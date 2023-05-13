@@ -17,6 +17,7 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
 
     //inserts Media into Firestore and Firebase Storage
     fun insert(media: Media)=viewModelScope.launch(Dispatchers.IO){
+
         //generete new document in Firestore and store id
         val mediaId = db.collection("media").document().id
         media.id = mediaId
