@@ -1,46 +1,55 @@
 package com.othregensburg.photosynthese.models
 
 import android.app.Application
+import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.io.File
+import java.io.FileOutputStream
 
 class mediaViewModel(application: Application) : AndroidViewModel(application) {
     var storageRef: StorageReference = FirebaseStorage.getInstance().getReference()
     val db = FirebaseFirestore.getInstance()
 
-    //inserts media into firestore and firebase Storage
+    //inserts given Media into Firebase
     fun insert(media: Media) = viewModelScope.launch(Dispatchers.IO) {
 
-        //generete new document in firestore and store id
+        //generate id for firestore
         val mediaId = db.collection("media").document().id
         media.id = mediaId
 
-        //set reference to path in firebase
+        //generate reference for firebase storage
         val reference = "media/${media.event_id}/${mediaId}.jpg"
         media.reference = reference
 
-        //format media object so uri doesn't get into firestore
+        //create map for firestore
         val uploadMedia = mapOf(
             "event_id" to media.event_id,
             "reference" to media.reference,
             "timestamp" to media.timestamp,
             "user" to media.user
         )
-
-        //insert formated media into firestore
+        //upload media object to firestore
         db.collection("media").document(mediaId)
             .set(uploadMedia)
 
-        //insert Uri in firebase storage
-        storageRef.child("${reference}").putFile(media.content!!)
+        //compress image to 75% quality and 1200x1600px
+        val uploadUri=compressImage(media.content!!,75)
+        //upload image to firebase storage
+        storageRef.child("${reference}").putFile(uploadUri!!).await()
 
     }
 
@@ -54,22 +63,22 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
         storageRef.child(media.reference!!).delete()
     }
 
-    //gets all media for given event from firebase
+    //gets all Media from Firebase
     fun getEventMedia(event_id: String? = "0"): MutableLiveData<List<Media>> {
 
         var result: MutableLiveData<List<Media>> = MutableLiveData()
 
-        //get media from firebase for given event_id in chronological order
+        //get all media objects from firestore that have the given event_id in right order
         db.collection("media").whereEqualTo("event_id", event_id).orderBy("timestamp")
             .get().addOnSuccessListener { documents ->
 
-                //help list to store media objects into this List
+                //create help list
                 val mediaList = mutableListOf<Media>()
 
-                //launch new Coroutine that all result are in right order
+                //start coroutine and wait until all media objects are downloaded
                 viewModelScope.launch(Dispatchers.IO) {
 
-                    //create new media object for each document returned by Firebase
+                    //for each media object in documents create a media object and add it to help list
                     for (item in documents) {
 
                         val media = Media(
@@ -81,19 +90,48 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
                             null
                         )
 
-                        //get picture uri for each media object from firebase storage and wait until it is downloaded
+                        //download media uri from firebase storage
                         val uri = storageRef.child(media.reference!!).downloadUrl.await()
                         media.content = uri
 
-                        //after media uri is downloaded add media object to help list
+                        //add media object to help list
                         mediaList.add(media)
                     }
 
-                    //after ever media object is downloaded set live data equal to help list
+                    //set help list as result
                     result.value = mediaList
                 }
             }
-
         return result
     }
+
+    private fun compressImage(uri: Uri, quality: Int): Uri {
+        //get context
+        val context: Context = getApplication<Application>().applicationContext
+
+        //set resolution for image
+        val requestOptions = RequestOptions().override(1200, 1600)
+
+        //get bitmap from uri and apply resolution
+        val bitmap = Glide.with(context)
+            .asBitmap()
+            .load(uri)
+            .apply(requestOptions)
+            .submit()
+            .get()
+
+        //create new file in cache directory
+        val file = File(context.cacheDir, "${System.currentTimeMillis()}.jpg")
+        //write bitmap to file
+        val outputStream = FileOutputStream(file)
+        //compress bitmap with given quality
+        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
+        //close outputStream
+        outputStream.close()
+
+        //return uri of file
+        return file.toUri()
+    }
+
+
 }
