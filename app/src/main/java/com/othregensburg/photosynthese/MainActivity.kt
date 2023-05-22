@@ -2,6 +2,7 @@ package com.othregensburg.photosynthese
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.ktx.Firebase
@@ -18,8 +19,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val recyclerView: RecyclerView = findViewById(R.id.recyclerView_events)
-        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        recyclerView.adapter = EventAdapter(randomNames)
+        val recyclerViewActive: RecyclerView = findViewById(R.id.recyclerView_events_active)
+        recyclerViewActive.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        recyclerViewActive.adapter = EventAdapter(randomNames, "active")
+
+        val recyclerViewFuture: RecyclerView = findViewById(R.id.recyclerView_events_future)
+        recyclerViewFuture.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        recyclerViewFuture.adapter = EventAdapter(randomNames, "future")
+
+        val recyclerViewMemory: RecyclerView = findViewById(R.id.recyclerView_events_memory)
+        recyclerViewMemory.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        recyclerViewMemory.adapter = EventAdapter(randomNames, "memory")
+
     }
 }
