@@ -34,7 +34,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         //set up recycler views
-
         val recyclerViewActive: RecyclerView = findViewById(R.id.recyclerView_events_active)
         recyclerViewActive.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         recyclerViewActive.adapter = EventAdapter(randomEvents, "active")
