@@ -1,56 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <TextView
+    <!--top app bar-->
+    <include layout="@layout/toolbar" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="Photosynthese"
-        android:textAppearance="?attr/textAppearanceTitleLarge"
-        android:id="@+id/event_group_active" />
+        android:layout_marginTop="?attr/actionBarSize"
+        android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="ACTIVE EVENTS"
-        android:textAppearance="?attr/textAppearanceTitleMedium"
-        android:id="@+id/event_group_active" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="ACTIVE EVENTS"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:id="@+id/event_group_active" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView_events_active"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_events_active"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="FUTURE EVENTS"
-        android:textAppearance="?attr/textAppearanceTitleMedium"
-        android:id="@+id/event_group_future" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="FUTURE EVENTS"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:id="@+id/event_group_future" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView_events_future"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_events_future"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="MEMORY BOX"
-        android:textAppearance="?attr/textAppearanceTitleMedium"
-        android:id="@+id/event_group_memory" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="MEMORY BOX"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:id="@+id/event_group_memory" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView_events_memory"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_events_memory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-</LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

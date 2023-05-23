@@ -9,41 +9,31 @@
     android:checkable="true"
     android:layout_margin="8dp">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:padding="16dp"
         android:layout_gravity="bottom">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Title and Date-->
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:text="title"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:id="@+id/event_title" />
 
-            <!-- Title and Date-->
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="title"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
-                android:id="@+id/event_title"
-
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="25.05.2023"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:textColor="?android:attr/textColorSecondary"
-                android:id="@+id/event_date"
-
-                />
-
-
-        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="25.05.2023"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?android:attr/textColorSecondary"
+            android:id="@+id/event_date" />
 
     </LinearLayout>
 
