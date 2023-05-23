@@ -10,12 +10,23 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.ktx.Firebase
 import com.othregensburg.photosynthese.adapter.EventAdapter
+import com.othregensburg.photosynthese.models.Event
+import java.util.*
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
-    private val randomNames = List(50) {
-        ("Event" + Random.nextInt('Z' - 'A')).toString()
+    private val randomEvents = List(50) {
+        Event(
+            null,
+            ("Event" + Random.nextInt('Z' - 'A')).toString(),
+            Date().time,
+            Random.nextLong(),
+            Random.nextLong(),
+            LongArray(2) { Random.nextLong() },
+            null,
+            null
+        )
     }
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -25,21 +36,21 @@ class MainActivity : AppCompatActivity() {
         //change status bar color
 
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.statusBarColor = ContextCompat.getColor(this, R.color.black)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.background_dark)
 
         //set up recycler views
 
         val recyclerViewActive: RecyclerView = findViewById(R.id.recyclerView_events_active)
         recyclerViewActive.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        recyclerViewActive.adapter = EventAdapter(randomNames, "active")
+        recyclerViewActive.adapter = EventAdapter(randomEvents, "active")
 
         val recyclerViewFuture: RecyclerView = findViewById(R.id.recyclerView_events_future)
         recyclerViewFuture.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        recyclerViewFuture.adapter = EventAdapter(randomNames, "future")
+        recyclerViewFuture.adapter = EventAdapter(randomEvents, "future")
 
         val recyclerViewMemory: RecyclerView = findViewById(R.id.recyclerView_events_memory)
         recyclerViewMemory.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        recyclerViewMemory.adapter = EventAdapter(randomNames, "memory")
+        recyclerViewMemory.adapter = EventAdapter(randomEvents, "memory")
 
     }
 }
