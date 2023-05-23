@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="background_dark">#1C1B1F</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="skyblue">#FFC2E7FF</color>
+    <color name="background">#FF1C1B1F</color>
+
+    <color name="cards_pink">#FFD61B61</color>
+    <color name="cards_yellow">#FFFFE435</color>
+    <color name="cards_sage">#FF96B4AC</color>
+    <color name="cards_lime">#AEEA00</color>
+    <color name="cards_teal">#1DE9B6</color>
+    <color name="cards_purple">#AA00FF</color>
 </resources>
