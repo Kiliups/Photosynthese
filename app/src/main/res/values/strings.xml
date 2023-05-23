@@ -1,7 +1,16 @@
 <resources>
-    <string name="hello_blank_fragment">hello blank fragment</string>
     <string name="app_name">Photosynthese</string>
+
+    <!-- Main Activity -->
     <string name="headline_active_events">ACTIVE EVENTS</string>
     <string name="headline_future_events">FUTURE EVENTS</string>
     <string name="headline_memory_box">MEMORY BOX</string>
+
+    <!-- Create event Activity -->
+    <string name="headline_create_event">Create new event</string>
+    <string name="placeholder_event_name">Event name</string>
+    <string name="placeholder_date">Date</string>
+    <string name="placeholder_time">Time</string>
+    <string name="description">Description</string>
+    <string name="location">Location</string>
 </resources>
