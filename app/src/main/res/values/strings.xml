@@ -1,7 +1,6 @@
 <resources>
     <string name="hello_blank_fragment">hello blank fragment</string>
     <string name="app_name">Photosynthese</string>
-    <string name="event_date">25.05.2023</string>
     <string name="headline_active_events">ACTIVE EVENTS</string>
     <string name="headline_future_events">FUTURE EVENTS</string>
     <string name="headline_memory_box">MEMORY BOX</string>

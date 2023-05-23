@@ -9,9 +9,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:layout_margin="10dp"
-        android:background="@drawable/account"
-        android:minWidth="30dp"
-        android:minHeight="30dp" />
+        android:background="@drawable/ic_account_24"
+        android:minWidth="24dp"
+        android:minHeight="24dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -25,8 +25,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_margin="10dp"
-        android:background="@drawable/add"
-        android:minWidth="30dp"
-        android:minHeight="30dp" />
+        android:background="@drawable/ic_add_24"
+        android:minWidth="24dp"
+        android:minHeight="24dp" />
 
 </androidx.appcompat.widget.Toolbar>

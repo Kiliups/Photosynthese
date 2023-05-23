@@ -33,11 +33,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //change status bar color
-
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.statusBarColor = ContextCompat.getColor(this, R.color.background_dark)
-
         //set up recycler views
 
         val recyclerViewActive: RecyclerView = findViewById(R.id.recyclerView_events_active)
