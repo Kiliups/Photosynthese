@@ -14,6 +14,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.iceteck.silicompressorr.SiliCompressor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -31,8 +32,12 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
         val mediaId = db.collection("media").document().id
         media.id = mediaId
 
+        //get file type
+        var type = media.content.toString()
+        type = type.substring(type.lastIndexOf(".") + 1)
+
         //generate reference for firebase storage
-        val reference = "media/${media.event_id}/${mediaId}.jpg"
+        val reference = "media/${media.event_id}/${mediaId}.${type}"
         media.reference = reference
 
         //create map for firestore
@@ -43,11 +48,15 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
             "user" to media.user
         )
         //upload media object to firestore
-        db.collection("media").document(mediaId)
-            .set(uploadMedia)
+        db.collection("media").document(mediaId).set(uploadMedia).addOnSuccessListener {
+                Log.e("firebase", "upload success")
+            }.addOnFailureListener {
+                Log.e("firebase", it.message.toString())
+            }
 
         //compress image to 75% quality and 1200x1600px
-        val uploadUri=compressImage(media.content!!,75)
+        val uploadUri = compressMedia(media.content!!, 75,type)
+
         //upload image to firebase storage
         storageRef.child("${reference}").putFile(uploadUri!!).await()
 
@@ -69,8 +78,8 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
         var result: MutableLiveData<List<Media>> = MutableLiveData()
 
         //get all media objects from firestore that have the given event_id in right order
-        db.collection("media").whereEqualTo("event_id", event_id).orderBy("timestamp")
-            .get().addOnSuccessListener { documents ->
+        db.collection("media").whereEqualTo("event_id", event_id).orderBy("timestamp").get()
+            .addOnSuccessListener { documents ->
 
                 //create help list
                 val mediaList = mutableListOf<Media>()
@@ -105,32 +114,37 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
         return result
     }
 
-    private fun compressImage(uri: Uri, quality: Int): Uri {
+    private fun compressMedia(uri: Uri, quality: Int, type:String): Uri {
+        var result: Uri? = null
         //get context
         val context: Context = getApplication<Application>().applicationContext
 
-        //set resolution for image
-        val requestOptions = RequestOptions().override(1200, 1600)
+        //check if media is image or video
+        if (type == "jpg") {
+            //set resolution for image
+            val requestOptions = RequestOptions().override(1200, 1600)
 
-        //get bitmap from uri and apply resolution
-        val bitmap = Glide.with(context)
-            .asBitmap()
-            .load(uri)
-            .apply(requestOptions)
-            .submit()
-            .get()
+            //get bitmap from uri and apply resolution
+            val bitmap =
+                Glide.with(context).asBitmap().load(uri).apply(requestOptions).submit().get()
+            //create new file in cache directory
+            val file = File(context.cacheDir, "${System.currentTimeMillis()}.jpg")
+            //write bitmap to file
+            val outputStream = FileOutputStream(file)
+            //compress bitmap with given quality
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
+            //close outputStream
+            outputStream.close()
+            result = file.toUri()
+        }
 
-        //create new file in cache directory
-        val file = File(context.cacheDir, "${System.currentTimeMillis()}.jpg")
-        //write bitmap to file
-        val outputStream = FileOutputStream(file)
-        //compress bitmap with given quality
-        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
-        //close outputStream
-        outputStream.close()
+        //check if media is video
+        if (type == "mp4") {
+            result = uri
+        }
 
         //return uri of file
-        return file.toUri()
+        return result!!
     }
 
 
