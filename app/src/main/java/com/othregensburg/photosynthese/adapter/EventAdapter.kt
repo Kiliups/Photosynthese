@@ -45,8 +45,8 @@ class EventAdapter(private val EventList: List<Event>, private val groupid: Stri
         if (groupid == "active") {
 
             val layoutParams = holder.eventCard.layoutParams as ViewGroup.LayoutParams
-            layoutParams.height = 600
-            layoutParams.width = 600
+            layoutParams.height = 624
+            layoutParams.width = 624
 
             holder.eventCard.layoutParams = layoutParams
         }

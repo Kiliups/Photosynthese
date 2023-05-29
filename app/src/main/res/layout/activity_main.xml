@@ -17,7 +17,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_margin="@dimen/small"
             android:text="@string/headline_active_events"
             android:textAppearance="?attr/textAppearanceTitleMedium"
             android:id="@+id/event_group_active" />
@@ -30,7 +30,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_margin="@dimen/small"
             android:text="@string/headline_future_events"
             android:textAppearance="?attr/textAppearanceTitleMedium"
             android:id="@+id/event_group_future" />
@@ -43,7 +43,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_margin="@dimen/small"
             android:text="@string/headline_memory_box"
             android:textAppearance="?attr/textAppearanceTitleMedium"
             android:id="@+id/event_group_memory" />

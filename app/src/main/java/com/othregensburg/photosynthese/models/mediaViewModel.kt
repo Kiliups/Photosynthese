@@ -43,8 +43,7 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
             "user" to media.user
         )
         //upload media object to firestore
-        db.collection("media").document(mediaId)
-            .set(uploadMedia)
+        db.collection("media").document(mediaId).set(uploadMedia)
 
         //compress image to 75% quality and 1200x1600px
         val uploadUri=compressImage(media.content!!,75)

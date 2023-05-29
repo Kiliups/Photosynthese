@@ -5,28 +5,31 @@
     android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
     <ImageButton
+        android:id="@+id/icon_account"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:layout_margin="10dp"
         android:background="@drawable/ic_account_24"
-        android:minWidth="24dp"
-        android:minHeight="24dp" />
+        android:minWidth="@dimen/xlarge"
+        android:minHeight="@dimen/xlarge"
+        android:padding="@dimen/medium" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:text="@string/app_name"
-        android:textAppearance="?attr/textAppearanceHeadlineLarge"
-        android:layout_gravity="center"/>
+        android:textAppearance="?attr/textAppearanceHeadlineLarge" />
 
     <ImageButton
+        android:id="@+id/icon_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:layout_margin="10dp"
         android:background="@drawable/ic_add_24"
-        android:minWidth="24dp"
-        android:minHeight="24dp" />
+        android:padding="@dimen/medium"
+        android:minWidth="@dimen/xlarge"
+        android:minHeight="@dimen/xlarge"
+        android:layout_marginRight="@dimen/small" />
 
 </androidx.appcompat.widget.Toolbar>
