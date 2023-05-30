@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="SendButton" parent="Widget.AppCompat.Button">
+        <item name="android:drawable">@color/skyblue</item>
+        <item name="android:textColor">@color/background</item>
+        <item name="android:text">@string/send_button</item>
+    </style>
+
+    <style name="PositiveButton" parent="Widget.AppCompat.Button">
+        <item name="android:textColor">@color/background</item>
+        <item name="backgroundTint">@color/skyblue</item>
+    </style>
+
+    <style name="NeutralButton" parent="Widget.AppCompat.Button">
+        <item name="android:textColor">@color/skyblue</item>
+        <item name="backgroundTint">@color/background</item>
+    </style>
+
+    <style name="dialog_theme" parent="ThemeOverlay.AppCompat.Dialog">
+        <item name="colorAccent">@color/skyblue</item>                   <!--header background-->
+        <item name="android:windowBackground">@color/background</item>  <!--calendar background-->
+        <item name="android:colorControlActivated">@color/skyblue</item> <!--selected day-->
+        <item name="android:textColorPrimary">@color/white</item> <!--days of the month-->
+        <item name="android:textColorSecondary">@color/white</item>    <!--days of the week-->
+        <item name="android:buttonBarPositiveButtonStyle">@style/PositiveButton</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/NeutralButton</item>
+    </style>
+</resources>

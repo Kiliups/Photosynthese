@@ -4,6 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="skyblue">#FFC2E7FF</color>
     <color name="background">#FF1C1B1F</color>
+    <color name="transparent">#00000000</color>
 
     <color name="cards_pink">#FFD61B61</color>
     <color name="cards_yellow">#FFFFE435</color>

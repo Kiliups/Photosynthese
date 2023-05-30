@@ -11,6 +11,16 @@
     <string name="placeholder_event_name">Event name</string>
     <string name="placeholder_date">Date</string>
     <string name="placeholder_time">Time</string>
-    <string name="description">Description</string>
+    <string name="placeholder_description">Description (optional)</string>
     <string name="location">Location</string>
+    <string name="send_button">Create event</string>
+    <string name="optional">Optional settings</string>
+    <string name="startDate">Start time of event</string>
+    <string name="startPostingDate">Start posting time</string>
+    <string name="startPostingDateLong">Start posting time\n(Default value: event start time)</string>
+    <string name="stopPostingDate">End of event</string>
+    <string name="stopPostingDateLong">End of event\n(Default value: 12 hours after event start)</string>
+
+
+    <string name="hello_blank_fragment">Blank Fragment!</string>
 </resources>
