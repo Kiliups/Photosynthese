@@ -42,7 +42,7 @@ class EventCameraDisplayFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentEventCameraDisplayBinding.inflate(inflater, container, false)
-        val mediaViewModel= ViewModelProvider(this).get(mediaViewModel::class.java)
+        val mediaViewModel = ViewModelProvider(this).get(mediaViewModel::class.java)
         val photo = arguments?.getParcelable<Uri>("photo")
         Glide.with(this).load(photo).into(binding.media)
 
@@ -50,7 +50,8 @@ class EventCameraDisplayFragment : Fragment() {
         if (video != null) {
             binding.video.setVideoURI(video)
             binding.video.start()
-        }else
+            binding.video.setOnPreparedListener { it.isLooping = true }
+        } else
             binding.video.visibility = View.GONE
 
         binding.backButton.setOnClickListener {
@@ -64,6 +65,7 @@ class EventCameraDisplayFragment : Fragment() {
                 media = Media(null, "0", null, System.currentTimeMillis(), null, video)
             mediaViewModel.insert(media!!)
         }
+        binding.sendButton.setBackgroundColor(resources.getColor(R.color.skyblue, null))
 
         return binding.root
     }

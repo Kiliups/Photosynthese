@@ -1,5 +1,6 @@
 package com.othregensburg.photosynthese
 
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -14,7 +15,7 @@ import com.othregensburg.photosynthese.models.Event
 import java.util.*
 import kotlin.random.Random
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), EventAdapter.eventItemClickListener {
 
     private val randomEvents = List(50) {
         Event(
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
             null
         )
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -35,16 +37,26 @@ class MainActivity : AppCompatActivity() {
 
         //set up recycler views
         val recyclerViewActive: RecyclerView = findViewById(R.id.recyclerView_events_active)
-        recyclerViewActive.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        recyclerViewActive.adapter = EventAdapter(randomEvents, "active")
+        recyclerViewActive.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        recyclerViewActive.adapter = EventAdapter(randomEvents, "active",this)
 
         val recyclerViewFuture: RecyclerView = findViewById(R.id.recyclerView_events_future)
-        recyclerViewFuture.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        recyclerViewFuture.adapter = EventAdapter(randomEvents, "future")
+        recyclerViewFuture.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        recyclerViewFuture.adapter = EventAdapter(randomEvents, "future",this)
 
         val recyclerViewMemory: RecyclerView = findViewById(R.id.recyclerView_events_memory)
-        recyclerViewMemory.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        recyclerViewMemory.adapter = EventAdapter(randomEvents, "memory")
+        recyclerViewMemory.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        recyclerViewMemory.adapter = EventAdapter(randomEvents, "memory",this)
 
     }
+
+
+    override fun onItemClicked(entry: Event) {
+        val intent = Intent(this, EventActivity::class.java)
+        startActivity(intent)
+    }
+
 }
