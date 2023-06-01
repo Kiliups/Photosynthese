@@ -73,6 +73,7 @@ class EventCameraFragment : Fragment() {
     var isWide = false
     var isWideAvailabile = false
     var flash = false
+    var recordingVideo = false
 
     lateinit var binding: FragmentEventCameraBinding
 
@@ -125,18 +126,20 @@ class EventCameraFragment : Fragment() {
         // Set up the listener for flip camera button
         binding.flipCameraButton.setOnClickListener {
             // Flip the camera selector
-            when (cameraSelector) {
-                CameraSelector.DEFAULT_BACK_CAMERA -> {
-                    cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
-                    startCamera()
-                }
+            if (!recordingVideo) {
+                when (cameraSelector) {
+                    CameraSelector.DEFAULT_BACK_CAMERA -> {
+                        cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
+                        startCamera()
+                    }
 
-                CameraSelector.DEFAULT_FRONT_CAMERA -> {
-                    cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-                    startCamera()
+                    CameraSelector.DEFAULT_FRONT_CAMERA -> {
+                        cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+                        startCamera()
+                    }
                 }
+                setupFlashIcon()
             }
-            setupFlashIcon()
         }
 
         //Set up wide angle button
@@ -153,7 +156,9 @@ class EventCameraFragment : Fragment() {
         //Set up flash button
         setupFlashIcon()
         binding.flashButton.setOnClickListener {
-            flash = !flash
+            if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA && !recordingVideo){
+                flash = !flash
+            }
             setupFlashIcon()
         }
 
@@ -268,6 +273,7 @@ class EventCameraFragment : Fragment() {
                 // Update the state of the button after the recording has started or stopped.
                 when (recordEvent) {
                     is VideoRecordEvent.Start -> {
+                        recordingVideo = true
                         binding.captureButton.apply {
                             isEnabled = true
                             colorFilter = PorterDuffColorFilter(
