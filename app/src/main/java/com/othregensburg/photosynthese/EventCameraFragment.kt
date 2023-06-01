@@ -24,6 +24,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.camera2.Camera2Config
 import androidx.camera.camera2.interop.Camera2CameraControl
 import androidx.camera.camera2.interop.Camera2CameraInfo
@@ -61,38 +62,22 @@ import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-
-@ExperimentalCamera2Interop
 class EventCameraFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
     private var imageCapture: ImageCapture? = null
-
     private var videoCapture: VideoCapture<Recorder>? = null
     private var recording: Recording? = null
-
     private lateinit var cameraExecutor: ExecutorService
     var cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-    lateinit var binding: FragmentEventCameraBinding
+    lateinit var camera: Camera
+
     var isWide = false
     var isWideAvailabile = false
-    lateinit var camera: Camera
     var flash = false
+
+    lateinit var binding: FragmentEventCameraBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
@@ -113,10 +98,7 @@ class EventCameraFragment : Fragment() {
         // Set up the listener for take photo button
         cameraExecutor = Executors.newSingleThreadExecutor()
 
-        // Set up the animation for the capture button
-        var captureAnimation = AnimationUtils.loadAnimation(
-            requireContext(), com.google.android.material.R.anim.abc_grow_fade_in_from_bottom
-        )
+        // Set up video and photo toggle buttons
         binding.toggleGroup.check(binding.cameraToggle.id)
         binding.cameraToggle.setOnClickListener {
             binding.toggleGroup.check(binding.cameraToggle.id)
@@ -127,7 +109,12 @@ class EventCameraFragment : Fragment() {
 
         // Set up the listeners for take photo and video capture buttons
         binding.captureButton.setOnClickListener {
+            // Animate the capture button
+            var captureAnimation = AnimationUtils.loadAnimation(
+                requireContext(), com.google.android.material.R.anim.abc_grow_fade_in_from_bottom
+            )
             binding.captureButton.startAnimation(captureAnimation)
+            // Capture photo or video
             if (binding.toggleGroup.checkedButtonId == binding.cameraToggle.id) {
                 takePhoto()
             } else {
@@ -149,8 +136,10 @@ class EventCameraFragment : Fragment() {
                     startCamera()
                 }
             }
+            setupFlashIcon()
         }
 
+        //Set up wide angle button
         binding.wideAngleButton.setOnClickListener {
             isWide = !isWide
             if (isWide) {
@@ -160,44 +149,23 @@ class EventCameraFragment : Fragment() {
             }
             startCamera()
         }
+
+        //Set up flash button
+        setupFlashIcon()
+        binding.flashButton.setOnClickListener {
+            flash = !flash
+            setupFlashIcon()
+        }
+
+        //Set up back button
         binding.backButton.setOnClickListener {
             requireActivity().onBackPressed()
         }
 
-        if (flash) {
-            binding.flashButton.setImageResource(R.drawable.ic_flash_on_50)
-        } else {
-            binding.flashButton.setImageResource(R.drawable.ic_flash_off_50)
-        }
-        binding.flashButton.setOnClickListener {
-            flash = !flash
-            if (flash) {
-                binding.flashButton.setImageResource(R.drawable.ic_flash_on_50)
-            } else {
-                binding.flashButton.setImageResource(R.drawable.ic_flash_off_50)
-            }
-        }
         return binding.root
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CameraFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) = EventCameraFragment().apply {
-            arguments = Bundle().apply {
-                putString(ARG_PARAM1, param1)
-                putString(ARG_PARAM2, param2)
-            }
-        }
-
         // Implements CameraX
         private const val TAG = "Photosynthese"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
@@ -211,15 +179,33 @@ class EventCameraFragment : Fragment() {
         }.toTypedArray()
     }
 
+    fun setupFlashIcon() {
+        if (flash) {
+            if (cameraSelector == CameraSelector.DEFAULT_FRONT_CAMERA) {
+                binding.flashButton.setImageResource(R.drawable.ic_flash_off_50)
+            } else
+                binding.flashButton.setImageResource(R.drawable.ic_flash_on_50)
+        } else {
+            binding.flashButton.setImageResource(R.drawable.ic_flash_off_50)
+        }
+    }
+
+    fun setupFlash() {
+        camera.cameraControl.enableTorch(flash)
+        if (flash) {
+            /*if (cameraSelector == CameraSelector.DEFAULT_FRONT_CAMERA) {
+                binding.background.background = ColorDrawable(Color.WHITE)
+            }*/
+            Thread.sleep(700)
+        }
+    }
+
     //take photo and replace fragment
     private fun takePhoto() {
         val imageCapture = imageCapture ?: return
-        camera.cameraControl.enableTorch(flash)
-        if (flash) {
-            if (cameraSelector == CameraSelector.DEFAULT_FRONT_CAMERA)
-                binding.background.background = ColorDrawable(Color.WHITE)
-            Thread.sleep(500)
-        }
+
+        //Set up flash
+        setupFlash()
 
         // Create time-stamped output file to hold the image in the cache directory
         val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US).format(System.currentTimeMillis())
@@ -231,6 +217,7 @@ class EventCameraFragment : Fragment() {
         imageCapture.takePicture(outputOptions,
             ContextCompat.getMainExecutor(requireContext()),
             object : ImageCapture.OnImageSavedCallback {
+                //If error, log it
                 override fun onError(exc: ImageCaptureException) {
                     Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                 }
@@ -238,10 +225,8 @@ class EventCameraFragment : Fragment() {
                 //save photo and replace fragment
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = output.savedUri ?: Uri.fromFile(file)
-                    val msg = "Photo capture succeeded"
-                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
-                    Log.d(TAG, msg)
                     replaceFragment("photo", savedUri)
+                    //Turn off flash
                     camera.cameraControl.enableTorch(false)
                 }
             })
@@ -267,13 +252,8 @@ class EventCameraFragment : Fragment() {
         val file = File(cacheDir, "$name.mp4")
         val fileOutputOptions = FileOutputOptions.Builder(file).build()
 
-        camera.cameraControl.enableTorch(flash)
-        if (flash) {
-            if (cameraSelector == CameraSelector.DEFAULT_FRONT_CAMERA) {
-                binding.background.background = ColorDrawable(Color.WHITE)
-            }
-            Thread.sleep(500)
-        }
+        //Set up flash
+        setupFlash()
 
         // Create a new video recording use case and start recording.
         recording =
@@ -295,17 +275,14 @@ class EventCameraFragment : Fragment() {
                                     requireContext(), R.color.cards_pink
                                 ), PorterDuff.Mode.SRC_ATOP
                             )
-
+                            //hide wide angle button
+                            binding.wideAngleButton.visibility = View.GONE
                         }
                     }
 
                     is VideoRecordEvent.Finalize -> {
                         if (!recordEvent.hasError()) {
                             // Video capture has stopped, output file is generated.
-                            val msg =
-                                "Video capture succeeded: " + "${recordEvent.outputResults.outputUri}"
-                            Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
-                            Log.d(TAG, msg)
                             replaceFragment("video", recordEvent.outputResults.outputUri)
                         } else {
                             recording?.close()
@@ -317,6 +294,7 @@ class EventCameraFragment : Fragment() {
                         binding.captureButton.apply {
                             isEnabled = true
                         }
+                        //turn off flash
                         camera.cameraControl.enableTorch(false)
                     }
                 }
@@ -367,14 +345,15 @@ class EventCameraFragment : Fragment() {
                     this, cameraSelector, preview, imageCapture, videoCapture
                 )
 
+                //check if wide angle camera is available
                 wideAvalible()
 
+                //if wide angle camera is available and user click on button, switch to wide angle camera
                 if (isWide) {
                     val cameraControl = camera.cameraControl
                     val cameraInfo = camera.cameraInfo
                     val zoomRatio = cameraInfo.getZoomState().getValue()!!.getMinZoomRatio()
                     cameraControl.setZoomRatio(zoomRatio)
-                    Log.d("Camera2wide", "zoomRatio: $zoomRatio")
                 }
 
             } catch (exc: Exception) {
@@ -385,6 +364,7 @@ class EventCameraFragment : Fragment() {
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
+    //check if wide angle camera is available and setup button
     fun wideAvalible() {
         val cameraControl = camera.cameraControl
         val cameraInfo = camera.cameraInfo
@@ -430,4 +410,3 @@ class EventCameraFragment : Fragment() {
     }
 
 }
-
