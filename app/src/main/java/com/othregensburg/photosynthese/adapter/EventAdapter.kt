@@ -11,7 +11,13 @@ import com.othregensburg.photosynthese.models.Event
 import java.text.SimpleDateFormat
 import java.util.*
 
-class EventAdapter(private val EventList: List<Event>, private val groupid: String): RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
+class EventAdapter(private var events: List<Event>, private val groupid: String): RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
+
+    //update events
+    fun updateEvents(updatedEvents: List<Event>) {
+        events = updatedEvents
+        notifyDataSetChanged()
+    }
 
     inner class EventViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
@@ -28,16 +34,16 @@ class EventAdapter(private val EventList: List<Event>, private val groupid: Stri
 
     override fun getItemCount(): Int {
 
-        return EventList.size
+        return events.size
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
 
-        holder.eventTitle.text = EventList[position].name
+        holder.eventTitle.text = events[position].name
 
         //format date
         val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-        val formattedDate = dateFormat.format(EventList[position].event_date)
+        val formattedDate = events[position].event_date?.let { dateFormat.format(it) }
         holder.eventDate.text = formattedDate
 
         //increase size of active events
@@ -52,4 +58,5 @@ class EventAdapter(private val EventList: List<Event>, private val groupid: Stri
         }
 
     }
+
 }

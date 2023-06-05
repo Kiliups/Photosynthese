@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
-import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -21,8 +20,9 @@ import java.io.File
 import java.io.FileOutputStream
 
 class mediaViewModel(application: Application) : AndroidViewModel(application) {
+
     var storageRef: StorageReference = FirebaseStorage.getInstance().getReference()
-    val db = FirebaseFirestore.getInstance()
+    var db = FirebaseFirestore.getInstance()
 
     //inserts given Media into Firebase
     fun insert(media: Media) = viewModelScope.launch(Dispatchers.IO) {

@@ -10,11 +10,10 @@ data class Event(
     var event_date: Long?,
     var start_date: Long?,
     var end_date: Long?,
-    var location: Location?,
+    var location: String?,
     var participants: List<String>?,
     var picture: String?
 )
 
-data class Location(val latitude: Double, val longitude: Double)
 
 

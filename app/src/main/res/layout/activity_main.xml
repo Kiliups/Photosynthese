@@ -6,7 +6,7 @@
     tools:context=".MainActivity">
 
     <!--top app bar-->
-    <include layout="@layout/toolbar" />
+    <include layout="@layout/toolbar_main_activity" />
 
     <LinearLayout
         android:layout_width="match_parent"
