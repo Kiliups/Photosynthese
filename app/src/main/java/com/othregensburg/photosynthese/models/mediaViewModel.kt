@@ -97,10 +97,9 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
                         //add media object to help list
                         mediaList.add(media)
                     }
-
-                    //set help list as result
-                    result.value = mediaList
                 }
+                //set help list as result
+                result.value = mediaList
             }
         return result
     }
