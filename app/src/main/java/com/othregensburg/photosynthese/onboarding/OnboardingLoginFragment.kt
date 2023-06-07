@@ -6,10 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.othregensburg.photosynthese.MainActivity
 import com.othregensburg.photosynthese.R
 import com.othregensburg.photosynthese.databinding.FragmentOnboardingLoginBinding
+import com.othregensburg.photosynthese.models.userViewModel
 
 class OnboardingLoginFragment : Fragment() {
     lateinit var binding: FragmentOnboardingLoginBinding
@@ -23,18 +25,11 @@ class OnboardingLoginFragment : Fragment() {
         binding.signUp.setOnClickListener {
 
         }
+        val userVM= ViewModelProvider(requireActivity()).get(userViewModel::class.java)
+
         binding.loginButton.setOnClickListener {
-            auth.signInWithEmailAndPassword(
-                binding.user.text.toString(),
-                binding.password.text.toString()
-            ).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    //start main activity
-                    val intent = Intent(requireContext(), MainActivity::class.java)
-                    startActivity(intent)
-                } else {
-                    //show error
-                }
+            if (binding.user.text.toString().isNotEmpty() && binding.password.text.toString().isNotEmpty()) {
+                userVM.login(binding.user.text.toString(), binding.password.text.toString())
             }
         }
         return binding.root
