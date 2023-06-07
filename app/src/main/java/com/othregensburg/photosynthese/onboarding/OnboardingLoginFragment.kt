@@ -30,7 +30,14 @@ class OnboardingLoginFragment : Fragment() {
         binding.loginButton.setOnClickListener {
             if (binding.user.text.toString().isNotEmpty() && binding.password.text.toString().isNotEmpty()) {
                 userVM.login(binding.user.text.toString(), binding.password.text.toString())
+                if (auth.currentUser != null) {
+                    val intent = Intent(requireContext(), MainActivity::class.java)
+                    startActivity(intent)
+                }
             }
+        }
+        binding.signOutButton.setOnClickListener {
+            userVM.signOut()
         }
         return binding.root
     }
