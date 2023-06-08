@@ -4,15 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".onboarding.OnboardingWelcomeFragment"
-    android:padding="@dimen/xlarge">
+    android:padding="@dimen/xlarge"
+    tools:context=".onboarding.OnboardingWelcomeFragment">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/welcome_title"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Welcome to Photosynthesis"
+        android:textAllCaps="true"
         android:textAppearance="?attr/textAppearanceHeadlineLarge"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,25 +24,25 @@
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:src="@drawable/logo"
-        app:layout_constraintBottom_toTopOf="@+id/textView2"
+        app:layout_constraintBottom_toTopOf="@+id/welcome_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/welcome_title" />
 
     <TextView
-        android:id="@+id/textView2"
-        android:layout_width="300dp"
+        android:id="@+id/welcome_text"
+        android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/large"
         android:gravity="center"
         android:text="caputure, share and store important moments with friends and family all in one place!"
         android:textAppearance="?attr/textAppearanceHeadlineMedium"
-        app:layout_constraintBottom_toTopOf="@+id/login_button"
+        app:layout_constraintBottom_toTopOf="@+id/get_started_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/login_button"
+        android:id="@+id/get_started_button"
         style="@style/Widget.Material3.Button.ElevatedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -52,7 +53,6 @@
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-         />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

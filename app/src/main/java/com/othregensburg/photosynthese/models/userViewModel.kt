@@ -8,6 +8,7 @@ import android.util.Patterns
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -22,13 +23,16 @@ class userViewModel(application: Application) : AndroidViewModel(application) {
         username: String, firstname: String, lastname: String, email: String, password: String
     ) = viewModelScope.launch(Dispatchers.IO) {
         val user = username.toLowerCase()
+        // Check if username is already taken
         db.collection("user").whereEqualTo("username", user).get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
+                    // If username is taken, show error
                     Toast.makeText(
                         getApplication(), "Username already taken", Toast.LENGTH_SHORT
                     ).show()
                 } else {
+                    // If username is not taken, create user
                     auth.createUserWithEmailAndPassword(
                         email, password
                     ).addOnSuccessListener {
@@ -49,49 +53,50 @@ class userViewModel(application: Application) : AndroidViewModel(application) {
 
     }
 
-    fun login(user: String, password: String) {
+    fun login(user: String, password: String): MutableLiveData<Boolean> {
         var email = user
         email = email.toLowerCase()
+        var result = MutableLiveData<Boolean>()
+        // Check if user is trying to login with email or username
         if (!Patterns.EMAIL_ADDRESS.matcher(user).matches()) {
+            // If username, get email from database
             db.collection("user").whereEqualTo("username", user).get()
                 .addOnSuccessListener { documents ->
                     if (!documents.isEmpty()) {
+                        // If username exists, get email and login
                         email = documents.documents[0].get("email").toString()
-                        Log.d("firebase", "E-Mail-Adresse: $email")
                         auth.signInWithEmailAndPassword(
                             email, password
                         ).addOnCompleteListener {
                             if (it.isSuccessful) {
-                                //start main activity
-                                Toast.makeText(
-                                    getApplication(), "Login successful", Toast.LENGTH_SHORT
-                                ).show()
+                                // If login successful, set result to true
+                                result.value = true
+                            }else{
+                                // If login unsuccessful, set result to false
+                                result.value = false
                             }
                         }
-                    }else{
-                        Toast.makeText(
-                            getApplication(), "Login failed", Toast.LENGTH_SHORT
-                        ).show()
+                    } else {
+                        // If username does not exist, set result to false
+                        result.value = false
                     }
                 }
         } else {
+            // If email, login
             auth.signInWithEmailAndPassword(
                 email, password
             ).addOnCompleteListener {
                 if (it.isSuccessful) {
-                    //start main activity
-                    Toast.makeText(
-                        getApplication(), "Login successful", Toast.LENGTH_SHORT
-                    ).show()
+                    // If login successful, set result to true
+                    result.value = true
                 } else {
-                    Toast.makeText(
-                        getApplication(), "Login failed", Toast.LENGTH_SHORT
-                    ).show()
+                    // If login unsuccessful, set result to false
+                    result.value = false
                 }
             }
         }
+        return result
     }
-
     fun signOut() {
         auth.signOut()
         Toast.makeText(

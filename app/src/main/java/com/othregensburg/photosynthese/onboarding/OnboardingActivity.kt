@@ -27,10 +27,14 @@ class OnboardingActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        /*if (auth.currentUser != null) {
+        // Sign out user for testing purposes
+        auth.signOut()
+        // Check if user is already logged in
+        if (auth.currentUser != null) {
             //start main activity
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
-        }*/
+            finish()
+        }
     }
 }

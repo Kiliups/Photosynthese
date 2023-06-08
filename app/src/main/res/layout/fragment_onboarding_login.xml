@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".onboarding.OnboardingLoginFragment">
 
+    <ImageButton
+        android:id="@+id/back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:padding="@dimen/medium"
+        android:src="@drawable/ic_arrow_back_32"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/logo"
         android:layout_width="200dp"
@@ -19,6 +29,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="@+id/horizontal_30">
 
@@ -26,8 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/login_background"
-            android:padding="@dimen/xlarge"
-            >
+            android:padding="@dimen/xlarge">
 
             <TextView
                 android:id="@+id/login"
@@ -97,32 +107,31 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/password_container" />
 
-            <Button
-                android:id="@+id/sign_out_button"
-                style="@style/Widget.Material3.Button.ElevatedButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/xlarge"
-                android:backgroundTint="@color/skyblue"
-                android:text="sign out"
-                android:textAllCaps="true"
-                android:textColor="@color/black"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/login_button" />
-
-            <TextView
+            <LinearLayout
                 android:id="@+id/sign_up"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/large"
                 android:padding="@dimen/medium"
-                android:text="Don't have an account? Sign up"
-                android:textAppearance="?attr/textAppearanceBody1"
-                android:textColor="?attr/colorSurface"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sign_out_button" />
+                app:layout_constraintStart_toStartOf="parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Don't have an account? "
+                    android:textAppearance="?attr/textAppearanceBody1"
+                    android:textColor="?attr/colorSurface" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sign Up"
+                    android:textAppearance="?attr/textAppearanceBody1"
+                    android:textColor="@android:color/holo_blue_light" />
+
+            </LinearLayout>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
