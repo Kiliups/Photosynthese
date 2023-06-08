@@ -17,16 +17,21 @@ import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 
 class mediaViewModel(application: Application) : AndroidViewModel(application) {
     var storageRef: StorageReference = FirebaseStorage.getInstance().getReference()
     val db = FirebaseFirestore.getInstance()
+    val isUploading = MutableLiveData<Boolean>()
 
     //inserts given Media into Firebase
     fun insert(media: Media) = viewModelScope.launch(Dispatchers.IO) {
 
+        withContext(Dispatchers.Main) {
+            isUploading.value = true
+        }
         //generate id for firestore
         val mediaId = db.collection("media").document().id
         media.id = mediaId
@@ -48,17 +53,20 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
         )
         //upload media object to firestore
         db.collection("media").document(mediaId).set(uploadMedia).addOnSuccessListener {
-                Log.e("firebase", "upload success")
-            }.addOnFailureListener {
-                Log.e("firebase", it.message.toString())
-            }
+            Log.e("firebase", "upload success")
+        }.addOnFailureListener {
+            Log.e("firebase", it.message.toString())
+        }
 
         //compress image to 75% quality and 1200x1600px
-        val uploadUri = compressMedia(media.content!!, 75,type)
+        val uploadUri = compressMedia(media.content!!, 75, type)
 
         //upload image to firebase storage
         storageRef.child("${reference}").putFile(uploadUri!!).await()
 
+        withContext(Dispatchers.Main) {
+            isUploading.value = false
+        }
     }
 
     //deletes given Media from Firebase
@@ -112,7 +120,7 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
         return result
     }
 
-    private fun compressMedia(uri: Uri, quality: Int, type:String): Uri {
+    private fun compressMedia(uri: Uri, quality: Int, type: String): Uri {
         var result: Uri? = null
         //get context
         val context: Context = getApplication<Application>().applicationContext

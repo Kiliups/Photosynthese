@@ -14,6 +14,7 @@ import com.othregensburg.photosynthese.models.Media
 import com.othregensburg.photosynthese.models.mediaViewModel
 
 lateinit var binding: FragmentEventCameraDisplayBinding
+
 class EventCameraDisplayFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +41,7 @@ class EventCameraDisplayFragment : Fragment() {
         binding.backButton.setOnClickListener {
             requireActivity().onBackPressed()
         }
-
+        binding.progressBar.visibility = View.GONE
         binding.sendButton.setOnClickListener {
             var media: Media? = null
             if (photo != null)
@@ -48,6 +49,15 @@ class EventCameraDisplayFragment : Fragment() {
             if (video != null)
                 media = Media(null, "0", null, System.currentTimeMillis(), null, video)
             mediaViewModel.insert(media!!)
+            mediaViewModel.isUploading.observe(viewLifecycleOwner, {
+                if (it == true) {
+                    binding.progressBar.visibility = View.VISIBLE
+                } else {
+                    binding.progressBar.visibility = View.GONE
+                    requireActivity().onBackPressed()
+                }
+            })
+            binding.sendButton.isEnabled = false
         }
 
         binding.sendButton.setBackgroundColor(resources.getColor(R.color.skyblue, null))

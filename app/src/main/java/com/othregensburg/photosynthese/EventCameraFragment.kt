@@ -102,7 +102,11 @@ class EventCameraFragment : Fragment() {
         // Set up video and photo toggle buttons
         binding.toggleGroup.check(binding.cameraToggle.id)
         binding.cameraToggle.setOnClickListener {
-            binding.toggleGroup.check(binding.cameraToggle.id)
+            if (recordingVideo) {
+                binding.toggleGroup.check(binding.videoToggle.id)
+            } else {
+                binding.toggleGroup.check(binding.cameraToggle.id)
+            }
         }
         binding.videoToggle.setOnClickListener {
             binding.toggleGroup.check(binding.videoToggle.id)
@@ -156,7 +160,7 @@ class EventCameraFragment : Fragment() {
         //Set up flash button
         setupFlashIcon()
         binding.flashButton.setOnClickListener {
-            if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA && !recordingVideo){
+            if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA && !recordingVideo) {
                 flash = !flash
             }
             setupFlashIcon()
@@ -302,6 +306,7 @@ class EventCameraFragment : Fragment() {
                         }
                         //turn off flash
                         camera.cameraControl.enableTorch(false)
+                        recordingVideo = false
                     }
                 }
             }
