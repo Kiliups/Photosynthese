@@ -36,6 +36,7 @@ class OnboardingLoginFragment : Fragment() {
                             ).show()
                             val intent = Intent(requireContext(), MainActivity::class.java)
                             startActivity(intent)
+                            requireActivity().finish()
                         } else {
                             // if Login failed -> show error
                             Toast.makeText(
