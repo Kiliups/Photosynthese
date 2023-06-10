@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+
+    <ImageButton
+        android:id="@+id/icon_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:background="@drawable/ic_profile_48"
+        android:minWidth="@dimen/xxxlarge"
+        android:minHeight="@dimen/xxxlarge"
+        android:contentDescription="@string/content_description_icon_profile"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/app_name"
+        android:textAppearance="?attr/textAppearanceHeadlineLarge" />
+
+    <ImageButton
+        android:id="@+id/icon_add"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:layout_marginEnd="@dimen/small"
+        android:background="@drawable/ic_add_48"
+        android:minWidth="@dimen/xxxlarge"
+        android:minHeight="@dimen/xxxlarge"
+        android:contentDescription="@string/content_description_icon_add"/>
+
+</androidx.appcompat.widget.Toolbar>

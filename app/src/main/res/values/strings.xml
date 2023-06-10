@@ -6,6 +6,11 @@
     <string name="headline_future_events">FUTURE EVENTS</string>
     <string name="headline_memory_box">MEMORY BOX</string>
 
+    <!-- Event Activity Toolbar -->
+    <string name="content_description_icon_add">add</string>
+    <string name="content_description_icon_profile">profile</string>
+
+
     <!-- Create event Activity -->
     <string name="headline_create_event">Create new event</string>
     <string name="placeholder_event_name">Event name</string>
@@ -13,5 +18,5 @@
     <string name="placeholder_time">Time</string>
     <string name="description">Description</string>
     <string name="location">Location</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>
