@@ -5,14 +5,14 @@
     android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
     <ImageButton
-        android:id="@+id/icon_account"
+        android:id="@+id/icon_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:background="@drawable/ic_account_24"
-        android:minWidth="@dimen/xlarge"
-        android:minHeight="@dimen/xlarge"
-        android:padding="@dimen/medium" />
+        android:background="@drawable/ic_profile_48"
+        android:minWidth="@dimen/xxxlarge"
+        android:minHeight="@dimen/xxxlarge"
+        android:contentDescription="@string/content_description_icon_profile"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -24,12 +24,12 @@
     <ImageButton
         android:id="@+id/icon_add"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="end"
-        android:background="@drawable/ic_add_24"
-        android:padding="@dimen/medium"
-        android:minWidth="@dimen/xlarge"
-        android:minHeight="@dimen/xlarge"
-        android:layout_marginRight="@dimen/small" />
+        android:layout_marginEnd="@dimen/small"
+        android:background="@drawable/ic_add_48"
+        android:minWidth="@dimen/xxxlarge"
+        android:minHeight="@dimen/xxxlarge"
+        android:contentDescription="@string/content_description_icon_add"/>
 
 </androidx.appcompat.widget.Toolbar>

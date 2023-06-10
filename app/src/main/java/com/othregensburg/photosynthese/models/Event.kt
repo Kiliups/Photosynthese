@@ -12,7 +12,8 @@ data class Event(
     var end_date: Long?,
     var location: String?,
     var participants: List<String>?,
-    var picture: String?
+    var picture: String?,
+    var status: String?
 )
 
 
