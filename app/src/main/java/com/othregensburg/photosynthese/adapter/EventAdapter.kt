@@ -1,6 +1,5 @@
 package com.othregensburg.photosynthese.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,9 +10,16 @@ import com.othregensburg.photosynthese.R
 import com.othregensburg.photosynthese.models.Event
 import java.text.SimpleDateFormat
 import java.util.*
+import android.os.Build
+import com.othregensburg.photosynthese.MainActivity
+import com.othregensburg.photosynthese.EventActivity
+import android.content.Intent
 
-class EventAdapter(private var events: List<Event>, private val status: String): RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
+class EventAdapter(private var events: List<Event>, private val status: String, val listener: eventItemClickListener): RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
 
+    interface eventItemClickListener {
+        fun onItemClicked(event: Event)
+    }
 
     //update events
     fun updateEvents(updatedEvents: List<Event>) {
@@ -53,6 +59,10 @@ class EventAdapter(private var events: List<Event>, private val status: String):
         //resize event card for active events
         if (status == "ACTIVE") {
             resizeEventCard(holder, 624)
+        }
+
+        holder.eventCard.setOnClickListener {
+            listener.onItemClicked(currentEvent)
         }
 
     }

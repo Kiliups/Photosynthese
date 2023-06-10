@@ -1,22 +1,26 @@
 package com.othregensburg.photosynthese
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ImageButton
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.othregensburg.photosynthese.adapter.EventAdapter
 import com.othregensburg.photosynthese.models.*
-import java.text.SimpleDateFormat
 
-import java.util.*
-import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var EventViewModel: eventViewModel
+
+    var eventItemClickListener = object : EventAdapter.eventItemClickListener {
+        override fun onItemClicked(event: Event) {
+            val intent = Intent(this@MainActivity, EventActivity::class.java)
+            startActivity(intent)
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -26,17 +30,17 @@ class MainActivity : AppCompatActivity() {
 
         val activeEvents: RecyclerView = findViewById(R.id.recyclerView_events_active)
         activeEvents.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        val activeAdapter = EventAdapter(emptyList(), "ACTIVE")
+        val activeAdapter = EventAdapter(emptyList(), "ACTIVE", eventItemClickListener)
         activeEvents.adapter = activeAdapter
 
         val futureEvents: RecyclerView = findViewById(R.id.recyclerView_events_future)
         futureEvents.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        val futureAdapter = EventAdapter(emptyList(), "FUTURE")
+        val futureAdapter = EventAdapter(emptyList(), "FUTURE", eventItemClickListener)
         futureEvents.adapter = futureAdapter
 
         val memoryEvents: RecyclerView = findViewById(R.id.recyclerView_events_memory)
         memoryEvents.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        val memoryAdapter = EventAdapter(emptyList(), "MEMORY")
+        val memoryAdapter = EventAdapter(emptyList(), "MEMORY", eventItemClickListener)
         memoryEvents.adapter = memoryAdapter
 
         //set up event view model
@@ -54,7 +58,5 @@ class MainActivity : AppCompatActivity() {
                 memoryAdapter.updateEvents(sortedEvents[2])
             }
         })
-
     }
-
 }
