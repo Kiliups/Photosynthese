@@ -45,6 +45,8 @@ class OnboardingSignUpFragment : Fragment() {
                                 binding.email.text.toString(),
                                 binding.password.text.toString()
                             )
+                            val onboardingActivity = requireActivity() as OnboardingActivity
+                            onboardingActivity.binding.viewPager.currentItem = 1
                         } else {
                             // Show error if email is invalid
                             Toast.makeText(

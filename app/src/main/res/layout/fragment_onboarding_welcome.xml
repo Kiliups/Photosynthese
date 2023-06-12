@@ -9,7 +9,7 @@
 
     <TextView
         android:id="@+id/welcome_title"
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Welcome to Photosynthesis"
@@ -31,7 +31,7 @@
 
     <TextView
         android:id="@+id/welcome_text"
-        android:layout_width="400dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/large"
         android:gravity="center"
