@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -24,6 +25,7 @@ import java.io.FileOutputStream
 class mediaViewModel(application: Application) : AndroidViewModel(application) {
     var storageRef: StorageReference = FirebaseStorage.getInstance().getReference()
     val db = FirebaseFirestore.getInstance()
+    val auth= FirebaseAuth.getInstance()
     val isUploading = MutableLiveData<Boolean>()
 
     //inserts given Media into Firebase
@@ -39,6 +41,10 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
         //get file type
         var type = media.content.toString()
         type = type.substring(type.lastIndexOf(".") + 1)
+        
+        //set user id
+        if(auth.currentUser != null)
+            media.user = auth.currentUser!!.uid
 
         //generate reference for firebase storage
         val reference = "media/${media.event_id}/${mediaId}.${type}"
