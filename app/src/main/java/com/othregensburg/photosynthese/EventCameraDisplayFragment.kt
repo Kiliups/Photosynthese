@@ -28,7 +28,7 @@ class EventCameraDisplayFragment : Fragment() {
         binding = FragmentEventCameraDisplayBinding.inflate(inflater, container, false)
         val mediaViewModel = ViewModelProvider(this).get(mediaViewModel::class.java)
         val photo = arguments?.getParcelable<Uri>("photo")
-        Glide.with(this).load(photo).into(binding.media)
+        Glide.with(this).load(photo).into(binding.photo)
 
         val video = arguments?.getParcelable<Uri>("video")
         if (video != null) {
