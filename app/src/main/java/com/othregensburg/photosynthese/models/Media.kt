@@ -8,7 +8,7 @@ data class Media(
     val event_id: String?,
     var reference: String?,
     val timestamp: Long?,
-    val user: String?,
+    var user: String?,
     var content: Uri?
 )
 
