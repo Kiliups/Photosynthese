@@ -1,6 +1,7 @@
 package com.othregensburg.photosynthese.models
 
 import android.net.Uri
+import java.io.Serializable
 
 data class Event(
     var id: String?,
@@ -13,8 +14,9 @@ data class Event(
     var location: String?,
     var participants: List<String>?,
     var picture: String?,
+    var description: String?,
     var status: String?
-)
+): Serializable
 
 
 

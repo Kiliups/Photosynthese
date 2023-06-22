@@ -100,13 +100,14 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
                                 item.get("location") as String?,
                                 item.get("participants") as List<String>?,
                                 item.get("picture") as String?,
+                                item.get("description") as String?,
                                 null
                             )
 
                             //download event picture uri from firebase storage
                             if(event.picture!=null){
                                 val uri = storageRef.child(event.picture!!).downloadUrl.await()
-                                event.content = uri
+                                //event.content = uri
                             }
 
                             //add media object to help list

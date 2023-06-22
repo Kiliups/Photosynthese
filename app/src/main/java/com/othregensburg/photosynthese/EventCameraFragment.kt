@@ -54,6 +54,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import androidx.fragment.app.Fragment
 import com.othregensburg.photosynthese.databinding.FragmentEventCameraBinding
+import com.othregensburg.photosynthese.models.Event
 import java.io.File
 import java.lang.Math.round
 import java.text.SimpleDateFormat
@@ -76,6 +77,7 @@ class EventCameraFragment : Fragment() {
     var recordingVideo = false
 
     lateinit var binding: FragmentEventCameraBinding
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

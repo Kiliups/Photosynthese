@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.othregensburg.photosynthese.adapter.EventAdapter
 import com.othregensburg.photosynthese.models.*
-
+import com.othregensburg.photosynthese.EventActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,9 +18,11 @@ class MainActivity : AppCompatActivity() {
     var eventItemClickListener = object : EventAdapter.eventItemClickListener {
         override fun onItemClicked(event: Event) {
             val intent = Intent(this@MainActivity, EventActivity::class.java)
+            intent.putExtra("event", event)
             startActivity(intent)
         }
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -50,6 +52,8 @@ class MainActivity : AppCompatActivity() {
 
         eventLiveData.observe(this, androidx.lifecycle.Observer { events ->
             events?.let {
+
+                //sort events by status
 
                 var sortedEvents = EventViewModel.sortEventsByStatus(events)
 
