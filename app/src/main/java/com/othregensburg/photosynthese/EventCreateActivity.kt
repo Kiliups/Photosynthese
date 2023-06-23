@@ -21,6 +21,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.setPadding
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.type.DateTime
 import com.othregensburg.photosynthese.models.Event
 import com.othregensburg.photosynthese.models.eventViewModel
 import com.othregensburg.photosynthese.models.mediaViewModel
@@ -33,16 +34,18 @@ import java.util.Calendar
 import kotlin.random.Random
 
 class EventCreateActivity : AppCompatActivity() {
-    var timeButtonHour = 0
-    var timeButtonMinute = 0
-    var dateButtonDay = 0
-    var dateButtonMonth = 0
-    var dateButtonYear = 0
+    var dateTimeButtonHour = 0
+    var dateTimeButtonMinute = 0
+    var dateTimeButtonDay = 0
+    var dateTimeButtonMonth = 0
+    var dateTimeButtonYear = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_event_create)
 
         val eventViewModel = ViewModelProvider(this).get(eventViewModel::class.java)
+
+        val dateTimeButton = findViewById<Button>(R.id.button_date_time)
 
         //Button back to Main Activity
         val backButton = findViewById<ImageButton>(R.id.arrowBack)
@@ -54,15 +57,7 @@ class EventCreateActivity : AppCompatActivity() {
         })
 
         val eventPictureButton = findViewById<ImageView>(R.id.eventPicture)
-        val randomNumber = Random.nextInt(6)
-        when (randomNumber) {
-            1 -> eventPictureButton.background = getDrawable(R.color.cards_pink)
-            2 -> eventPictureButton.background = getDrawable(R.color.cards_yellow)
-            3 -> eventPictureButton.background = getDrawable(R.color.cards_sage)
-            4 -> eventPictureButton.background = getDrawable(R.color.cards_lime)
-            5 -> eventPictureButton.background = getDrawable(R.color.cards_teal)
-            else -> eventPictureButton.background = getDrawable(R.color.cards_purple)
-        }
+
         var selectedPicture: Uri? = null;
         val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             // Callback is invoked after the user selects a media item or closes the photo picker
@@ -108,7 +103,7 @@ class EventCreateActivity : AppCompatActivity() {
                     //Create the event with selected inputs
 
                     //convert selected time to UNIX timestamp
-                    val timeString = "${dateButtonDay}.${dateButtonMonth}.${dateButtonYear} ${timeButtonHour}:${timeButtonMinute}:"
+                    val timeString = dateTimeButton.text.toString()
                     val timeFormat = SimpleDateFormat("dd.MM.yyyy HH:mm")
                     val timestamp = timeFormat.parse(timeString)
 
@@ -136,63 +131,61 @@ class EventCreateActivity : AppCompatActivity() {
             }
         })
 
-        val dateButton = findViewById<Button>(R.id.button_date)
-        val timeButton = findViewById<Button>(R.id.button_time)
         val currentDateTime = LocalDateTime.now(ZoneId.of("ECT"))
-
-        dateButton.text = currentDateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
-        dateButtonDay = currentDateTime.dayOfMonth
-        dateButtonMonth = currentDateTime.monthValue
-        dateButtonYear = currentDateTime.year
-        timeButton.text = currentDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
-        timeButtonHour = currentDateTime.hour
-        timeButtonMinute = currentDateTime.minute
+        dateTimeButton.text = currentDateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
+        dateTimeButtonDay = currentDateTime.dayOfMonth
+        dateTimeButtonMonth = currentDateTime.monthValue
+        dateTimeButtonYear = currentDateTime.year
+        dateTimeButtonHour = currentDateTime.hour
+        dateTimeButtonMinute = currentDateTime.minute
 
 
-        dateButton.setOnClickListener(object: View.OnClickListener {
+        dateTimeButton.setOnClickListener(object: View.OnClickListener {
             override fun onClick(v: View?) {
-                openDateAndTimePickerDialog(dateButton, timeButton)
+                openDateAndTimePickerDialog(dateTimeButton)
             }
         })
-        timeButton.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                openTimePickerDialog(timeButton)
-            }
-        })
-
-
 
     }
-    fun openDateAndTimePickerDialog(dateButton: Button, timeButton: Button){
+    fun openDateAndTimePickerDialog(dateTimeButton: Button){
         val datePickerDialog = DatePickerDialog(this@EventCreateActivity, R.style.dialog_theme, DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+            dateTimeButtonDay = dayOfMonth
+            dateTimeButtonMonth = month+1
+            dateTimeButtonYear = year
 
-            dateButton.text = "$dayOfMonth."+ (month+1)+".$year"
-            dateButtonDay = dayOfMonth
-            dateButtonMonth = month+1
-            dateButtonYear = year
+            updateTimeText(dateTimeButton)
 
             //Show timePicker, when date was selected
-            openTimePickerDialog(timeButton)
+            val timePickerDialog = TimePickerDialog(this@EventCreateActivity, R.style.dialog_theme, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+                dateTimeButtonHour = hourOfDay
+                dateTimeButtonMinute = minute
 
-        }, dateButtonYear, dateButtonMonth-1, dateButtonDay)
+                updateTimeText(dateTimeButton)
+            },dateTimeButtonHour,dateTimeButtonMinute, true )
+            timePickerDialog.show()
+
+        }, dateTimeButtonYear, dateTimeButtonMonth-1, dateTimeButtonDay)
         datePickerDialog.datePicker.firstDayOfWeek = Calendar.MONDAY
         datePickerDialog.show()
     }
 
-    fun openTimePickerDialog(timeButton: Button){
-        val timePickerDialog = TimePickerDialog(this@EventCreateActivity, R.style.dialog_theme, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-            if (minute > 9 && hourOfDay>9)
-                timeButton.text = "$hourOfDay:$minute"
-            else if (minute > 9)
-                timeButton.text = "0$hourOfDay:$minute"
-            else if (hourOfDay > 9)
-                timeButton.text = "$hourOfDay:0$minute"
-            else
-                timeButton.text = "0$hourOfDay:0$minute"
-            timeButtonHour = hourOfDay
-            timeButtonMinute = minute
-        },timeButtonHour,timeButtonMinute, true )
-        timePickerDialog.show()
+    fun updateTimeText(dateTimeButton: Button){
+        var day = dateTimeButtonDay.toString()
+        if (dateTimeButtonDay < 10)
+            day = "0$day"
+        var month = dateTimeButtonMonth.toString()
+        if (dateTimeButtonMonth < 10)
+            month = "0$month"
+
+        var hour = dateTimeButtonHour.toString()
+        if (dateTimeButtonHour<10)
+            hour = "0$hour"
+        var minute = dateTimeButtonMinute.toString()
+        if(dateTimeButtonMinute<10)
+            minute = "0$minute"
+
+        dateTimeButton.text = "$day.$month.$dateTimeButtonYear $hour:$minute"
     }
+
 
 }

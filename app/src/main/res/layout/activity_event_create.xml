@@ -21,8 +21,8 @@
 
         <ImageButton
             android:id="@+id/arrowBack"
-            android:layout_width="@dimen/xxlarge"
-            android:layout_height="@dimen/xxlarge"
+            android:layout_width="@dimen/xxxlarge"
+            android:layout_height="@dimen/xxxlarge"
             android:scaleX="1.5"
             android:scaleY="1.5"
             android:src="@drawable/ic_arrow_back_24"
@@ -57,23 +57,40 @@
             android:orientation="vertical">
 
             <!-- Select profile picture -->
-            <ImageView
-                android:id="@+id/eventPicture"
+            <androidx.cardview.widget.CardView
                 android:layout_width="220dp"
                 android:layout_height="220dp"
-                android:layout_marginTop="8dp"
-                android:padding="@dimen/large"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_group_96" />
+                android:layout_marginTop="@dimen/small"
+                app:cardCornerRadius="@dimen/xxxlarge">
+                <ImageView
+                    android:id="@+id/eventPicture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:padding="@dimen/large"
+                    android:src="@drawable/ic_group_96" />
+            </androidx.cardview.widget.CardView>
 
             <!-- Input Event name -->
-            <EditText
-                android:id="@+id/editText_eventName"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="320dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/placeholder_event_name"
-                android:inputType="text"
-                android:maxLength="25"/>
+                android:layout_marginTop="@dimen/large"
+                android:textColorHint="@color/white"
+                app:boxStrokeColor="@color/white"
+                app:hintTextColor="@color/white">
+                <EditText
+                    android:id="@+id/editText_eventName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:hint="@string/placeholder_event_name"
+                    android:inputType="text"
+                    android:maxLength="25"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
 
             <!-- Setting up the starting time of the event (Default current time) -->
             <TextView
@@ -81,52 +98,67 @@
                 android:layout_width="320dp"
                 android:textColor="@color/white"
                 android:text="@string/startDate"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
                 android:id="@+id/StartDate_text"
                 android:layout_marginTop="@dimen/medium" />
-            <View
-                android:layout_width="320dp"
-                android:layout_height="1dp"
-                android:background="@color/white" />
 
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="320dp"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                app:cardCornerRadius="4dp"
+                app:strokeColor="@color/white"
+                app:strokeWidth="1dp">
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:textColor="@color/white"
-                    android:id="@+id/button_date"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/button_date_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="left|center_vertical"
+                    android:padding="@dimen/medium"
+                    android:background="@color/background"
                     android:textAllCaps="false"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
                     android:text="@string/placeholder_date" />
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:textColor="@color/white"
-                    android:id="@+id/button_time"
-                    android:layout_width="120dp"
-                    android:layout_height="wrap_content"
-                    android:textAllCaps="false"
-                    android:text="@string/placeholder_time" />
-
-            </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
 
             <!-- Input Description -->
-            <EditText
-                android:id="@+id/editText_description"
-                android:inputType="text"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="320dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/placeholder_description"/>
+                android:layout_marginTop="@dimen/small"
+                android:textColorHint="@color/white"
+                app:boxStrokeColor="@color/white"
+                app:hintTextColor="@color/white">
+                <EditText
+                    android:id="@+id/editText_description"
+                    android:inputType="text"
+                    android:padding="@dimen/medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/placeholder_description"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Input Location -->
-            <EditText
-                android:id="@+id/editText_location"
-                android:inputType="text"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="320dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/placeholder_location"/>
+                android:layout_marginTop="@dimen/small"
+                android:textColorHint="@color/white"
+                app:boxStrokeColor="@color/white"
+                app:hintTextColor="@color/white">
+                <EditText
+                    android:id="@+id/editText_location"
+                    android:inputType="text"
+                    android:padding="@dimen/medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/placeholder_location"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
 <!--
 
             <!- Selection of starting time to post, if other than event start time ->
