@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
-import com.othregensburg.photosynthese.databinding.FragmentEventCameraBinding
 import com.othregensburg.photosynthese.databinding.FragmentEventCameraDisplayBinding
 import com.othregensburg.photosynthese.models.Media
 import com.othregensburg.photosynthese.models.mediaViewModel
@@ -28,7 +27,7 @@ class EventCameraDisplayFragment : Fragment() {
         binding = FragmentEventCameraDisplayBinding.inflate(inflater, container, false)
         val mediaViewModel = ViewModelProvider(this).get(mediaViewModel::class.java)
         val photo = arguments?.getParcelable<Uri>("photo")
-        Glide.with(this).load(photo).into(binding.media)
+        Glide.with(this).load(photo).into(binding.photo)
 
         val video = arguments?.getParcelable<Uri>("video")
         if (video != null) {
@@ -49,7 +48,7 @@ class EventCameraDisplayFragment : Fragment() {
             if (video != null)
                 media = Media(null, "0", null, System.currentTimeMillis(), null, video)
             mediaViewModel.insert(media!!)
-            mediaViewModel.isUploading.observe(viewLifecycleOwner, {
+            mediaViewModel.isLoading.observe(viewLifecycleOwner, {
                 if (it == true) {
                     binding.progressBar.visibility = View.VISIBLE
                 } else {
