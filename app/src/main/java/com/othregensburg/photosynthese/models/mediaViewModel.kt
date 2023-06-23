@@ -36,7 +36,7 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
     val db = FirebaseFirestore.getInstance()
     val auth = FirebaseAuth.getInstance()
     val isLoading = MutableLiveData<Boolean>()
-    val isDone = MutableLiveData<Boolean>()
+    private val eventMedia: MutableLiveData<MutableList<Media>> = MutableLiveData()
 
     //inserts given Media into Firebase
     fun insert(media: Media) = viewModelScope.launch(Dispatchers.IO) {
@@ -85,8 +85,7 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     //deletes given Media from Firebase
-    fun delete(media: Media) = viewModelScope.launch(Dispatchers.IO) {
-
+    fun delete(media: Media) = viewModelScope.launch(Dispatchers.Main) {
         //delete data from firestore
         db.collection("media").document(media.id!!).delete()
 
@@ -95,9 +94,9 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     //gets all Media from Firebase
-    fun getEventMedia(event_id: String? = "0"): MutableLiveData<List<Media>> {
+    fun getEventMedia(event_id: String? = "0"): MutableLiveData<MutableList<Media>> {
 
-        var result: MutableLiveData<List<Media>> = MutableLiveData()
+        var result: MutableLiveData<MutableList<Media>> = MutableLiveData()
         isLoading.value = true
 
         //get all media objects from firestore that have the given event_id in right order

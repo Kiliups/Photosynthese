@@ -30,15 +30,15 @@ class EventGalleryFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentEventGalleryBinding.inflate(inflater, container, false)
         val mVM = ViewModelProvider(requireActivity()).get(mediaViewModel::class.java)
-        mVM.getEventMedia().observe(viewLifecycleOwner, { mediaList ->
+        mVM.getEventMedia().observe(viewLifecycleOwner) { mediaList ->
             if (mediaList != null && mediaList.isNotEmpty()) {
-                mVM.isLoading.observe(viewLifecycleOwner, {
+                mVM.isLoading.observe(viewLifecycleOwner) {
                     if (it == true) {
                         binding.progressBar.visibility = View.VISIBLE
                     } else {
                         binding.progressBar.visibility = View.GONE
                     }
-                })
+                }
                 var media = mediaList[counter]
                 displaymedia(media)
                 binding.next.setOnClickListener {
@@ -55,29 +55,45 @@ class EventGalleryFragment : Fragment() {
                         displaymedia(media)
                     }
                 }
-                binding.moreButton.setOnClickListener {view ->
-                    val postMenu= PopupMenu(requireContext(),view)
+                binding.moreButton.setOnClickListener { view ->
+                    val postMenu = PopupMenu(requireContext(), view)
                     postMenu.inflate(R.menu.post_menu)
                     postMenu.setOnMenuItemClickListener { item ->
                         when (item.itemId) {
                             R.id.delete -> {
+                                //delete media from database
+                                mVM.delete(media)
+                                mediaList.remove(media)
+                                if (counter > 0) {
+                                    counter--
+                                    media = mediaList.get(counter)
+                                    displaymedia(media)
+                                }else{
+                                    if (counter < mediaList.size - 1) {
+                                        media = mediaList.get(counter)
+                                        displaymedia(media)
+                                    }else{
+                                        requireActivity().onBackPressed()
+                                    }
+                                }
                                 true
                             }
-                            R.id.download ->{
+
+                            R.id.download -> {
                                 if (media.content != null) {
                                     //save media to device in gallery folder
                                     mVM.saveMedia(media!!)
                                 }
                                 true
                             }
+
                             else -> false
                         }
                     }
                     postMenu.show()
                 }
             }
-        })
-
+        }
         return binding.root
     }
 
@@ -100,11 +116,11 @@ class EventGalleryFragment : Fragment() {
         binding.time.text = dateFormat.format(time)
         if (media.user != null) {
             val uVM = ViewModelProvider(requireActivity()).get(userViewModel::class.java)
-            uVM.getUser(media.user!!).observe(viewLifecycleOwner, { user ->
+            uVM.getUser(media.user!!).observe(viewLifecycleOwner) { user ->
                 if (user != null) {
                     binding.username.text = user.username
                 }
-            })
+            }
         } else {
             binding.username.text = "Username"
         }
