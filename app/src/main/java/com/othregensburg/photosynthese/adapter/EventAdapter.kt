@@ -1,5 +1,6 @@
 package com.othregensburg.photosynthese.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,14 @@ import com.othregensburg.photosynthese.models.Event
 import java.text.SimpleDateFormat
 import java.util.*
 
-class EventAdapter(private val EventList: List<Event>, private val groupid: String): RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
+class EventAdapter(private var events: List<Event>, private val status: String): RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
+
+
+    //update events
+    fun updateEvents(updatedEvents: List<Event>) {
+        events = updatedEvents
+        notifyDataSetChanged()
+    }
 
     inner class EventViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
@@ -28,28 +36,34 @@ class EventAdapter(private val EventList: List<Event>, private val groupid: Stri
 
     override fun getItemCount(): Int {
 
-        return EventList.size
+        return events.size
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
 
-        holder.eventTitle.text = EventList[position].name
+        val currentEvent = events[position]
+
+        holder.eventTitle.text = currentEvent.name
 
         //format date
         val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-        val formattedDate = dateFormat.format(EventList[position].event_date)
+        val formattedDate = currentEvent.event_date?.let { dateFormat.format(it) }
         holder.eventDate.text = formattedDate
 
-        //increase size of active events
-
-        if (groupid == "active") {
-
-            val layoutParams = holder.eventCard.layoutParams as ViewGroup.LayoutParams
-            layoutParams.height = 600
-            layoutParams.width = 600
-
-            holder.eventCard.layoutParams = layoutParams
+        //resize event card for active events
+        if (status == "ACTIVE") {
+            resizeEventCard(holder, 624)
         }
 
+    }
+
+    //resize event card
+    private fun resizeEventCard(holder: EventViewHolder,size: Int) {
+
+        val layoutParams = holder.eventCard.layoutParams as ViewGroup.LayoutParams
+        layoutParams.height = size
+        layoutParams.width = size
+
+        holder.eventCard.layoutParams = layoutParams
     }
 }

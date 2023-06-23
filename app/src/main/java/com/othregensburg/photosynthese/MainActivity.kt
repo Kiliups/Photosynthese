@@ -1,9 +1,12 @@
 package com.othregensburg.photosynthese
 
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.view.WindowManager
+import android.widget.ImageButton
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,9 +26,13 @@ class MainActivity : AppCompatActivity() {
             Date().time,
             Random.nextLong(),
             Random.nextLong(),
-            LongArray(2) { Random.nextLong() },
+            "Regensburg",
+            listOf(null),
             null,
-            null
+            null,
+            "0",
+            "Test"
+
         )
     }
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +53,14 @@ class MainActivity : AppCompatActivity() {
         val recyclerViewMemory: RecyclerView = findViewById(R.id.recyclerView_events_memory)
         recyclerViewMemory.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         recyclerViewMemory.adapter = EventAdapter(randomEvents, "memory")
+
+        val createEventButton: ImageButton = findViewById(R.id.createEventButton)
+        createEventButton.setOnClickListener(object: View.OnClickListener{
+            override fun onClick(p0: View?) {
+                val intent = Intent(this@MainActivity, EventCreateActivity::class.java)
+                startActivity(intent)
+            }
+        })
 
     }
 }

@@ -39,7 +39,7 @@
             android:layout_gravity="center"/>
     </androidx.appcompat.widget.Toolbar>
 
-    <!-- Settings for a new event -->
+    <!-- Settings/Inputs for a new event -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -56,13 +56,17 @@
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
-            <ImageButton
+            <!-- Select profile picture -->
+            <ImageView
                 android:id="@+id/eventPicture"
                 android:layout_width="220dp"
                 android:layout_height="220dp"
                 android:layout_marginTop="8dp"
-                app:srcCompat="@drawable/ic_group_96" />
+                android:padding="@dimen/large"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_group_96" />
 
+            <!-- Input Event name -->
             <EditText
                 android:id="@+id/editText_eventName"
                 android:layout_width="320dp"
@@ -70,15 +74,6 @@
                 android:hint="@string/placeholder_event_name"
                 android:inputType="text"
                 android:maxLength="25"/>
-
-
-            <!-- Description -->
-            <EditText
-                android:id="@+id/editText_description"
-                android:inputType="text"
-                android:layout_width="320dp"
-                android:layout_height="wrap_content"
-                android:hint="@string/placeholder_description"/>
 
             <!-- Setting up the starting time of the event (Default current time) -->
             <TextView
@@ -88,7 +83,7 @@
                 android:text="@string/startDate"
                 android:textAppearance="?attr/textAppearanceTitleMedium"
                 android:id="@+id/StartDate_text"
-                android:layout_marginTop="@dimen/small" />
+                android:layout_marginTop="@dimen/medium" />
             <View
                 android:layout_width="320dp"
                 android:layout_height="1dp"
@@ -113,11 +108,28 @@
                     android:layout_height="wrap_content"
                     android:textAllCaps="false"
                     android:text="@string/placeholder_time" />
+
             </LinearLayout>
 
 
+            <!-- Input Description -->
+            <EditText
+                android:id="@+id/editText_description"
+                android:inputType="text"
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/placeholder_description"/>
 
-            <!-- Selection of starting time to post, if other than event start time -->
+            <!-- Input Location -->
+            <EditText
+                android:id="@+id/editText_location"
+                android:inputType="text"
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/placeholder_location"/>
+<!--
+
+            <!- Selection of starting time to post, if other than event start time ->
             <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="320dp"
@@ -152,7 +164,7 @@
                     android:text="@string/placeholder_time" />
             </LinearLayout>
 
-            <!-- Selection of end time to post, if other than 12 hours after event start time -->
+            <!- Selection of end time to post, if other than 12 hours after event start time ->
             <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="320dp"
@@ -187,7 +199,7 @@
                     android:text="@string/placeholder_time" />
             </LinearLayout>
 
-            <!-- Things to maybe add later, but don't make sence right now -->
+            <!- Things to maybe add later, but don't make sence right now ->
 
 
             <TextView
@@ -217,7 +229,7 @@
                 android:textColor="@color/white"
                 android:text="Maps\n\tProbably the best with OpenStreetMap, but not he most important feature -> later"
                 android:textAppearance="?attr/textAppearanceTitleMedium"/>
-
+-->
         </LinearLayout>
     </ScrollView>
 
