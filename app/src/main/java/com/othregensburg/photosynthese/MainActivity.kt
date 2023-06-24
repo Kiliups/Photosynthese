@@ -1,40 +1,28 @@
 package com.othregensburg.photosynthese
 
 import android.content.Intent
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.view.WindowManager
-import android.widget.ImageButton
-import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.ktx.Firebase
 import com.othregensburg.photosynthese.adapter.EventAdapter
-import com.othregensburg.photosynthese.models.Event
-import java.util.*
-import kotlin.random.Random
+import com.othregensburg.photosynthese.models.*
+import com.othregensburg.photosynthese.EventActivity
 
 class MainActivity : AppCompatActivity() {
 
-    private val randomEvents = List(50) {
-        Event(
-            null,
-            ("Event" + Random.nextInt('Z' - 'A')).toString(),
-            Date().time,
-            Random.nextLong(),
-            Random.nextLong(),
-            "Regensburg",
-            listOf(null),
-            null,
-            null,
-            "0",
-            "Test"
+    private lateinit var EventViewModel: eventViewModel
 
-        )
+    var eventItemClickListener = object : EventAdapter.eventItemClickListener {
+        override fun onItemClicked(event: Event) {
+            val intent = Intent(this@MainActivity, EventActivity::class.java)
+            intent.putExtra("event", event)
+            startActivity(intent)
+        }
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -42,25 +30,37 @@ class MainActivity : AppCompatActivity() {
 
         //set up recycler views
 
-        val recyclerViewActive: RecyclerView = findViewById(R.id.recyclerView_events_active)
-        recyclerViewActive.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        recyclerViewActive.adapter = EventAdapter(randomEvents, "active")
+        val activeEvents: RecyclerView = findViewById(R.id.recyclerView_events_active)
+        activeEvents.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        val activeAdapter = EventAdapter(emptyList(), "ACTIVE", eventItemClickListener)
+        activeEvents.adapter = activeAdapter
 
-        val recyclerViewFuture: RecyclerView = findViewById(R.id.recyclerView_events_future)
-        recyclerViewFuture.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        recyclerViewFuture.adapter = EventAdapter(randomEvents, "future")
+        val futureEvents: RecyclerView = findViewById(R.id.recyclerView_events_future)
+        futureEvents.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        val futureAdapter = EventAdapter(emptyList(), "FUTURE", eventItemClickListener)
+        futureEvents.adapter = futureAdapter
 
-        val recyclerViewMemory: RecyclerView = findViewById(R.id.recyclerView_events_memory)
-        recyclerViewMemory.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        recyclerViewMemory.adapter = EventAdapter(randomEvents, "memory")
+        val memoryEvents: RecyclerView = findViewById(R.id.recyclerView_events_memory)
+        memoryEvents.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        val memoryAdapter = EventAdapter(emptyList(), "MEMORY", eventItemClickListener)
+        memoryEvents.adapter = memoryAdapter
 
-        val createEventButton: ImageButton = findViewById(R.id.createEventButton)
-        createEventButton.setOnClickListener(object: View.OnClickListener{
-            override fun onClick(p0: View?) {
-                val intent = Intent(this@MainActivity, EventCreateActivity::class.java)
-                startActivity(intent)
+        //set up event view model
+
+        EventViewModel = ViewModelProvider(this).get(eventViewModel::class.java)
+        var eventLiveData: LiveData<List<Event>> = EventViewModel.getEventsByUser("gudrun")
+
+        eventLiveData.observe(this, androidx.lifecycle.Observer { events ->
+            events?.let {
+
+                //sort events by status
+
+                var sortedEvents = EventViewModel.sortEventsByStatus(events)
+
+                activeAdapter.updateEvents(sortedEvents[0])
+                futureAdapter.updateEvents(sortedEvents[1])
+                memoryAdapter.updateEvents(sortedEvents[2])
             }
         })
-
     }
 }
