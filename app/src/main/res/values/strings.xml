@@ -35,6 +35,7 @@
     <string name="event_date">event date</string>
     <string name="posting_start">posting start</string>
     <string name="posting_end">posting end</string>
+    <string name="description">description</string>
 
     <string name="hello_blank_fragment">Blank Fragment!</string>
 </resources>

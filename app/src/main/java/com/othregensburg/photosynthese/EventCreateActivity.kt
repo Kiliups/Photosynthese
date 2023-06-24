@@ -101,6 +101,7 @@ class EventCreateActivity : AppCompatActivity() {
                     dialog.show()
                 else {
                     //Create the event with selected inputs
+                    val user = FirebaseAuth.getInstance().currentUser
 
                     //convert selected time to UNIX timestamp
                     val timeString = dateTimeButton.text.toString()
@@ -109,20 +110,20 @@ class EventCreateActivity : AppCompatActivity() {
 
                     //create an Event object with the selected values
                     val newEvent = Event(
-                        //FirebaseAuth.getInstance().currentUser.displayName
-                        null,
+                        mutableListOf<String?>(user!!.uid),
                         editText_eventName.text.toString(),
                         timestamp.time,
                         timestamp.time,
                         timestamp.time + 43200000,
                         editText_location.text.toString(),
-                        //listOf(FirebaseAuth.getInstance().currentUser.displayName),
-                        listOf<String?>(null),
+                        mutableListOf<String?>(user!!.uid),
                         selectedPicture,
                         null,
                         null,
-                        editText_description.text.toString()
+                        editText_description.text.toString(),
+                        null
                     )
+
                     eventViewModel.insert(newEvent)
                     val intent = Intent(this@EventCreateActivity, MainActivity::class.java)
                     startActivity(intent)

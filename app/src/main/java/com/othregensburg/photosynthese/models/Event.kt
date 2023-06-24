@@ -4,7 +4,7 @@ import android.net.Uri
 import java.io.Serializable
 
 data class Event(
-    var admins: List<String>?,
+    var admins: List<String?>,
     var name: String?,
     var event_date: Long?,
     var start_date: Long?,
@@ -14,7 +14,7 @@ data class Event(
     var picture: Uri?,
     var reference: String?,
     var id: String?,
-    var description: String?
+    var description: String?,
     var status: String?
 ): Serializable
 

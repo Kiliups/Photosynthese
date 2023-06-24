@@ -64,9 +64,8 @@ class EventDetailFragment : Fragment() {
         event?.picture?.let {
             // Use a coroutine to fetch the URI asynchronously
             lifecycleScope.launch {
-                val uri = getUriFromPicture(it)
                 Glide.with(requireContext())
-                    .load(uri)
+                    .load(it)
                     .into(image)
             }
         }

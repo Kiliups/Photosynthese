@@ -3,10 +3,15 @@ package com.othregensburg.photosynthese
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.widget.Button
+import android.widget.ImageButton
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.othregensburg.photosynthese.adapter.EventAdapter
 import com.othregensburg.photosynthese.models.*
 import com.othregensburg.photosynthese.EventActivity
@@ -28,6 +33,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // get current logged in user
+        val user = FirebaseAuth.getInstance().currentUser
+
         //set up recycler views
 
         val activeEvents: RecyclerView = findViewById(R.id.recyclerView_events_active)
@@ -46,15 +54,13 @@ class MainActivity : AppCompatActivity() {
         memoryEvents.adapter = memoryAdapter
 
         //set up event view model
-
         EventViewModel = ViewModelProvider(this).get(eventViewModel::class.java)
-        var eventLiveData: LiveData<List<Event>> = EventViewModel.getEventsByUser("gudrun")
+        var eventLiveData: LiveData<List<Event>> = EventViewModel.getEventsByUser(user!!.uid)
 
         eventLiveData.observe(this, androidx.lifecycle.Observer { events ->
             events?.let {
 
                 //sort events by status
-
                 var sortedEvents = EventViewModel.sortEventsByStatus(events)
 
                 activeAdapter.updateEvents(sortedEvents[0])
@@ -62,5 +68,15 @@ class MainActivity : AppCompatActivity() {
                 memoryAdapter.updateEvents(sortedEvents[2])
             }
         })
+
+        // set up OnClickListener to create a new event
+        val createEventButton: ImageButton = findViewById(R.id.icon_add)
+        createEventButton.setOnClickListener(object: View.OnClickListener {
+            override fun onClick (v: View?) {
+                val intent = Intent(this@MainActivity, EventCreateActivity::class.java)
+                startActivity(intent)
+            }
+        })
+
     }
 }
