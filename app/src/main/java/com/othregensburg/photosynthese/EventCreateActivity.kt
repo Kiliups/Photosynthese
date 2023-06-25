@@ -80,6 +80,8 @@ class EventCreateActivity : AppCompatActivity() {
         val editText_description = findViewById<EditText>(R.id.editText_description)
         val editText_location = findViewById<EditText>(R.id.editText_location)
         val sendButton = findViewById<Button>(R.id.CreateEventSendButton)
+
+        //Show dialog if input was wrong
         val dialog = Dialog(this@EventCreateActivity)
         dialog.setContentView(R.layout.dialog_input_error)
         dialog.window?.setBackgroundDrawable(getDrawable(R.drawable.background_dialog))

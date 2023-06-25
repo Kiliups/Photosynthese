@@ -7,6 +7,8 @@
     <string name="headline_active_events">ACTIVE EVENTS</string>
     <string name="headline_future_events">FUTURE EVENTS</string>
     <string name="headline_memory_box">MEMORY BOX</string>
+    <string name="eventInfo_title">Copy event id into clipboard:</string>
+    <string name="close">close</string>
 
     <!-- Event Activity Toolbar -->
     <string name="content_description_icon_add">add</string>
