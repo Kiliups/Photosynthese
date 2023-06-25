@@ -2,6 +2,7 @@ package com.othregensburg.photosynthese.models
 
 import android.app.Activity
 import android.app.Application
+import android.content.Intent.getIntent
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
@@ -188,7 +189,9 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
                         db.collection("event").document(event_id)
                             .update("participants", list)
                             .addOnSuccessListener {
-                                Toast.makeText(activity, "successfully registered", Toast.LENGTH_SHORT).show()}
+                                Toast.makeText(activity, "successfully registered", Toast.LENGTH_SHORT).show()
+                                activity.recreate()
+                            }
                             .addOnFailureListener {
                                 Toast.makeText(activity, "error while joining event", Toast.LENGTH_SHORT).show()}
                     }
