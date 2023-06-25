@@ -1,8 +1,11 @@
 package com.othregensburg.photosynthese.models
 
+import android.app.Activity
 import android.app.Application
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -90,13 +93,13 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
 
                        //create event object
                        val event = Event(
-                           item.get("admins") as List<String?>,
+                           item.get("admins") as MutableList<String?>,
                            item.get("name") as String?,
                            item.get("event_date") as Long?,
                            item.get("start_date") as Long?,
                            item.get("end_date") as Long?,
                            item.get("location") as String?,
-                           item.get("participants") as List<String?>,
+                           item.get("participants") as MutableList<String?>,
                            null as Uri?, // event picture not in database (storage)
                            item.get("reference") as String?,
                            item.get("id") as String?,
@@ -166,8 +169,34 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
         return sortedEvents
     }
 
-
-
-
+    fun addUserToEvent(uid: String, event_id: String, activity: AppCompatActivity) {
+        db.collection("event")
+            .whereEqualTo("id", event_id)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (item in documents) {
+                    val list = item.get("participants") as MutableList<String?>
+                    var notInList = true
+                    for (x in list){
+                        if (x == uid){
+                            Toast.makeText(activity, "already registered", Toast.LENGTH_SHORT).show()
+                            notInList = false
+                        }
+                    }
+                    if (notInList){
+                        list.add(uid)
+                        db.collection("event").document(event_id)
+                            .update("participants", list)
+                            .addOnSuccessListener {
+                                Toast.makeText(activity, "successfully registered", Toast.LENGTH_SHORT).show()}
+                            .addOnFailureListener {
+                                Toast.makeText(activity, "error while joining event", Toast.LENGTH_SHORT).show()}
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Toast.makeText(activity, "event couldn't be found", Toast.LENGTH_SHORT).show()
+            }
+    }
 
 }

@@ -21,6 +21,7 @@ class EventAdapter(private var events: List<Event>, private val status: String, 
     interface eventItemClickListener {
         fun onItemClicked(event: Event)
         fun onItemInfoClicked(event: Event)
+        fun showInfoDialog(event: Event)
     }
 
 

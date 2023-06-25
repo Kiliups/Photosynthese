@@ -10,6 +10,13 @@
     <string name="eventInfo_title">Copy event id into clipboard:</string>
     <string name="close">close</string>
 
+    <string name="create_event">Create new event</string>
+    <string name="add_existing_event">Add existing event</string>
+
+    <string name="add_existing_event_dialog">Add existing event:</string>
+    <string name="event_id">event id</string>
+    <string name="add_event">add event</string>
+
     <!-- Event Activity Toolbar -->
     <string name="content_description_icon_add">add</string>
     <string name="content_description_icon_profile">profile</string>
