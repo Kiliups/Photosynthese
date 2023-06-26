@@ -32,6 +32,7 @@ class EventGalleryFragment : Fragment() {
         binding = FragmentEventGalleryBinding.inflate(inflater, container, false)
         val mVM = ViewModelProvider(requireActivity()).get(mediaViewModel::class.java)
         val event = arguments?.getSerializable("event") as? Event
+        binding.title.text=event!!.name
         mVM.getEventMedia(event!!.id).observe(viewLifecycleOwner) { mediaList ->
             if (mediaList != null && mediaList.isNotEmpty()) {
                 mVM.isLoading.observe(viewLifecycleOwner) {

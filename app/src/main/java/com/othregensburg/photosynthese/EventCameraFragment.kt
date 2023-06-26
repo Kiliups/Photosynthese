@@ -101,7 +101,7 @@ class EventCameraFragment : Fragment() {
         }
 
         event = (arguments?.getSerializable("event") as? Event)!!
-
+        binding.title.text=event!!.name
         // Set up the listener for take photo button
         cameraExecutor = Executors.newSingleThreadExecutor()
 

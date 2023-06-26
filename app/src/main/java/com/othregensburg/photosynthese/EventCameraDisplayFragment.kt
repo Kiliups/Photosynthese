@@ -30,6 +30,7 @@ class EventCameraDisplayFragment : Fragment() {
         val photo = arguments?.getParcelable<Uri>("photo")
         Glide.with(this).load(photo).into(binding.photo)
         val event=arguments?.getSerializable("event") as? Event
+        binding.title.text=event!!.name
         val video = arguments?.getParcelable<Uri>("video")
         if (video != null) {
             binding.video.setVideoURI(video)
