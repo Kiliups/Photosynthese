@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.othregensburg.photosynthese.databinding.FragmentEventGalleryBinding
+import com.othregensburg.photosynthese.models.Event
 import com.othregensburg.photosynthese.models.Media
 import com.othregensburg.photosynthese.models.mediaViewModel
 import com.othregensburg.photosynthese.models.userViewModel
@@ -30,7 +31,8 @@ class EventGalleryFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentEventGalleryBinding.inflate(inflater, container, false)
         val mVM = ViewModelProvider(requireActivity()).get(mediaViewModel::class.java)
-        mVM.getEventMedia().observe(viewLifecycleOwner) { mediaList ->
+        val event = arguments?.getSerializable("event") as? Event
+        mVM.getEventMedia(event!!.id).observe(viewLifecycleOwner) { mediaList ->
             if (mediaList != null && mediaList.isNotEmpty()) {
                 mVM.isLoading.observe(viewLifecycleOwner) {
                     if (it == true) {
@@ -123,6 +125,16 @@ class EventGalleryFragment : Fragment() {
             }
         } else {
             binding.username.text = "Username"
+        }
+    }
+
+    companion object {
+        fun newInstance(event: Event): EventGalleryFragment {
+            val fragment = EventGalleryFragment()
+            val args = Bundle()
+            args.putSerializable("event", event)
+            fragment.arguments = args
+            return fragment
         }
     }
 

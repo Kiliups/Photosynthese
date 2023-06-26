@@ -19,11 +19,11 @@ class EventActivity : AppCompatActivity() {
 
         // Replace the fragment based on the status
         if(status == "ACTIVE")
-            replaceFragment(EventCameraFragment())
+            replaceFragment(EventCameraFragment.newInstance(event))
         else if(status == "FUTURE")
             replaceFragment(EventDetailFragment.newInstance(event))
-        else if(status == "MEMORY")
-            replaceFragment(EventGalleryFragment())
+        else if(status == "PAST")
+            replaceFragment(EventGalleryFragment.newInstance(event))
     }
 
     // Replaces the current fragment with the given fragment

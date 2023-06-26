@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.othregensburg.photosynthese.databinding.FragmentEventCameraDisplayBinding
+import com.othregensburg.photosynthese.models.Event
 import com.othregensburg.photosynthese.models.Media
 import com.othregensburg.photosynthese.models.mediaViewModel
 
@@ -28,7 +29,7 @@ class EventCameraDisplayFragment : Fragment() {
         val mediaViewModel = ViewModelProvider(this).get(mediaViewModel::class.java)
         val photo = arguments?.getParcelable<Uri>("photo")
         Glide.with(this).load(photo).into(binding.photo)
-
+        val event=arguments?.getSerializable("event") as? Event
         val video = arguments?.getParcelable<Uri>("video")
         if (video != null) {
             binding.video.setVideoURI(video)
@@ -44,9 +45,9 @@ class EventCameraDisplayFragment : Fragment() {
         binding.sendButton.setOnClickListener {
             var media: Media? = null
             if (photo != null)
-                media = Media(null, "0", null, System.currentTimeMillis(), null, photo)
+                media = Media(null, event!!.id, null, System.currentTimeMillis(), null, photo)
             if (video != null)
-                media = Media(null, "0", null, System.currentTimeMillis(), null, video)
+                media = Media(null, event!!.id, null, System.currentTimeMillis(), null, video)
             mediaViewModel.insert(media!!)
             mediaViewModel.isLoading.observe(viewLifecycleOwner, {
                 if (it == true) {
@@ -62,6 +63,17 @@ class EventCameraDisplayFragment : Fragment() {
         binding.sendButton.setBackgroundColor(resources.getColor(R.color.skyblue, null))
 
         return binding.root
+    }
+
+    companion object {
+        fun newInstance(event: Event,uri: Uri,type:String): EventCameraDisplayFragment {
+            val fragment = EventCameraDisplayFragment()
+            val args = Bundle()
+            args.putSerializable("event", event)
+            args.putParcelable(type, uri)
+            fragment.arguments = args
+            return fragment
+        }
     }
 
 }
