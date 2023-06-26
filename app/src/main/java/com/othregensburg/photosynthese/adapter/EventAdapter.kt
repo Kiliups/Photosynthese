@@ -1,8 +1,12 @@
 package com.othregensburg.photosynthese.adapter
 
+import android.app.Dialog
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
@@ -10,16 +14,16 @@ import com.othregensburg.photosynthese.R
 import com.othregensburg.photosynthese.models.Event
 import java.text.SimpleDateFormat
 import java.util.*
-import android.os.Build
-import com.othregensburg.photosynthese.MainActivity
-import com.othregensburg.photosynthese.EventActivity
-import android.content.Intent
+
 
 class EventAdapter(private var events: List<Event>, private val status: String, val listener: eventItemClickListener): RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
 
     interface eventItemClickListener {
         fun onItemClicked(event: Event)
+        fun onItemInfoClicked(event: Event)
+        fun showInfoDialog(event: Event)
     }
+
 
     //update events
     fun updateEvents(updatedEvents: List<Event>) {
@@ -32,6 +36,7 @@ class EventAdapter(private var events: List<Event>, private val status: String, 
         val eventTitle: TextView = itemView.findViewById(R.id.event_title)
         val eventDate: TextView = itemView.findViewById(R.id.event_date)
         val eventCard: CardView = itemView.findViewById(R.id.card)
+        val eventInfo: ImageButton = itemView.findViewById(R.id.event_info)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
@@ -65,6 +70,9 @@ class EventAdapter(private var events: List<Event>, private val status: String, 
             listener.onItemClicked(currentEvent)
         }
 
+        holder.eventInfo.setOnClickListener {
+            listener.onItemInfoClicked(currentEvent)
+        }
     }
 
     //resize event card

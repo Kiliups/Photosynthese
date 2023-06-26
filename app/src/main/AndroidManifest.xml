@@ -24,6 +24,15 @@
             android:name=".ProfileActivity"
             android:exported="false" />
         <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EventCreateActivity"
+            android:exported="false" />
+        <activity
+            android:name=".EventActivity"
+            android:exported="false" />
+        <activity
             android:name=".onboarding.OnboardingActivity"
             android:exported="true">
             <intent-filter>
@@ -32,15 +41,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".EventCreateActivity"
-            android:exported="false" />
-        <activity
-            android:name=".EventActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="false"></activity>
     </application>
 
 </manifest>

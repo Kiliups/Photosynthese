@@ -4,6 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="skyblue">#FFC2E7FF</color>
     <color name="background">#FF1C1B1F</color>
+    <color name="transparent">#00000000</color>
 
     <color name="cards_pink">#FFD61B61</color>
     <color name="cards_yellow">#FFFFE435</color>
@@ -11,4 +12,5 @@
     <color name="cards_lime">#AEEA00</color>
     <color name="cards_teal">#1DE9B6</color>
     <color name="cards_purple">#AA00FF</color>
+    <color name="mtrl_textinput_default_box_stroke_color">@color/white</color>
 </resources>

@@ -1,22 +1,50 @@
 <resources>
     <string name="app_name">Photosynthese</string>
 
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</string>
+
     <!-- Main Activity -->
     <string name="headline_active_events">ACTIVE EVENTS</string>
     <string name="headline_future_events">FUTURE EVENTS</string>
     <string name="headline_memory_box">MEMORY BOX</string>
+    <string name="eventInfo_title">Copy event id into clipboard:</string>
+    <string name="close">close</string>
+
+    <string name="create_event">Create new event</string>
+    <string name="add_existing_event">Add existing event</string>
+
+    <string name="add_existing_event_dialog">Add existing event:</string>
+    <string name="event_id">event id</string>
+    <string name="add_event">add event</string>
 
     <!-- Event Activity Toolbar -->
     <string name="content_description_icon_add">add</string>
     <string name="content_description_icon_profile">profile</string>
-
 
     <!-- Create event Activity -->
     <string name="headline_create_event">Create new event</string>
     <string name="placeholder_event_name">Event name</string>
     <string name="placeholder_date">Date</string>
     <string name="placeholder_time">Time</string>
-    <string name="description">Description</string>
+    <string name="placeholder_description">Description (optional)</string>
     <string name="location">Location</string>
+    <string name="send_button">Create event</string>
+    <string name="optional">Optional settings</string>
+    <string name="startDate">Start time of event</string>
+    <string name="startPostingDate">Start posting time</string>
+    <string name="startPostingDateLong">Start posting time\n(Default value: event start time)</string>
+    <string name="stopPostingDate">End of event</string>
+    <string name="stopPostingDateLong">End of event\n(Default value: 12 hours after event start)</string>
+    <string name="inputError_EventName">Please enter an event name!</string>
+    <string name="ok">OK</string>
+    <string name="placeholder_location">Location (optional)</string>
 
+    <!-- Event Detail Activity -->
+    <string name="time_table">Time Table</string>
+    <string name="event_date">event date</string>
+    <string name="posting_start">posting start</string>
+    <string name="posting_end">posting end</string>
+    <string name="description">description</string>
+
+    <string name="hello_blank_fragment">Blank Fragment!</string>
 </resources>
