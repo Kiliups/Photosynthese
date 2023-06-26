@@ -32,16 +32,23 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
         val eventId = db.collection("event").document().id
         event.id = eventId
 
+        event.reference = "event/${eventId}.jpg"
+
         //generate reference to event picture for firebase storage and upload image to storage
         if (event.picture != null) {
-            event.reference = "event/${eventId}.jpg"
             storageRef.child(event.reference!!).putFile(event.picture!!).await()
+        }
+        else{
+            event.reference = null
         }
 
         //create map for firestore
         val uploadEvent = mapOf(
-            "name" to event.name,
+
+            //uri and status not in database
+
             "admins" to event.admins,
+            "name" to event.name,
             "event_date" to event.event_date,
             "start_date" to event.start_date,
             "end_date" to event.end_date,
@@ -49,8 +56,7 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
             "participants" to event.participants,
             "reference" to event.reference,
             "id" to event.id,
-            "description" to event.description,
-            "status" to event.status
+            "description" to event.description
         )
 
         //upload event object to firestore
@@ -105,14 +111,8 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
                            item.get("reference") as String?,
                            item.get("id") as String?,
                            item.get("description") as String?,
-                           item.get("status") as String?
+                           null as String? // event status not in database (storage)
                        )
-
-                       //download event picture uri from firebase storage
-                       if(event.reference!=null){
-                           val uri = storageRef.child(event.reference!!).downloadUrl.await()
-                           event.picture = uri
-                       }
 
                        //add media object to help list
                        eventList.add(event)

@@ -29,7 +29,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.othregensburg.photosynthese.adapter.EventAdapter
 import com.othregensburg.photosynthese.models.*
 
-
 class MainActivity : AppCompatActivity() {
 
     private lateinit var EventViewModel: eventViewModel

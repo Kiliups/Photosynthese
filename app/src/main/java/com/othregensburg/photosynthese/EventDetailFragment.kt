@@ -2,7 +2,7 @@ package com.othregensburg.photosynthese
 
 import android.net.Uri
 import android.os.Bundle
-import android.text.format.DateUtils
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -59,13 +59,16 @@ class EventDetailFragment : Fragment() {
             requireActivity().onBackPressed()
         }
 
-        //set the event picture
         val image = view.findViewById<ImageView>(R.id.imageView)
-        event?.picture?.let {
-            // Use a coroutine to fetch the URI asynchronously
+
+        //set the event picture
+        if(event?.reference != null) {
             lifecycleScope.launch {
+                //get the uri from the event picture
+                val uri = getUriFromPictureReference(event?.reference!!)
+                //load the image into the imageview
                 Glide.with(requireContext())
-                    .load(it)
+                    .load(uri)
                     .into(image)
             }
         }
@@ -121,7 +124,7 @@ class EventDetailFragment : Fragment() {
     }
 
     //get the uri from the event picture
-    private suspend fun getUriFromPicture(picture: String): Uri {
+    private suspend fun getUriFromPictureReference(picture: String): Uri {
 
         val storageRef: StorageReference = FirebaseStorage.getInstance().getReference()
 
@@ -130,7 +133,6 @@ class EventDetailFragment : Fragment() {
         //download event picture uri from firebase storage
         if(picture!=null){
             uri = storageRef.child(picture!!).downloadUrl.await()
-            //event.content = uri
         }
 
         return uri
