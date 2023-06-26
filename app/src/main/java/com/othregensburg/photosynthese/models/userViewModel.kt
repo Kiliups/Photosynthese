@@ -97,6 +97,20 @@ class userViewModel(application: Application) : AndroidViewModel(application) {
         }
         return result
     }
+    fun getUser(id:String): MutableLiveData<User?> {
+        var user = MutableLiveData<User?>()
+        user.value = null
+        db.collection("user").document(id).get().addOnSuccessListener {
+             user.value= User(
+                it.id as String?,
+                it.get("email") as String?,
+                it.get("username") as String?,
+                it.get("firstname") as String?,
+                it.get("lastname") as String?,
+            )
+        }
+        return user
+    }
     fun signOut() {
         auth.signOut()
         Toast.makeText(

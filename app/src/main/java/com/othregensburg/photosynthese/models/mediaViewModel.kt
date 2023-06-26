@@ -1,10 +1,18 @@
 package com.othregensburg.photosynthese.models
 
 import android.app.Application
+import android.content.ContentResolver
+import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
+import android.webkit.MimeTypeMap
+import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -21,18 +29,20 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
+import java.io.OutputStream
 
 class mediaViewModel(application: Application) : AndroidViewModel(application) {
     var storageRef: StorageReference = FirebaseStorage.getInstance().getReference()
     val db = FirebaseFirestore.getInstance()
-    val auth= FirebaseAuth.getInstance()
-    val isUploading = MutableLiveData<Boolean>()
+    val auth = FirebaseAuth.getInstance()
+    val isLoading = MutableLiveData<Boolean>()
+    private val eventMedia: MutableLiveData<MutableList<Media>> = MutableLiveData()
 
     //inserts given Media into Firebase
     fun insert(media: Media) = viewModelScope.launch(Dispatchers.IO) {
 
         withContext(Dispatchers.Main) {
-            isUploading.value = true
+            isLoading.value = true
         }
         //generate id for firestore
         val mediaId = db.collection("media").document().id
@@ -41,10 +51,9 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
         //get file type
         var type = media.content.toString()
         type = type.substring(type.lastIndexOf(".") + 1)
-        
+
         //set user id
-        if(auth.currentUser != null)
-            media.user = auth.currentUser!!.uid
+        if (auth.currentUser != null) media.user = auth.currentUser!!.uid
 
         //generate reference for firebase storage
         val reference = "media/${media.event_id}/${mediaId}.${type}"
@@ -71,13 +80,12 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
         storageRef.child("${reference}").putFile(uploadUri!!).await()
 
         withContext(Dispatchers.Main) {
-            isUploading.value = false
+            isLoading.value = false
         }
     }
 
     //deletes given Media from Firebase
-    fun delete(media: Media) = viewModelScope.launch(Dispatchers.IO) {
-
+    fun delete(media: Media) = viewModelScope.launch(Dispatchers.Main) {
         //delete data from firestore
         db.collection("media").document(media.id!!).delete()
 
@@ -86,9 +94,10 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     //gets all Media from Firebase
-    fun getEventMedia(event_id: String? = "0"): MutableLiveData<List<Media>> {
+    fun getEventMedia(event_id: String? = "0"): MutableLiveData<MutableList<Media>> {
 
-        var result: MutableLiveData<List<Media>> = MutableLiveData()
+        var result: MutableLiveData<MutableList<Media>> = MutableLiveData()
+        isLoading.value = true
 
         //get all media objects from firestore that have the given event_id in right order
         db.collection("media").whereEqualTo("event_id", event_id).orderBy("timestamp").get()
@@ -98,7 +107,7 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
                 val mediaList = mutableListOf<Media>()
 
                 //start coroutine and wait until all media objects are downloaded
-                viewModelScope.launch(Dispatchers.IO) {
+                viewModelScope.launch(Dispatchers.Main) {
 
                     //for each media object in documents create a media object and add it to help list
                     for (item in documents) {
@@ -118,11 +127,13 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
 
                         //add media object to help list
                         mediaList.add(media)
+                        //set help list as result
+                        result.value = mediaList
                     }
                 }
-                //set help list as result
-                result.value = mediaList
             }
+        //set isLoading to false
+        isLoading.value = false
         return result
     }
 
@@ -159,5 +170,35 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
         return result!!
     }
 
+    fun saveMedia(media: Media) = viewModelScope.launch(Dispatchers.IO) {
+        val context = getApplication<Application>().applicationContext
+        val fileName = media.reference
+        val resolver: ContentResolver = context.contentResolver
+        val contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        val contentValues = ContentValues().apply {
+            put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+            put(
+                MediaStore.Images.Media.RELATIVE_PATH, "Pictures/Photosynthese"
+            ) // Specify the folder here
+        }
+        var outputStream: OutputStream? = null
 
+        try {
+            val contentUri = resolver.insert(contentUri, contentValues)
+            if (contentUri != null) {
+                outputStream = resolver.openOutputStream(contentUri)
+                outputStream?.use { outputStream ->
+                    val bitmap = Glide.with(context).asBitmap().load(media.content).submit().get()
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                    outputStream.flush()
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            outputStream?.close()
+        }
+    }
 }
+
+

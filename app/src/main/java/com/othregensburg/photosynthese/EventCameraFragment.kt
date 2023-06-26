@@ -76,6 +76,8 @@ class EventCameraFragment : Fragment() {
     var flash = false
     var recordingVideo = false
 
+    lateinit var event: Event
+
     lateinit var binding: FragmentEventCameraBinding
 
 
@@ -97,6 +99,8 @@ class EventCameraFragment : Fragment() {
                 requireActivity(), REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
             )
         }
+
+        event = (arguments?.getSerializable("event") as? Event)!!
 
         // Set up the listener for take photo button
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -177,6 +181,14 @@ class EventCameraFragment : Fragment() {
     }
 
     companion object {
+        fun newInstance(event: Event): EventCameraFragment{
+            val fragment = EventCameraFragment()
+            val args = Bundle()
+            args.putSerializable("event", event)
+            fragment.arguments = args
+            return fragment
+        }
+
         // Implements CameraX
         private const val TAG = "Photosynthese"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
@@ -188,6 +200,7 @@ class EventCameraFragment : Fragment() {
                 add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
         }.toTypedArray()
+
     }
 
     fun setupFlashIcon() {
@@ -316,17 +329,11 @@ class EventCameraFragment : Fragment() {
 
     //replace fragment and send uri to fragment
     private fun replaceFragment(type: String, uri: Uri) {
-        val extras = Bundle()
-        extras.putParcelable(
-            type, uri
-        )
-        val fragment = EventCameraDisplayFragment()
-        fragment.arguments = extras
+        val fragment = EventCameraDisplayFragment.newInstance(event, uri, type)
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragment_container, fragment)
         fragmentTransaction.addToBackStack("EventCameraDisplayFragment")
         fragmentTransaction.commit()
-
     }
 
     private fun startCamera() {
@@ -421,5 +428,4 @@ class EventCameraFragment : Fragment() {
             }
         }
     }
-
 }
