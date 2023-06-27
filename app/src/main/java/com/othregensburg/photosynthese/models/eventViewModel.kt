@@ -202,4 +202,17 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
             }
     }
 
+    suspend fun getUriFromPictureReference(picture: String): Uri {
+
+        var uri: Uri = Uri.EMPTY
+
+        //download event picture uri from firebase storage
+        if(picture!=null){
+            uri = storageRef.child(picture!!).downloadUrl.await()
+        }
+
+        return uri
+
+    }
+
 }
