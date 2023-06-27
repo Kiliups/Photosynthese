@@ -11,11 +11,13 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.othregensburg.photosynthese.models.Event
+import com.othregensburg.photosynthese.models.eventViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
@@ -26,6 +28,8 @@ class EventDetailFragment : Fragment() {
     private lateinit var descriptionCard: CardView
     private lateinit var timetableCard: CardView
     private lateinit var locationCard: CardView
+
+    private lateinit var eVM: eventViewModel
 
     companion object {
 
@@ -45,6 +49,7 @@ class EventDetailFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         val view = inflater.inflate(R.layout.fragment_event_detail, container, false)
+        eVM = ViewModelProvider(this).get(eventViewModel::class.java)
 
         // Get the event from the arguments
         val event = arguments?.getSerializable("event") as? Event
@@ -65,7 +70,7 @@ class EventDetailFragment : Fragment() {
         if(event?.reference != null) {
             lifecycleScope.launch {
                 //get the uri from the event picture
-                val uri = getUriFromPictureReference(event?.reference!!)
+                val uri = eVM.getUriFromPictureReference(event?.reference!!)
                 //load the image into the imageview
                 Glide.with(requireContext())
                     .load(uri)
@@ -120,22 +125,6 @@ class EventDetailFragment : Fragment() {
             details.visibility = View.GONE
             icon.setImageResource(R.drawable.ic_arrow_drop_down_24)
         }
-
-    }
-
-    //get the uri from the event picture
-    private suspend fun getUriFromPictureReference(picture: String): Uri {
-
-        val storageRef: StorageReference = FirebaseStorage.getInstance().getReference()
-
-        var uri: Uri = Uri.EMPTY
-
-        //download event picture uri from firebase storage
-        if(picture!=null){
-            uri = storageRef.child(picture!!).downloadUrl.await()
-        }
-
-        return uri
 
     }
 

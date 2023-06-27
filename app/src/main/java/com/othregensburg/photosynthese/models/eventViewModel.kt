@@ -64,7 +64,6 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
 
     }
 
-
     //delete given Event from Firebase
     fun delete(event: Event) = viewModelScope.launch(Dispatchers.IO) {
 
@@ -201,6 +200,19 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
             .addOnFailureListener { exception ->
                 Toast.makeText(activity, "event couldn't be found", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    suspend fun getUriFromPictureReference(picture: String): Uri {
+
+        var uri: Uri = Uri.EMPTY
+
+        //download event picture uri from firebase storage
+        if(picture!=null){
+            uri = storageRef.child(picture!!).downloadUrl.await()
+        }
+
+        return uri
+
     }
 
     fun leaveEvent(uid: String, event_id: String) {

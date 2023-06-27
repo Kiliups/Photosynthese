@@ -1,20 +1,39 @@
 package com.othregensburg.photosynthese.adapter
 
 import android.app.Dialog
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.othregensburg.photosynthese.R
 import com.othregensburg.photosynthese.models.Event
+import com.othregensburg.photosynthese.models.eventViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 class EventAdapter(private var events: List<Event>, private val status: String, val listener: eventItemClickListener): RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
 
@@ -32,7 +51,6 @@ class EventAdapter(private var events: List<Event>, private val status: String, 
         }
     }
 
-
     //update events
     fun updateEvents(updatedEvents: List<Event>) {
         events = updatedEvents
@@ -45,6 +63,8 @@ class EventAdapter(private var events: List<Event>, private val status: String, 
         val eventDate: TextView = itemView.findViewById(R.id.event_date)
         val eventCard: CardView = itemView.findViewById(R.id.card)
         val eventSettings: ImageButton = itemView.findViewById(R.id.event_settings)
+        val cardBackground: ImageView = itemView.findViewById(R.id.background_image)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
@@ -62,6 +82,7 @@ class EventAdapter(private var events: List<Event>, private val status: String, 
 
         val currentEvent = events[position]
 
+        //set event title
         holder.eventTitle.text = currentEvent.name
 
         //format date
@@ -81,6 +102,18 @@ class EventAdapter(private var events: List<Event>, private val status: String, 
         holder.eventSettings.setOnClickListener {
             listener.onItemSettingsClicked(currentEvent, holder)
         }
+
+        //val eVM = ViewModelProvider(this).get(eventViewModel::class.java)
+        val eVM = ViewModelProvider(holder.itemView.context as ViewModelStoreOwner).get(eventViewModel::class.java)
+
+        //set event picture as card background
+        if(currentEvent.reference != null) {
+            GlobalScope.launch {
+                val uri = eVM.getUriFromPictureReference(currentEvent.reference!!)
+                loadImageWithGlide(uri.toString(), holder.cardBackground)
+            }
+        }
+
     }
 
     //resize event card
@@ -92,4 +125,26 @@ class EventAdapter(private var events: List<Event>, private val status: String, 
 
         holder.eventCard.layoutParams = layoutParams
     }
+
+    private fun loadImageWithGlide(imageUrl: String, imageView: ImageView) {
+
+        GlobalScope.launch(Dispatchers.Main) {
+            try {
+                val bitmap = withContext(Dispatchers.IO) {
+                    Glide.with(imageView.context)
+                        .asBitmap()
+                        .load(imageUrl)
+                        .submit()
+                        .get()
+                }
+                val drawable = BitmapDrawable(imageView.resources, bitmap)
+                imageView.setImageDrawable(drawable)
+
+
+            } catch (e: Exception) {
+                Log.e("EventAdapter", "Fehler beim Laden des Bildes", e)
+            }
+        }
+    }
+
 }
