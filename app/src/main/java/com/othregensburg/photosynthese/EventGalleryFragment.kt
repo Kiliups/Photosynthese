@@ -97,6 +97,9 @@ class EventGalleryFragment : Fragment() {
                 }
             }
         }
+        binding.backButton.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
         return binding.root
     }
 
@@ -122,6 +125,7 @@ class EventGalleryFragment : Fragment() {
             uVM.getUser(media.user!!).observe(viewLifecycleOwner) { user ->
                 if (user != null) {
                     binding.username.text = user.username
+                    Glide.with(requireContext()).load(user.picture).into(binding.profilePicture)
                 }
             }
         } else {

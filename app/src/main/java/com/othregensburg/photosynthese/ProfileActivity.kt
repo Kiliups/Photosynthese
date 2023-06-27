@@ -26,13 +26,24 @@ class ProfileActivity : AppCompatActivity() {
         setContentView(binding.root)
         val uVM = ViewModelProvider(this).get(userViewModel::class.java)
         var currentUser:User?=null
+        var selectedPicture: Uri? = null
         uVM.getUser(auth.currentUser!!.uid).observe(this) { user ->
             if (user != null) {
                 binding.username.setText(user.username)
                 binding.firstName.setText(user.firstname)
                 binding.lastName.setText(user.lastname)
                 binding.email.setText(user.email)
-                currentUser=user
+                Glide.with(this).load(user.picture).into(binding.profilePicture)
+                binding.checkButton.setOnClickListener {
+                    uVM.updateUser(
+                        auth.currentUser!!.uid,
+                        binding.username.text.toString(),
+                        user.email,
+                        binding.firstName.text.toString(),
+                        binding.lastName.text.toString(),
+                        selectedPicture
+                    )
+                }
             }
         }
 
@@ -51,17 +62,7 @@ class ProfileActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
-        var selectedPicture: Uri? = null;
-        binding.checkButton.setOnClickListener {
-            /*uVM.updateUser(
-                auth.currentUser!!.uid,
-                binding.username.text.toString(),
-                currentUser!!.email,
-                binding.firstName.text.toString(),
-                binding.lastName.text.toString(),
-                selectedPicture
-            )*/
-        }
+        binding.email.isEnabled=false
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                 // Callback is invoked after the user selects a media item or closes the photo picker

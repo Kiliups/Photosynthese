@@ -1,24 +1,23 @@
 package com.othregensburg.photosynthese.models
 
 import android.app.Application
-import android.content.Context
-import android.content.Intent
-import android.util.Log
+import android.net.Uri
 import android.util.Patterns
 import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.othregensburg.photosynthese.MainActivity
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class userViewModel(application: Application) : AndroidViewModel(application) {
     val db = FirebaseFirestore.getInstance()
     val auth = FirebaseAuth.getInstance()
+    val storageRef = FirebaseStorage.getInstance().getReference()
     fun createUser(
         username: String, firstname: String, lastname: String, email: String, password: String
     ) = viewModelScope.launch(Dispatchers.IO) {
@@ -42,6 +41,7 @@ class userViewModel(application: Application) : AndroidViewModel(application) {
                             "firstname" to firstname,
                             "lastname" to lastname,
                             "email" to email,
+                            "reference" to "user/" + userId,
                         )
                         db.collection("user").document(userId).set(uploadUser)
                         Toast.makeText(
@@ -71,7 +71,7 @@ class userViewModel(application: Application) : AndroidViewModel(application) {
                             if (it.isSuccessful) {
                                 // If login successful, set result to true
                                 result.value = true
-                            }else{
+                            } else {
                                 // If login unsuccessful, set result to false
                                 result.value = false
                             }
@@ -97,24 +97,58 @@ class userViewModel(application: Application) : AndroidViewModel(application) {
         }
         return result
     }
-    fun getUser(id:String): MutableLiveData<User?> {
-        var user = MutableLiveData<User?>()
-        user.value = null
+
+    fun getUser(id: String): MutableLiveData<User?> {
+        var userLive = MutableLiveData<User?>()
+        var user :User?=null
         db.collection("user").document(id).get().addOnSuccessListener {
-             user.value= User(
-                it.id as String?,
-                it.get("email") as String?,
-                it.get("username") as String?,
-                it.get("firstname") as String?,
-                it.get("lastname") as String?,
-            )
+            viewModelScope.launch(Dispatchers.Main) {
+                user= User(
+                    it.id as String?,
+                    it.get("email") as String?,
+                    it.get("username") as String?,
+                    it.get("firstname") as String?,
+                    it.get("lastname") as String?,
+                    it.get("reference") as String?,
+                    null
+                )
+                val reference = user!!.reference
+                val uri=storageRef.child(reference!!).downloadUrl.await()
+                user!!.picture=uri
+                userLive.value=user
+            }
         }
-        return user
+        return userLive
     }
-    fun signOut() {
-        auth.signOut()
-        Toast.makeText(
-            getApplication(), "Sign out", Toast.LENGTH_SHORT
-        ).show()
+
+    fun updateUser(
+        id: String,
+        username: String,
+        email: String?,
+        firstname: String,
+        lastname: String,
+        selectedPicture: Uri?
+    ) {
+        val reference = "user/" + id
+        db.collection("user").whereEqualTo("username", username).get()
+            .addOnSuccessListener { documents ->
+                if (documents.documents[0].id != id) {
+                    // If username is taken, show error
+                    Toast.makeText(
+                        getApplication(), "Username already taken", Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    val uploadUser = mapOf(
+                        "username" to username,
+                        "firstname" to firstname,
+                        "lastname" to lastname,
+                        "email" to email,
+                        "reference" to reference,
+                    )
+                    db.collection("user").document(id).set(uploadUser)
+                    if (selectedPicture != null)
+                        storageRef.child("${reference}").putFile(selectedPicture!!)
+                }
+            }
     }
 }

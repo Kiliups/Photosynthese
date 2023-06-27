@@ -40,8 +40,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/profile_picture_container"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
         android:layout_margin="@dimen/large"
         app:cardCornerRadius="@dimen/xxxlarge"
         app:layout_constraintEnd_toEndOf="parent"
@@ -55,7 +55,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:scaleType="centerCrop"/>
     </androidx.cardview.widget.CardView>
 
     <EditText
@@ -152,12 +153,13 @@
         android:layout_margin="@dimen/large"
         />
 
-    <ImageButton
+    <Button
         android:id="@+id/check_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/small"
-        android:src="@drawable/ic_check_32"
+        android:text="confirm"
+        android:textAllCaps="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_margin="@dimen/large"
