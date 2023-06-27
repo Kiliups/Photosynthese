@@ -137,6 +137,12 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        val profile=findViewById<ImageButton>(R.id.icon_profile)
+        profile.setOnClickListener{
+            val intent = Intent(this, ProfileActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 
     private fun showPopupMenu(view: View) {

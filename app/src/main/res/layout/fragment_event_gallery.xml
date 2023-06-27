@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".EventGalleryFragment">
 
 
@@ -33,46 +33,57 @@
         android:id="@+id/user_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/horizontal_topline"
-        android:padding="@dimen/small">
-        <ImageView
-            android:id="@+id/profile_picture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        android:padding="@dimen/small"
+        app:layout_constraintBottom_toTopOf="@id/horizontal_topline">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/picture_container"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:cardCornerRadius="@dimen/medium">
+
+            <ImageView
+                android:scaleType="centerCrop"
+                android:id="@+id/profile_picture"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/small"
             android:text="Username"
             android:textAppearance="?attr/textAppearanceBodyLarge"
             android:textSize="18sp"
-            app:layout_constraintStart_toEndOf="@id/profile_picture"
-            app:layout_constraintTop_toTopOf="parent"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/picture_container"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/small"
             android:text="13:45 Uhr"
             android:textAppearance="?attr/textAppearanceBodySmall"
-            app:layout_constraintStart_toEndOf="@id/profile_picture"
+            app:layout_constraintStart_toEndOf="@+id/picture_container"
             app:layout_constraintTop_toBottomOf="@+id/username" />
 
         <ImageButton
             android:id="@+id/more_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@null"
+            android:padding="@dimen/small"
+            android:src="@drawable/ic_more_vert_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/ic_more_vert_24"
-            android:padding="@dimen/small"
-            android:background="@null"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -89,6 +100,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <com.github.chrisbanes.photoview.PhotoView
                 android:id="@+id/photo"
                 android:layout_width="match_parent"
@@ -106,6 +118,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
             <ProgressBar
                 android:id="@+id/progressBar"
                 android:layout_width="100dp"
@@ -113,8 +126,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                />
+                app:layout_constraintTop_toTopOf="parent" />
+
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/vertical_previous"
                 android:layout_width="wrap_content"
