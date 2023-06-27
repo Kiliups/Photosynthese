@@ -64,6 +64,7 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
 
     }
 
+
     //delete given Event from Firebase
     fun delete(event: Event) = viewModelScope.launch(Dispatchers.IO) {
 
@@ -71,7 +72,7 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
         db.collection("event").document(event.id!!).delete()
 
         //delete image from firebase storage
-        if (event.picture  != null){
+        if (event.reference  != null){
             storageRef.child(event.reference!!).delete()
         }
     }
@@ -199,6 +200,25 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
             }
             .addOnFailureListener { exception ->
                 Toast.makeText(activity, "event couldn't be found", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    fun leaveEvent(uid: String, event_id: String) {
+        db.collection("event")
+            .whereEqualTo("id", event_id)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (item in documents) {
+                    val list = item.get("participants") as MutableList<String?>
+                    for (x in list){
+                        if (x == uid){
+                            val removedElement = list.remove(uid)
+                            Log.e("TEST", "uid: $uid, removed: $removedElement")
+                            db.collection("event").document(event_id)
+                                .update("participants", list)
+                        }
+                    }
+                }
             }
     }
 

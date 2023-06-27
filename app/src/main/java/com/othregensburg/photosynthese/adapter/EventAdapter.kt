@@ -20,8 +20,16 @@ class EventAdapter(private var events: List<Event>, private val status: String, 
 
     interface eventItemClickListener {
         fun onItemClicked(event: Event)
-        fun onItemInfoClicked(event: Event)
-        fun showInfoDialog(event: Event)
+        fun onItemSettingsClicked(event: Event, holder: EventViewHolder)
+        fun showCopyIdDialog(event_id: String)
+        fun showEventPopupMenu(event: Event, view: View)
+        fun leaveEvent(event_id: String)
+        fun deleteEvent(event: Event)
+        fun showChangeTimeTableDialog(event: Event)
+        fun formatTimestamp(timestamp: Long): String {
+            val timeFormat = SimpleDateFormat("dd.MM.yyyy HH:mm")
+            return timeFormat.format(Date(timestamp))
+        }
     }
 
 
@@ -36,7 +44,7 @@ class EventAdapter(private var events: List<Event>, private val status: String, 
         val eventTitle: TextView = itemView.findViewById(R.id.event_title)
         val eventDate: TextView = itemView.findViewById(R.id.event_date)
         val eventCard: CardView = itemView.findViewById(R.id.card)
-        val eventInfo: ImageButton = itemView.findViewById(R.id.event_info)
+        val eventSettings: ImageButton = itemView.findViewById(R.id.event_settings)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
@@ -70,8 +78,8 @@ class EventAdapter(private var events: List<Event>, private val status: String, 
             listener.onItemClicked(currentEvent)
         }
 
-        holder.eventInfo.setOnClickListener {
-            listener.onItemInfoClicked(currentEvent)
+        holder.eventSettings.setOnClickListener {
+            listener.onItemSettingsClicked(currentEvent, holder)
         }
     }
 

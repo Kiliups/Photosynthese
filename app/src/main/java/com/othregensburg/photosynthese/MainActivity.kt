@@ -2,7 +2,9 @@ package com.othregensburg.photosynthese
 
 import android.R.attr.label
 import android.R.attr.text
+import android.app.DatePickerDialog
 import android.app.Dialog
+import android.app.TimePickerDialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -10,6 +12,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +23,7 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
@@ -28,6 +32,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.othregensburg.photosynthese.adapter.EventAdapter
 import com.othregensburg.photosynthese.models.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -43,12 +49,114 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        override fun onItemInfoClicked(event: Event) {
+        override fun onItemSettingsClicked(event: Event, holder: EventAdapter.EventViewHolder) {
             //When info button was clicked, dialog with option to copy event id is shown
-            showInfoDialog(event)
+            showEventPopupMenu(event, holder.eventSettings)
+
         }
 
-        override fun showInfoDialog(event: Event){
+        override fun showEventPopupMenu(event: Event, view: View) {
+            val popup = PopupMenu(this@MainActivity, view)
+            val menu: Menu = popup.menu
+            popup.inflate(R.menu.event_settings)
+
+            //check if logged in user is admin
+            var isAdmin: Boolean = false
+            for (admin in event.admins){
+                if (admin == user!!.uid)
+                    isAdmin = true
+            }
+            if(isAdmin){
+                menu.findItem(R.id.leave_event).setVisible(false)
+            } else {
+                menu.findItem(R.id.delete_event).setVisible(false)
+                menu.findItem(R.id.change_timetable).setEnabled(false)
+            }
+
+            popup.setOnMenuItemClickListener { item: MenuItem? ->
+
+                when (item!!.itemId) {
+                    R.id.copy_event_id -> {
+                        showCopyIdDialog(event.id!!)
+                    }
+
+                    R.id.leave_event -> {
+                        leaveEvent(event.id!!)
+                    }
+                    R.id.delete_event -> {
+                        deleteEvent(event)
+                    }
+                    R.id.change_timetable -> {
+                        showChangeTimeTableDialog(event)
+                    }
+                }
+
+                true
+            }
+
+            popup.show()
+        }
+        override fun deleteEvent(event: Event){
+            EventViewModel.delete(event)
+            this@MainActivity.recreate()
+
+        }
+
+        override fun leaveEvent(event_id: String){
+            EventViewModel.leaveEvent(user!!.uid, event_id)
+            this@MainActivity.recreate()
+        }
+
+        override fun showChangeTimeTableDialog(event: Event) {
+
+            // set up dialog
+            val dialog = Dialog(this@MainActivity)
+            dialog.setContentView(R.layout.dialog_change_timetable)
+            dialog.window?.setBackgroundDrawable(getDrawable(R.drawable.background_dialog))
+            dialog.window?.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            dialog.setCancelable(false)
+
+            // Caching new timestamps
+            var eventTimestamp = event.event_date
+            var startTimestamp = event.start_date
+            var endTimestamp = event.end_date
+
+            // set texts to timestamp
+            val eventTime = dialog.findViewById<AppCompatButton>(R.id.button_date_time)
+            val startTime = dialog.findViewById<AppCompatButton>(R.id.button_startPostingDate_time)
+            val endTime = dialog.findViewById<AppCompatButton>(R.id.button_endPostingDate_time)
+
+            eventTime.text = formatTimestamp(event.event_date!!)
+            startTime.text = formatTimestamp(event.start_date!!)
+            endTime.text = formatTimestamp(event.end_date!!)
+
+            // Handle Apply Changes Button
+            val applyChangesButton = dialog.findViewById<Button>(R.id.apply_changes_button)
+            applyChangesButton.setOnClickListener(object: View.OnClickListener {
+                override fun onClick(v: View?) {
+
+                    event.event_date = eventTimestamp
+                    event.start_date = startTimestamp
+                    event.end_date = endTimestamp
+
+                    dialog.dismiss()
+                }
+            })
+
+            // Button to close the showed dialog
+            val dialogCloseButton = dialog.findViewById<ImageButton>(R.id.dialog_close_button)
+            dialogCloseButton.setOnClickListener(object: View.OnClickListener {
+                override fun onClick(p0: View?) {
+                    dialog.dismiss()
+                }
+            })
+
+            dialog.show()
+        }
+
+
+
+        override fun showCopyIdDialog(event_id: String){
 
             // set up dialog
             val dialog = Dialog(this@MainActivity)
@@ -58,8 +166,8 @@ class MainActivity : AppCompatActivity() {
             dialog.setCancelable(false)
 
             // set text to event id
-            val event_id = dialog.findViewById<TextView>(R.id.event_id)
-            event_id.text = event.id
+            val event_id_TextView = dialog.findViewById<TextView>(R.id.event_id)
+            event_id_TextView.text = event_id
 
             // Get button to copy the event id into the clipboard and set listener
             val dialogCopyCard = dialog.findViewById<CardView>(R.id.dialog_copy_card)
@@ -68,7 +176,7 @@ class MainActivity : AppCompatActivity() {
 
                     //copy event code into clipboard
                     val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    val clip: ClipData = ClipData.newPlainText("event id", event.id)
+                    val clip: ClipData = ClipData.newPlainText("event id", event_id)
                     clipboard.setPrimaryClip(clip)
 
                     //Show Toast if Android version below 13 (in API 33 other popup will inform user)

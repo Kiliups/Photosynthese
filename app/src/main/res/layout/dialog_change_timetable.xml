@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="240dp"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center">
+
+    <ImageButton
+        android:id="@+id/dialog_close_button"
+        android:layout_width="@dimen/xlarge"
+        android:layout_height="@dimen/xlarge"
+        android:src="@drawable/ic_close_24"
+        android:background="@color/transparent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/medium"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/change_timetable"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textColor="@color/white" />
+
+        <!-- Setting up the starting time of the event -->
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textColor="@color/white"
+            android:text="@string/startDate"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:layout_marginTop="@dimen/medium" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            app:cardCornerRadius="4dp"
+            app:strokeColor="@color/white"
+            app:strokeWidth="1dp">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:textColor="@color/white"
+                android:id="@+id/button_date_time"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="left|center_vertical"
+                android:padding="@dimen/medium"
+                android:background="@color/background"
+                android:textAllCaps="false"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:text="@string/placeholder_date" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Setting up the starting time to post -->
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textColor="@color/white"
+            android:text="@string/startPostingDate"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:layout_marginTop="@dimen/medium" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            app:cardCornerRadius="4dp"
+            app:strokeColor="@color/white"
+            app:strokeWidth="1dp">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:textColor="@color/white"
+                android:id="@+id/button_startPostingDate_time"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="left|center_vertical"
+                android:padding="@dimen/medium"
+                android:background="@color/background"
+                android:textAllCaps="false"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:text="@string/placeholder_date" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Setting up the starting time of the event -->
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textColor="@color/white"
+            android:text="@string/endPostingDate"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:id="@+id/EndPostingDate_text"
+            android:layout_marginTop="@dimen/medium" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            app:cardCornerRadius="4dp"
+            app:strokeColor="@color/white"
+            app:strokeWidth="1dp">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:textColor="@color/white"
+                android:id="@+id/button_endPostingDate_time"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="left|center_vertical"
+                android:padding="@dimen/medium"
+                android:background="@color/background"
+                android:textAllCaps="false"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:text="@string/placeholder_date" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+
+
+        <Button
+            android:id="@+id/apply_changes_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="@color/skyblue"
+            android:layout_marginTop="@dimen/small"
+            android:text="@string/apply"
+            android:textAllCaps="false"
+            android:textColor="@color/background" />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
