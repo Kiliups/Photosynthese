@@ -35,6 +35,7 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.random.Random
 
 class EventAdapter(private var events: List<Event>, private val status: String, val listener: eventItemClickListener): RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
 
@@ -126,6 +127,15 @@ class EventAdapter(private var events: List<Event>, private val status: String, 
             GlobalScope.launch {
                 val uri = eVM.getUriFromPictureReference(currentEvent.reference!!)
                 loadImageWithGlide(uri.toString(), holder.cardBackground)
+            }
+        } else {
+            val randomNumber = Random.nextInt(0, 5)
+            when (randomNumber) {
+                0 -> holder.cardBackground.setImageResource(R.drawable.dilla1)
+                1 -> holder.cardBackground.setImageResource(R.drawable.dilla2)
+                2 -> holder.cardBackground.setImageResource(R.drawable.dilla3)
+                3 -> holder.cardBackground.setImageResource(R.drawable.dilla4)
+                else -> holder.cardBackground.setImageResource(R.drawable.dilla5)
             }
         }
 
