@@ -65,7 +65,7 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm Password</string>
-    <string name="no_account">Don't have an account? </string>
+    <string name="no_account">Do not have an account? </string>
     <string name="already_account">Already have an account? </string>
     <string name="email_username">Username/Email</string>
     <string name="first_name">First Name</string>
