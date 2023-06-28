@@ -16,6 +16,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatButton
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
@@ -45,10 +46,24 @@ class EventAdapter(private var events: List<Event>, private val status: String, 
         fun leaveEvent(event_id: String)
         fun deleteEvent(event: Event)
         fun showChangeTimeTableDialog(event: Event)
+        fun parseTime(timeString: String): Long{
+            val timeFormat = SimpleDateFormat("dd.MM.yyyy HH:mm")
+            return timeFormat.parse(timeString).time
+        }
         fun formatTimestamp(timestamp: Long): String {
             val timeFormat = SimpleDateFormat("dd.MM.yyyy HH:mm")
             return timeFormat.format(Date(timestamp))
         }
+        fun formatDateTime(day: Int, month: Int, year: Int, hour: Int, minute: Int): String {
+            val formattedDay = String.format("%02d", day)
+            val formattedMonth = String.format("%02d", month)
+            val formattedYear = String.format("%04d", year)
+            val formattedHour = String.format("%02d", hour)
+            val formattedMinute = String.format("%02d", minute)
+
+            return "$formattedDay.$formattedMonth.$formattedYear $formattedHour:$formattedMinute"
+        }
+        fun openDateAndTimePickerDialog(timeButton: AppCompatButton)
     }
 
     //update events

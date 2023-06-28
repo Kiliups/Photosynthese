@@ -86,7 +86,7 @@
                     android:textAppearance="?attr/textAppearanceTitleMedium"
                     android:hint="@string/placeholder_event_name"
                     android:inputType="text"
-                    android:maxLength="25"/>
+                    android:maxLength="18"/>
             </com.google.android.material.textfield.TextInputLayout>
 
 

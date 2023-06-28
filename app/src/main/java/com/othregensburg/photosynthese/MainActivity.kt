@@ -29,6 +29,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.othregensburg.photosynthese.adapter.EventAdapter
 import com.othregensburg.photosynthese.models.*
@@ -116,11 +117,6 @@ class MainActivity : AppCompatActivity() {
             dialog.window?.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             dialog.setCancelable(false)
 
-            // Caching new timestamps
-            var eventTimestamp = event.event_date
-            var startTimestamp = event.start_date
-            var endTimestamp = event.end_date
-
             // set texts to timestamp
             val eventTime = dialog.findViewById<AppCompatButton>(R.id.button_date_time)
             val startTime = dialog.findViewById<AppCompatButton>(R.id.button_startPostingDate_time)
@@ -130,16 +126,35 @@ class MainActivity : AppCompatActivity() {
             startTime.text = formatTimestamp(event.start_date!!)
             endTime.text = formatTimestamp(event.end_date!!)
 
+            // Handle click on buttons
+            eventTime.setOnClickListener (object: View.OnClickListener{
+                override fun onClick(p0: View?) {
+                    openDateAndTimePickerDialog(eventTime)
+                }
+            })
+            startTime.setOnClickListener (object: View.OnClickListener{
+                override fun onClick(p0: View?) {
+                    openDateAndTimePickerDialog(startTime)
+                }
+            })
+            endTime.setOnClickListener (object: View.OnClickListener{
+                override fun onClick(p0: View?) {
+                    openDateAndTimePickerDialog(endTime)
+                }
+            })
+
             // Handle Apply Changes Button
             val applyChangesButton = dialog.findViewById<Button>(R.id.apply_changes_button)
             applyChangesButton.setOnClickListener(object: View.OnClickListener {
                 override fun onClick(v: View?) {
 
-                    event.event_date = eventTimestamp
-                    event.start_date = startTimestamp
-                    event.end_date = endTimestamp
+                    event.event_date = parseTime(eventTime.text.toString())
+                    event.start_date = parseTime(startTime.text.toString())
+                    event.end_date = parseTime(endTime.text.toString())
 
+                    EventViewModel.update(event)
                     dialog.dismiss()
+                    this@MainActivity.recreate()
                 }
             })
 
@@ -154,7 +169,45 @@ class MainActivity : AppCompatActivity() {
             dialog.show()
         }
 
+        override fun openDateAndTimePickerDialog(timeButton: AppCompatButton){
+            // Create a Date object from the time string
+            val date = Date(parseTime(timeButton.text.toString()))
 
+            // Create a Calendar instance and set the date
+            val calendar = Calendar.getInstance()
+            calendar.time = date
+
+            // Extract individual components
+            var timestamp_day = calendar.get(Calendar.DAY_OF_MONTH)
+            var timestamp_month = calendar.get(Calendar.MONTH) + 1
+            var timestamp_year = calendar.get(Calendar.YEAR)
+            var timestamp_hour = calendar.get(Calendar.HOUR_OF_DAY)
+            var timestamp_minute = calendar.get(Calendar.MINUTE)
+
+            val datePickerDialog = DatePickerDialog(this@MainActivity, R.style.dialog_theme, DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+                timestamp_day = dayOfMonth
+                timestamp_month = month+1
+                timestamp_year = year
+
+                //update and format button text
+                timeButton.text = formatDateTime(timestamp_day, timestamp_month, timestamp_year, timestamp_hour, timestamp_minute)
+
+                //Show timePicker, when date was selected
+                val timePickerDialog = TimePickerDialog(this@MainActivity, R.style.dialog_theme, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+                    timestamp_hour = hourOfDay
+                    timestamp_minute = minute
+
+                    //update and format button text
+                    timeButton.text = formatDateTime(timestamp_day, timestamp_month, timestamp_year, timestamp_hour, timestamp_minute)
+
+                },timestamp_hour,timestamp_minute, true )
+                timePickerDialog.show()
+
+            }, timestamp_year, timestamp_month-1, timestamp_day)
+
+            datePickerDialog.datePicker.firstDayOfWeek = Calendar.MONDAY
+            datePickerDialog.show()
+        }
 
         override fun showCopyIdDialog(event_id: String){
 
@@ -245,6 +298,11 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        val swipeRefreshLayout = findViewById<SwipeRefreshLayout>(R.id.swipeRefreshLayout)
+        swipeRefreshLayout.setOnRefreshListener {
+            recreate()
+            swipeRefreshLayout.isRefreshing = false
+        }
     }
 
     private fun showPopupMenu(view: View) {

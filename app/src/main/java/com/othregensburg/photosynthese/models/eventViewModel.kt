@@ -6,6 +6,7 @@ import android.content.Intent.getIntent
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -13,6 +14,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.othregensburg.photosynthese.MainActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -61,7 +63,6 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
 
         //upload event object to firestore
         db.collection("event").document(eventId).set(uploadEvent)
-
     }
 
     //delete given Event from Firebase
@@ -83,7 +84,6 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
 
         //get all media objects from firestore that have the given event_id in right order
         if (uid != null) {
-            Log.e("TEST", "uid wasn't null")
             db.collection("event").whereArrayContains("participants", uid).
             get().addOnSuccessListener { documents ->
 
@@ -224,14 +224,30 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
                     val list = item.get("participants") as MutableList<String?>
                     for (x in list){
                         if (x == uid){
+                            Log.e("TEST", "uid: $uid, removed: $x")
                             val removedElement = list.remove(uid)
-                            Log.e("TEST", "uid: $uid, removed: $removedElement")
                             db.collection("event").document(event_id)
                                 .update("participants", list)
                         }
                     }
                 }
             }
+    }
+    fun update(event: Event) {
+        val updatedEvent = mapOf(
+            "admins" to event.admins,
+            "name" to event.name,
+            "event_date" to event.event_date,
+            "start_date" to event.start_date,
+            "end_date" to event.end_date,
+            "location" to event.location,
+            "participants" to event.participants,
+            "reference" to event.reference,
+            "id" to event.id,
+            "description" to event.description
+        )
+        db.collection("event").document(event.id!!)
+            .update(updatedEvent)
     }
 
 }
