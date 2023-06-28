@@ -27,10 +27,18 @@ class EventCameraDisplayFragment : Fragment() {
     ): View? {
         binding = FragmentEventCameraDisplayBinding.inflate(inflater, container, false)
         val mediaViewModel = ViewModelProvider(this).get(mediaViewModel::class.java)
+
+        //get photo from arguments and load it into view
         val photo = arguments?.getParcelable<Uri>("photo")
         Glide.with(this).load(photo).into(binding.photo)
+
+        //get event from arguments
         val event=arguments?.getSerializable("event") as? Event
+
+        //set title of event
         binding.title.text=event!!.name
+
+        //get video from arguments and load it into view if it exists
         val video = arguments?.getParcelable<Uri>("video")
         if (video != null) {
             binding.video.setVideoURI(video)
@@ -39,17 +47,23 @@ class EventCameraDisplayFragment : Fragment() {
         } else
             binding.video.visibility = View.GONE
 
+        //set back button
         binding.backButton.setOnClickListener {
             requireActivity().onBackPressed()
         }
+
         binding.progressBar.visibility = View.GONE
         binding.sendButton.setOnClickListener {
+
+            //insert media into database
             var media: Media? = null
             if (photo != null)
-                media = Media(null, event!!.id, null, System.currentTimeMillis(), null, photo)
+                media = Media(null, event.id, null, System.currentTimeMillis(), null, photo)
             if (video != null)
-                media = Media(null, event!!.id, null, System.currentTimeMillis(), null, video)
+                media = Media(null, event.id, null, System.currentTimeMillis(), null, video)
             mediaViewModel.insert(media!!)
+
+            //display progress bar while loading
             mediaViewModel.isLoading.observe(viewLifecycleOwner, {
                 if (it == true) {
                     binding.progressBar.visibility = View.VISIBLE
@@ -58,6 +72,8 @@ class EventCameraDisplayFragment : Fragment() {
                     requireActivity().onBackPressed()
                 }
             })
+
+            //disable button
             binding.sendButton.isEnabled = false
         }
 

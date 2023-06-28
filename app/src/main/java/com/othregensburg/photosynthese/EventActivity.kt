@@ -1,9 +1,8 @@
 package com.othregensburg.photosynthese
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.othregensburg.photosynthese.R
 import com.othregensburg.photosynthese.models.Event
 
 class EventActivity : AppCompatActivity() {

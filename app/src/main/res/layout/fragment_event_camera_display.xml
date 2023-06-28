@@ -77,7 +77,7 @@
         android:layout_width="175dp"
         android:layout_height="wrap_content"
         android:backgroundTint="@null"
-        android:text="Send"
+        android:text="@string/send"
         android:textColor="@color/black"
         android:textSize="24dp"
         app:layout_constraintBottom_toBottomOf="parent"

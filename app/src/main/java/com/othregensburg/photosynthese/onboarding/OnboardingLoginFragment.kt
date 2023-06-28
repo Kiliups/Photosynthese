@@ -2,13 +2,12 @@ package com.othregensburg.photosynthese.onboarding
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.google.firebase.auth.FirebaseAuth
 import com.othregensburg.photosynthese.MainActivity
 import com.othregensburg.photosynthese.R
 import com.othregensburg.photosynthese.databinding.FragmentOnboardingLoginBinding
@@ -18,7 +17,7 @@ class OnboardingLoginFragment : Fragment() {
     lateinit var binding: FragmentOnboardingLoginBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentOnboardingLoginBinding.inflate(inflater, container, false)
         val userVM = ViewModelProvider(requireActivity()).get(userViewModel::class.java)
         binding.loginButton.setOnClickListener {
@@ -28,11 +27,13 @@ class OnboardingLoginFragment : Fragment() {
             ) {
                 // Login user
                 userVM.login(binding.user.text.toString(), binding.password.text.toString())
-                    .observe(viewLifecycleOwner, {
+                    .observe(viewLifecycleOwner) {
                         if (it == true) {
                             // if Login successful -> go to main activity
                             Toast.makeText(
-                                requireContext(), "Login Successful", Toast.LENGTH_SHORT
+                                requireContext(),
+                                resources.getString(R.string.login_successful),
+                                Toast.LENGTH_SHORT
                             ).show()
                             val intent = Intent(requireContext(), MainActivity::class.java)
                             startActivity(intent)
@@ -40,10 +41,12 @@ class OnboardingLoginFragment : Fragment() {
                         } else {
                             // if Login failed -> show error
                             Toast.makeText(
-                                requireContext(), "Login Failed", Toast.LENGTH_SHORT
+                                requireContext(),
+                                resources.getString(R.string.login_failed),
+                                Toast.LENGTH_SHORT
                             ).show()
                         }
-                    })
+                    }
             }
         }
         binding.signUp.setOnClickListener {

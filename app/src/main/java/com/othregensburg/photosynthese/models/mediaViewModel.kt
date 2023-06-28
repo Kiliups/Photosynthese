@@ -4,15 +4,10 @@ import android.app.Application
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
-import android.os.Build
-import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
-import android.webkit.MimeTypeMap
-import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -24,6 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -36,7 +32,7 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
     val db = FirebaseFirestore.getInstance()
     val auth = FirebaseAuth.getInstance()
     val isLoading = MutableLiveData<Boolean>()
-    private val eventMedia: MutableLiveData<MutableList<Media>> = MutableLiveData()
+    var isDone = MutableLiveData<Boolean>()
 
     //inserts given Media into Firebase
     fun insert(media: Media) = viewModelScope.launch(Dispatchers.IO) {
@@ -77,7 +73,7 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
         val uploadUri = compressMedia(media.content!!, 75, type)
 
         //upload image to firebase storage
-        storageRef.child("${reference}").putFile(uploadUri!!).await()
+        storageRef.child(reference).putFile(uploadUri).await()
 
         withContext(Dispatchers.Main) {
             isLoading.value = false
@@ -96,39 +92,45 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
     //gets all Media from Firebase
     fun getEventMedia(event_id: String? = "0"): MutableLiveData<MutableList<Media>> {
 
-        var result: MutableLiveData<MutableList<Media>> = MutableLiveData()
+        val result: MutableLiveData<MutableList<Media>> = MutableLiveData()
         isLoading.value = true
 
         //get all media objects from firestore that have the given event_id in right order
         db.collection("media").whereEqualTo("event_id", event_id).orderBy("timestamp").get()
             .addOnSuccessListener { documents ->
+                if (documents.isEmpty) {
+                    result.value = null
+                } else {
 
-                //create help list
-                val mediaList = mutableListOf<Media>()
 
-                //start coroutine and wait until all media objects are downloaded
-                viewModelScope.launch(Dispatchers.Main) {
+                    //create help list
+                    val mediaList = mutableListOf<Media>()
 
-                    //for each media object in documents create a media object and add it to help list
-                    for (item in documents) {
+                    //start coroutine and wait until all media objects are downloaded
+                    viewModelScope.launch(Dispatchers.Main) {
 
-                        val media = Media(
-                            item.id as String?,
-                            item.get("event_id") as String?,
-                            item.get("reference") as String?,
-                            item.get("timestamp") as Long?,
-                            item.get("user") as String?,
-                            null
-                        )
+                        //for each media object in documents create a media object and add it to help list
+                        for (item in documents) {
 
-                        //download media uri from firebase storage
-                        val uri = storageRef.child(media.reference!!).downloadUrl.await()
-                        media.content = uri
+                            val media = Media(
+                                item.id as String?,
+                                item.get("event_id") as String?,
+                                item.get("reference") as String?,
+                                item.get("timestamp") as Long?,
+                                item.get("user") as String?,
+                                null
+                            )
 
-                        //add media object to help list
-                        mediaList.add(media)
-                        //set help list as result
-                        result.value = mediaList
+                            //download media uri from firebase storage
+                            val uri = storageRef.child(media.reference!!).downloadUrl.await()
+                            media.content = uri
+
+                            //add media object to help list
+                            mediaList.add(media)
+                            //set help list as result
+                            result.value = mediaList
+
+                        }
                     }
                 }
             }
@@ -192,9 +194,15 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
                     outputStream.flush()
                 }
+                withContext(Dispatchers.Main) {
+                    isDone.value = true
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()
+            withContext(Dispatchers.Main) {
+                isDone.value = false
+            }
         } finally {
             outputStream?.close()
         }

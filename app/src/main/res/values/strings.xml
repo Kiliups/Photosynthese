@@ -55,5 +55,44 @@
     <string name="posting_end">posting end</string>
     <string name="description">description</string>
 
+    <!-- Post Menu -->
+    <string name="download">download</string>
+    <string name="delete">delete</string>
+
+    <!-- Event Gallery Fragment -->
+    <string name="no_results">no results</string>
+    <string name="username">Username</string>
+    <string name="date">date</string>
+    <string name="media_saved">media saved to gallery</string>
+    <string name="media_saved_error">error while saving media to gallery</string>
+
+    <!-- Onboarding -->
+    <string name="welcome">welcome to photosynthesis</string>
+    <string name="welcome_text">You can create events and invite your friends to join them. During the event you can share your photos and videos with your friends. After the event you can look back at the shared media and relive the event.</string>
+    <string name="login">Login</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="no_account">Do not have an account? </string>
+    <string name="already_account">Already have an account? </string>
+    <string name="email_username">Username/Email</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="login_successful">Login Successful</string>
+    <string name="login_failed">Login Failed</string>
+    <string name="invalid_email">Please enter a valid email address</string>
+    <string name="invalid_confirm_password">Passwords do not match</string>
+    <string name="invalid_password">Password must be at least 6 characters long</string>
+    <string name="all_fields">Please fill out all fields</string>
+    <string name="username_taken">Username already taken</string>
+    <string name="user_created">User created</string>
+    <string name="logout">logout</string>
+    <string name="confirm">confirm</string>
+    <string name="profile_update">Profile updated</string>
+    <string name="profile_update_failed">Profile update failed</string>
+    <string name="permissions_failed">Permissions not granted by the user</string>
+    <string name="send">Send</string>
+
     <string name="hello_blank_fragment">Blank Fragment!</string>
 </resources>
