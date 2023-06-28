@@ -33,7 +33,8 @@ class ProfileActivity : AppCompatActivity() {
                 binding.firstName.setText(user.firstname)
                 binding.lastName.setText(user.lastname)
                 binding.email.setText(user.email)
-                Glide.with(this).load(user.picture).into(binding.profilePicture)
+                if (user.picture!=null)
+                    Glide.with(this).load(user.picture).into(binding.profilePicture)
                 binding.checkButton.setOnClickListener {
                     uVM.updateUser(
                         auth.currentUser!!.uid,

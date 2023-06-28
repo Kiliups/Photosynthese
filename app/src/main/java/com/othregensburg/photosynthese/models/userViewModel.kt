@@ -113,8 +113,12 @@ class userViewModel(application: Application) : AndroidViewModel(application) {
                     null
                 )
                 val reference = user!!.reference
-                val uri=storageRef.child(reference!!).downloadUrl.await()
-                user!!.picture=uri
+                try {
+                    val uri=storageRef.child(reference!!).downloadUrl.await()
+                    user!!.picture=uri
+                }catch (e:Exception){
+                    user!!.picture=null
+                }
                 userLive.value=user
             }
         }
