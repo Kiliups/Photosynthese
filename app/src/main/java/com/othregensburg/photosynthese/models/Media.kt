@@ -1,7 +1,7 @@
 package com.othregensburg.photosynthese.models
 
 import android.net.Uri
-import com.google.firebase.Timestamp
+
 //Data model class for database
 data class Media(
     var id: String?,

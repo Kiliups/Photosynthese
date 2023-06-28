@@ -2,14 +2,12 @@ package com.othregensburg.photosynthese.onboarding
 
 import android.os.Bundle
 import android.util.Patterns
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.othregensburg.photosynthese.R
 import com.othregensburg.photosynthese.databinding.FragmentOnboardingSignUpBinding
 import com.othregensburg.photosynthese.models.userViewModel
@@ -19,7 +17,7 @@ class OnboardingSignUpFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentOnboardingSignUpBinding.inflate(inflater, container, false)
         val userVM = ViewModelProvider(requireActivity()).get(userViewModel::class.java)
@@ -51,28 +49,28 @@ class OnboardingSignUpFragment : Fragment() {
                             // Show error if email is invalid
                             Toast.makeText(
                                 requireContext(),
-                                "Please enter a valid email address",
+                                resources.getString(R.string.invalid_email),
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
                     } else {
                         // Show error if passwords don't match
                         Toast.makeText(
-                            requireContext(), "Passwords do not match", Toast.LENGTH_SHORT
+                            requireContext(), resources.getString(R.string.invalid_confirm_password), Toast.LENGTH_SHORT
                         ).show()
                     }
                 } else {
                     // Show error if password is too short
                     Toast.makeText(
                         requireContext(),
-                        "Password must be at least 6 characters long",
+                        resources.getString(R.string.invalid_password),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
             } else {
                 // Show error if not all fields are filled
                 Toast.makeText(
-                    requireContext(), "Please fill out all fields", Toast.LENGTH_SHORT
+                    requireContext(), resources.getString(R.string.all_fields), Toast.LENGTH_SHORT
                 ).show()
             }
         }

@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="Welcome to Photosynthesis"
+        android:text="@string/welcome"
         android:textAllCaps="true"
         android:textAppearance="?attr/textAppearanceHeadlineLarge"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,11 +35,12 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/large"
         android:gravity="center"
-        android:text="caputure, share and store important moments with friends and family all in one place!"
-        android:textAppearance="?attr/textAppearanceHeadlineMedium"
+        android:text="@string/welcome_text"
+        android:textAppearance="?attr/textAppearanceHeadlineSmall"
         app:layout_constraintBottom_toTopOf="@+id/get_started_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_margin="@dimen/medium"/>
 
     <Button
         android:id="@+id/get_started_button"

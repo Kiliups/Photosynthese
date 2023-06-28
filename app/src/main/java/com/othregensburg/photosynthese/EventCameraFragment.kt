@@ -1,20 +1,10 @@
 package com.othregensburg.photosynthese
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
-import android.graphics.drawable.ColorDrawable
-import android.hardware.camera2.CameraCaptureSession
-import android.hardware.camera2.CameraCharacteristics
-import android.hardware.camera2.CameraDevice
-import android.hardware.camera2.CameraManager
-import android.hardware.camera2.params.OutputConfiguration
-import android.hardware.camera2.params.SessionConfiguration
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -23,22 +13,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.Toast
-import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
-import androidx.camera.camera2.Camera2Config
-import androidx.camera.camera2.interop.Camera2CameraControl
-import androidx.camera.camera2.interop.Camera2CameraInfo
-import androidx.camera.camera2.interop.Camera2Interop
-import androidx.camera.camera2.interop.ExperimentalCamera2Interop
 import androidx.camera.core.AspectRatio
 import androidx.camera.core.Camera
-import androidx.camera.core.CameraControl
-import androidx.camera.core.CameraFilter
 import androidx.camera.core.CameraSelector
-import androidx.camera.core.ExtendableBuilder
 import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCapture.FLASH_MODE_OFF
-import androidx.camera.core.ImageCapture.FLASH_MODE_ON
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -56,10 +34,8 @@ import androidx.fragment.app.Fragment
 import com.othregensburg.photosynthese.databinding.FragmentEventCameraBinding
 import com.othregensburg.photosynthese.models.Event
 import java.io.File
-import java.lang.Math.round
 import java.text.SimpleDateFormat
 import java.util.Locale
-import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -101,7 +77,7 @@ class EventCameraFragment : Fragment() {
         }
 
         event = (arguments?.getSerializable("event") as? Event)!!
-        binding.title.text=event!!.name
+        binding.title.text = event.name
         // Set up the listener for take photo button
         cameraExecutor = Executors.newSingleThreadExecutor()
 
@@ -181,7 +157,7 @@ class EventCameraFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(event: Event): EventCameraFragment{
+        fun newInstance(event: Event): EventCameraFragment {
             val fragment = EventCameraFragment()
             val args = Bundle()
             args.putSerializable("event", event)
@@ -220,7 +196,9 @@ class EventCameraFragment : Fragment() {
             /*if (cameraSelector == CameraSelector.DEFAULT_FRONT_CAMERA) {
                 binding.background.background = ColorDrawable(Color.WHITE)
             }*/
-            Thread.sleep(700)
+            if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
+                Thread.sleep(700)
+            }
         }
     }
 
@@ -386,7 +364,7 @@ class EventCameraFragment : Fragment() {
 
     //check if wide angle camera is available and setup button
     fun wideAvalible() {
-        val cameraControl = camera.cameraControl
+        camera.cameraControl
         val cameraInfo = camera.cameraInfo
         val minZoomRatio = cameraInfo.getZoomState().getValue()!!.getMinZoomRatio()
         if (minZoomRatio < 1) {
@@ -422,7 +400,8 @@ class EventCameraFragment : Fragment() {
                 startCamera()
             } else {
                 Toast.makeText(
-                    requireContext(), "Permissions not granted by the user.", Toast.LENGTH_SHORT
+                    requireContext(),
+                    resources.getString(R.string.permissions_failed), Toast.LENGTH_SHORT
                 ).show()
                 requireActivity().finish()
             }
