@@ -1,58 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <!--top app bar-->
-    <include layout="@layout/toolbar_main_activity" />
-
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <!--top app bar-->
+        <include layout="@layout/toolbar_main_activity" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/small"
-            android:text="@string/headline_active_events"
-            android:textAppearance="?attr/textAppearanceTitleMedium"
-            android:id="@+id/event_group_active" />
+            android:layout_marginTop="?attr/actionBarSize"
+            android:orientation="vertical">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView_events_active"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/small"
+                android:text="@string/headline_active_events"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:id="@+id/event_group_active" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/small"
-            android:text="@string/headline_future_events"
-            android:textAppearance="?attr/textAppearanceTitleMedium"
-            android:id="@+id/event_group_future" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView_events_active"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView_events_future"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/small"
+                android:text="@string/headline_future_events"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:id="@+id/event_group_future" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/small"
-            android:text="@string/headline_memory_box"
-            android:textAppearance="?attr/textAppearanceTitleMedium"
-            android:id="@+id/event_group_memory" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView_events_future"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView_events_memory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/small"
+                android:text="@string/headline_memory_box"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:id="@+id/event_group_memory" />
 
-    </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView_events_memory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-</RelativeLayout>
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+

@@ -16,6 +16,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatButton
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
@@ -39,8 +40,30 @@ class EventAdapter(private var events: List<Event>, private val status: String, 
 
     interface eventItemClickListener {
         fun onItemClicked(event: Event)
-        fun onItemInfoClicked(event: Event)
-        fun showInfoDialog(event: Event)
+        fun onItemSettingsClicked(event: Event, holder: EventViewHolder)
+        fun showCopyIdDialog(event_id: String)
+        fun showEventPopupMenu(event: Event, view: View)
+        fun leaveEvent(event_id: String)
+        fun deleteEvent(event: Event)
+        fun showChangeTimeTableDialog(event: Event)
+        fun parseTime(timeString: String): Long{
+            val timeFormat = SimpleDateFormat("dd.MM.yyyy HH:mm")
+            return timeFormat.parse(timeString).time
+        }
+        fun formatTimestamp(timestamp: Long): String {
+            val timeFormat = SimpleDateFormat("dd.MM.yyyy HH:mm")
+            return timeFormat.format(Date(timestamp))
+        }
+        fun formatDateTime(day: Int, month: Int, year: Int, hour: Int, minute: Int): String {
+            val formattedDay = String.format("%02d", day)
+            val formattedMonth = String.format("%02d", month)
+            val formattedYear = String.format("%04d", year)
+            val formattedHour = String.format("%02d", hour)
+            val formattedMinute = String.format("%02d", minute)
+
+            return "$formattedDay.$formattedMonth.$formattedYear $formattedHour:$formattedMinute"
+        }
+        fun openDateAndTimePickerDialog(timeButton: AppCompatButton)
     }
 
     //update events
@@ -54,7 +77,7 @@ class EventAdapter(private var events: List<Event>, private val status: String, 
         val eventTitle: TextView = itemView.findViewById(R.id.event_title)
         val eventDate: TextView = itemView.findViewById(R.id.event_date)
         val eventCard: CardView = itemView.findViewById(R.id.card)
-        val eventInfo: ImageButton = itemView.findViewById(R.id.event_info)
+        val eventSettings: ImageButton = itemView.findViewById(R.id.event_settings)
         val cardBackground: ImageView = itemView.findViewById(R.id.background_image)
 
     }
@@ -91,8 +114,8 @@ class EventAdapter(private var events: List<Event>, private val status: String, 
             listener.onItemClicked(currentEvent)
         }
 
-        holder.eventInfo.setOnClickListener {
-            listener.onItemInfoClicked(currentEvent)
+        holder.eventSettings.setOnClickListener {
+            listener.onItemSettingsClicked(currentEvent, holder)
         }
 
         //val eVM = ViewModelProvider(this).get(eventViewModel::class.java)
