@@ -2,93 +2,148 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".EventDetailFragment">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/eventDetailToolbar"
-        android:layout_width="match_parent"
+    <ImageButton
+        android:id="@+id/back_button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingEnd="@dimen/medium"
+        android:background="@null"
+        android:padding="@dimen/medium"
+        android:src="@drawable/ic_arrow_back_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/event_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/small"
+        android:text="@string/placeholder_event_name"
+        android:textAppearance="?attr/textAppearanceHeadlineLarge"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageButton
-            android:id="@+id/back_button"
-            android:layout_width="@dimen/xxxlarge"
-            android:layout_height="@dimen/xxxlarge"
-            android:background="@null"
-            android:src="@drawable/ic_arrow_back_32"
-            android:layout_gravity="start"/>
-
-        <TextView
-            android:id="@+id/event_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:maxWidth="240dp"
-            android:text="@string/placeholder_event_name"
-            android:textAppearance="?attr/textAppearanceHeadlineLarge"
-            android:textColor="@color/white"
-            android:layout_gravity="center"/>
-
-    </androidx.appcompat.widget.Toolbar>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/image_card"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/medium"
-        app:cardCornerRadius="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/eventDetailToolbar">
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:scaleType="centerInside"
-            android:src="@drawable/logo_neu"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="64dp" />
-
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/medium"
         android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/image_card">
+        app:layout_constraintTop_toBottomOf="@id/event_name"
+        android:layout_marginTop="@dimen/small"
+        android:layout_marginBottom="@dimen/small">
 
-        <LinearLayout
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_margin="8dp"
+            android:layout_marginBottom="@dimen/medium">
 
-            <!-- First CardView -->
-            <include
-                android:id="@+id/expandable_card_description"
-                layout="@layout/expandable_card" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/event_name">
 
-            <!-- Second CardView -->
-            <include
-                android:id="@+id/expandable_card_timetable"
-                layout="@layout/expandable_card" />
+                <!-- Event Picture -->
+                <ImageView
+                    android:id="@+id/event_picture"
+                    android:layout_marginBottom="@dimen/medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="352dp"
+                    app:srcCompat="@drawable/baseline_groups_32"
+                    android:scaleType="centerCrop"/>
 
-            <!-- Third CardView -->
-            <include
-                android:id="@+id/expandable_card_location"
-                layout="@layout/expandable_card" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/medium"
+                    android:orientation="vertical">
 
-        </LinearLayout>
+                    <!-- Event Description -->
+                    <TextView
+                        android:id="@+id/description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lorem_ipsum"
+                        android:textAppearance="?attr/textAppearanceBodyMedium" />
+                    <View
+                        android:id="@+id/line_under_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/line"
+                        android:layout_marginVertical="@dimen/medium"/>
+
+                    <!-- Event Time Table -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/xsmall"
+                        android:text="@string/event_date"
+                        android:textAppearance="?attr/textAppearanceTitleSmall"
+                        />
+                    <TextView
+                        android:id="@+id/event_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/date_random"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/small"
+                        android:layout_marginBottom="@dimen/xsmall"
+                        android:text="@string/posting_start"
+                        android:textAppearance="?attr/textAppearanceTitleSmall"
+                        />
+                    <TextView
+                        android:id="@+id/posting_start"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/date_random"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/small"
+                        android:layout_marginBottom="@dimen/xsmall"
+                        android:text="@string/posting_end"
+                        android:textAppearance="?attr/textAppearanceTitleSmall"
+                        />
+                    <TextView
+                        android:id="@+id/posting_end"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/date_random"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"
+                        />
+                    <View
+                        android:id="@+id/line_under_time_table"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/line"
+                        android:layout_marginVertical="@dimen/medium"/>
+
+                    <!-- Event Location -->
+                    <TextView
+                        android:id="@+id/location"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/location"
+                        android:textAppearance="?attr/textAppearanceBodyMedium"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
     </ScrollView>
 

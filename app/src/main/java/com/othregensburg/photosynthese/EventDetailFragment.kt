@@ -16,6 +16,8 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.othregensburg.photosynthese.databinding.ActivityProfileBinding
+import com.othregensburg.photosynthese.databinding.FragmentEventDetailBinding
 import com.othregensburg.photosynthese.models.Event
 import com.othregensburg.photosynthese.models.eventViewModel
 import kotlinx.coroutines.launch
@@ -30,7 +32,6 @@ class EventDetailFragment : Fragment() {
     private lateinit var locationCard: CardView
 
     private lateinit var eVM: eventViewModel
-
     companion object {
 
         // Create new instance of EventDetailFragment
@@ -51,6 +52,7 @@ class EventDetailFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_event_detail, container, false)
         eVM = ViewModelProvider(this).get(eventViewModel::class.java)
 
+
         // Get the event from the arguments
         val event = arguments?.getSerializable("event") as? Event
 
@@ -64,7 +66,7 @@ class EventDetailFragment : Fragment() {
             requireActivity().onBackPressed()
         }
 
-        val image = view.findViewById<ImageView>(R.id.imageView)
+        val image = view.findViewById<ImageView>(R.id.event_picture)
 
         //set the event picture
         if(event?.reference != null) {
@@ -77,55 +79,48 @@ class EventDetailFragment : Fragment() {
                     .into(image)
             }
         }
+        else{
+            image.visibility = View.GONE
+        }
 
         //set the event description, timetable and location
 
-        descriptionCard = view.findViewById(R.id.expandable_card_description)
-        timetableCard = view.findViewById(R.id.expandable_card_timetable)
-        locationCard = view.findViewById(R.id.expandable_card_location)
+        val description = view.findViewById<TextView>(R.id.description)
+        val event_date = view.findViewById<TextView>(R.id.event_date)
+        val posting_start = view.findViewById<TextView>(R.id.posting_start)
+        val posting_end = view.findViewById<TextView>(R.id.posting_end)
+        val location = view.findViewById<TextView>(R.id.location)
+        val lineUnderDescription = view.findViewById<View>(R.id.line_under_description)
+        val lineUnderTimetable = view.findViewById<View>(R.id.line_under_time_table)
 
-        descriptionCard.findViewById<TextView>(R.id.info_title).setText(R.string.description)
-        timetableCard.findViewById<TextView>(R.id.info_title).setText(R.string.time_table)
-        locationCard.findViewById<TextView>(R.id.info_title).setText(R.string.location)
+        description.text = event?.description
 
-        descriptionCard.findViewById<TextView>(R.id.details).setText("\n" + event?.description)
+        //if there is no description, hide the line under the description
+        if(event?.description == null || event?.description == ""){
+            description.visibility = View.GONE
+            lineUnderDescription.visibility = View.GONE
+
+        }
 
         //format date
         val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
         var eventDate = event?.event_date?.let { dateFormat.format(it) }
-        var start = event?.start_date?.let { dateFormat.format(it) }
-        var end = event?.end_date?.let { dateFormat.format(it) }
+        var postingStart = event?.start_date?.let { dateFormat.format(it) }
+        var postingEnd = event?.end_date?.let { dateFormat.format(it) }
 
-        val eventDateString = getString(R.string.event_date)
-        val postingStartString = getString(R.string.posting_start)
-        val postingEndString = getString(R.string.posting_end)
-        timetableCard.findViewById<TextView>(R.id.details).setText("\n" + eventDateString + ": "+ eventDate + "\n\n" + postingStartString + ": " + start + "\n" + postingEndString + ": " + end)
+        event_date.text = eventDate
+        posting_start.text = postingStart
+        posting_end.text = postingEnd
 
-        locationCard.findViewById<TextView>(R.id.details).setText("\n" + event?.location)
+        location.text = event?.location
 
-        descriptionCard.setOnClickListener { expand(descriptionCard) }
-        timetableCard.setOnClickListener { expand(timetableCard) }
-        locationCard.setOnClickListener { expand(locationCard) }
-
-        return view
-    }
-
-
-    // expands the card
-    private fun expand(card: CardView) {
-
-        var details = card.findViewById<TextView>(R.id.details)
-        var icon = card.findViewById<ImageView>(R.id.expand_icon)
-
-        // If the card is not expanded, expand it
-        if(details.visibility == View.GONE) {
-            details.visibility = View.VISIBLE
-            icon.setImageResource(R.drawable.ic_arrow_drop_up_24)
-        } else {
-            details.visibility = View.GONE
-            icon.setImageResource(R.drawable.ic_arrow_drop_down_24)
+        //if there is no location, hide the line under the timetable
+        if(event?.location == null || event?.location == ""){
+            lineUnderTimetable.visibility = View.GONE
+            location.visibility = View.GONE
         }
 
+        return view
     }
 
 }
