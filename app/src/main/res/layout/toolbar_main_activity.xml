@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
-    <ImageButton
+    <androidx.cardview.widget.CardView
         android:id="@+id/icon_profile"
         android:layout_width="@dimen/xxxlarge"
         android:layout_height="@dimen/xxxlarge"
         android:scaleY="0.67"
         android:scaleX="0.67"
+        android:backgroundTint="@color/background"
         android:layout_gravity="start"
-        android:background="@drawable/ic_profile_32"
-        android:contentDescription="@string/content_description_icon_profile"/>
+        app:cardCornerRadius="@dimen/large">
+
+        <ImageView
+            android:scaleType="centerCrop"
+            android:id="@+id/profile_picture"
+            android:src="@drawable/ic_profile_32"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:layout_width="wrap_content"

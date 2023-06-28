@@ -16,20 +16,17 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.PopupMenu
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.othregensburg.photosynthese.adapter.EventAdapter
 import com.othregensburg.photosynthese.models.*
@@ -298,11 +295,22 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        val profile=findViewById<ImageButton>(R.id.icon_profile)
+        val profile=findViewById<CardView>(R.id.icon_profile)
         profile.setOnClickListener{
             val intent = Intent(this, ProfileActivity::class.java)
             startActivity(intent)
         }
+        val profile_picture = findViewById<ImageView>(R.id.profile_picture)
+        // setup UserViewModel
+        val uVM = ViewModelProvider(this).get(userViewModel::class.java)
+        uVM.getUser(user.uid).observe(this) { item ->
+            if (item?.picture != null) {
+                Glide.with(this)
+                    .load(item.picture) // Assuming item.picture is a URL or file path as a String
+                    .into(profile_picture)
+            }
+        }
+
 
         val swipeRefreshLayout = findViewById<SwipeRefreshLayout>(R.id.swipeRefreshLayout)
         swipeRefreshLayout.setOnRefreshListener {
