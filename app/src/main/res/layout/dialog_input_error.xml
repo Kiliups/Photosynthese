@@ -16,7 +16,7 @@
 
     <Button
         android:id="@+id/dialog_ok_button"
-        android:layout_width="100dp"
+        android:layout_width="96dp"
         android:layout_height="wrap_content"
         android:textAllCaps="false"
         android:text="@string/ok"

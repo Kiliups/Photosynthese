@@ -175,6 +175,8 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
             .whereEqualTo("id", event_id)
             .get()
             .addOnSuccessListener { documents ->
+                if(documents.isEmpty)
+                    Toast.makeText(activity, "event couldn't be found", Toast.LENGTH_SHORT).show()
                 for (item in documents) {
                     val list = item.get("participants") as MutableList<String?>
                     var notInList = true
@@ -196,9 +198,6 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
                                 Toast.makeText(activity, "error while joining event", Toast.LENGTH_SHORT).show()}
                     }
                 }
-            }
-            .addOnFailureListener { exception ->
-                Toast.makeText(activity, "event couldn't be found", Toast.LENGTH_SHORT).show()
             }
     }
 
