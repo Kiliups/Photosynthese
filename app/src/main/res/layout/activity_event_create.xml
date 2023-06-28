@@ -23,11 +23,8 @@
             android:id="@+id/arrowBack"
             android:layout_width="@dimen/xxxlarge"
             android:layout_height="@dimen/xxxlarge"
-            android:scaleX="1.5"
-            android:scaleY="1.5"
-            android:src="@drawable/ic_arrow_back_24"
+            android:src="@drawable/ic_arrow_back_32"
             android:background="@color/transparent"
-            android:padding="@dimen/small"
             android:layout_gravity="start"/>
 
         <TextView
@@ -36,6 +33,7 @@
             android:layout_height="wrap_content"
             android:text="@string/headline_create_event"
             android:textAppearance="?attr/textAppearanceHeadlineLarge"
+            android:textColor="@color/white"
             android:layout_gravity="center"/>
     </androidx.appcompat.widget.Toolbar>
 
@@ -86,7 +84,7 @@
                     android:textAppearance="?attr/textAppearanceTitleMedium"
                     android:hint="@string/placeholder_event_name"
                     android:inputType="text"
-                    android:maxLength="18"/>
+                    android:maxLength="20"/>
             </com.google.android.material.textfield.TextInputLayout>
 
 

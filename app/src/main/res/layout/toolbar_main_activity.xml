@@ -6,12 +6,12 @@
 
     <ImageButton
         android:id="@+id/icon_profile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/xxxlarge"
+        android:layout_height="@dimen/xxxlarge"
+        android:scaleY="0.67"
+        android:scaleX="0.67"
         android:layout_gravity="start"
-        android:background="@drawable/ic_profile_48"
-        android:minWidth="@dimen/xxxlarge"
-        android:minHeight="@dimen/xxxlarge"
+        android:background="@drawable/ic_profile_32"
         android:contentDescription="@string/content_description_icon_profile"/>
 
     <TextView
@@ -24,13 +24,13 @@
 
     <ImageButton
         android:id="@+id/icon_add"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="@dimen/xxxlarge"
+        android:layout_height="@dimen/xxxlarge"
+        android:scaleY="0.67"
+        android:scaleX="0.67"
         android:layout_gravity="end"
-        android:layout_marginEnd="@dimen/small"
-        android:background="@drawable/ic_add_48"
-        android:minWidth="@dimen/xxxlarge"
-        android:minHeight="@dimen/xxxlarge"
+        android:layout_marginEnd="@dimen/medium"
+        android:background="@drawable/ic_add_32"
         android:contentDescription="@string/content_description_icon_add"/>
 
 </androidx.appcompat.widget.Toolbar>

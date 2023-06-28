@@ -9,10 +9,11 @@
 
     <ImageButton
         android:id="@+id/back_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/xxxlarge"
+        android:layout_height="@dimen/xxxlarge"
         android:background="@null"
-        android:padding="@dimen/medium"
+        android:layout_marginLeft="@dimen/medium"
+        android:layout_marginTop="@dimen/small"
         android:src="@drawable/ic_arrow_back_32"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
