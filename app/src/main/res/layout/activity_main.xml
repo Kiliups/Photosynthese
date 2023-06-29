@@ -27,6 +27,17 @@
                 android:textAppearance="?attr/textAppearanceTitleMedium"
                 android:id="@+id/event_group_active" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small"
+                android:layout_marginBottom="@dimen/medium"
+                android:layout_marginLeft="@dimen/xxlarge"
+                android:text="@string/no_results"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:id="@+id/no_results_active"
+                tools:ignore="MissingClass" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView_events_active"
                 android:layout_width="wrap_content"
@@ -40,6 +51,16 @@
                 android:textAppearance="?attr/textAppearanceTitleMedium"
                 android:id="@+id/event_group_future" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small"
+                android:layout_marginBottom="@dimen/medium"
+                android:layout_marginLeft="@dimen/xxlarge"
+                android:text="@string/no_results"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:id="@+id/no_results_future"/>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView_events_future"
                 android:layout_width="wrap_content"
@@ -52,6 +73,16 @@
                 android:text="@string/headline_memory_box"
                 android:textAppearance="?attr/textAppearanceTitleMedium"
                 android:id="@+id/event_group_memory" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small"
+                android:layout_marginBottom="@dimen/medium"
+                android:layout_marginLeft="@dimen/xxlarge"
+                android:text="@string/no_results"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:id="@+id/no_results_memory"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView_events_memory"

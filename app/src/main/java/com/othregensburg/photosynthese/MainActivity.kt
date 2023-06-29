@@ -253,7 +253,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         //set up recycler views
 
         val activeEvents: RecyclerView = findViewById(R.id.recyclerView_events_active)
@@ -280,6 +279,9 @@ class MainActivity : AppCompatActivity() {
 
                 //sort events by status
                 var sortedEvents = EventViewModel.sortEventsByStatus(events)
+
+                //show text if no events are available
+                setNoResults(sortedEvents)
 
                 activeAdapter.updateEvents(sortedEvents[0])
                 futureAdapter.updateEvents(sortedEvents[1])
@@ -372,4 +374,29 @@ class MainActivity : AppCompatActivity() {
 
         dialog.show()
     }
+
+    // show "no results" if no events are available
+    fun setNoResults(sortedEvents: List<List<Event>>){
+
+        // show text if no active events are available
+        if(sortedEvents[0].isEmpty())
+            findViewById<TextView>(R.id.no_results_active).visibility = View.VISIBLE
+        else
+            findViewById<TextView>(R.id.no_results_active).visibility = View.GONE
+
+        // show text if no future events are available
+        if(sortedEvents[1].isEmpty())
+            findViewById<TextView>(R.id.no_results_future).visibility = View.VISIBLE
+        else
+            findViewById<TextView>(R.id.no_results_future).visibility = View.GONE
+
+        // show text if no memory events are available
+        if(sortedEvents[2].isEmpty())
+            findViewById<TextView>(R.id.no_results_memory).visibility = View.VISIBLE
+        else
+            findViewById<TextView>(R.id.no_results_memory).visibility = View.GONE
+
+
+    }
+
 }
