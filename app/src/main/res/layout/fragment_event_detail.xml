@@ -67,18 +67,18 @@
 
                     <!-- Event Description -->
                     <TextView
+                        android:id="@+id/description_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/xsmall"
                         android:text="@string/description"
-                        android:textAppearance="?attr/textAppearanceTitleSmall"
-                        />
+                        android:textAppearance="?attr/textAppearanceTitleSmall"/>
                     <TextView
                         android:id="@+id/description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/lorem_ipsum"
-                        android:textAppearance="?attr/textAppearanceBodyMedium" />
+                        android:textAppearance="?attr/textAppearanceBodyMedium"/>
                     <View
                         android:id="@+id/line_under_description"
                         android:layout_width="match_parent"
@@ -140,6 +140,7 @@
 
                     <!-- Event Location -->
                     <TextView
+                        android:id="@+id/location_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/xsmall"
