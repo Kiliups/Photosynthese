@@ -19,7 +19,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -52,12 +51,12 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
         if (auth.currentUser != null) media.user = auth.currentUser!!.uid
 
         //generate reference for firebase storage
-        val reference = "media/${media.event_id}/${mediaId}.${type}"
+        val reference = "media/${media.eventId}/${mediaId}.${type}"
         media.reference = reference
 
         //create map for firestore
         val uploadMedia = mapOf(
-            "event_id" to media.event_id,
+            "event_id" to media.eventId,
             "reference" to media.reference,
             "timestamp" to media.timestamp,
             "user" to media.user

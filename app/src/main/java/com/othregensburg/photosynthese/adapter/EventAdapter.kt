@@ -1,18 +1,10 @@
 package com.othregensburg.photosynthese.adapter
 
-import android.app.Dialog
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
-import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -20,25 +12,21 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import com.othregensburg.photosynthese.R
 import com.othregensburg.photosynthese.models.Event
 import com.othregensburg.photosynthese.models.eventViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.random.Random
 
-class EventAdapter(private var events: List<Event>, private val status: String, val listener: eventItemClickListener): RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
-
+class EventAdapter(private var events: List<Event>, private val status: String, private val listener: eventItemClickListener)
+    : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
     interface eventItemClickListener {
         fun onItemClicked(event: Event)
         fun onItemSettingsClicked(event: Event, holder: EventViewHolder)
@@ -67,20 +55,18 @@ class EventAdapter(private var events: List<Event>, private val status: String, 
         fun openDateAndTimePickerDialog(timeButton: AppCompatButton)
     }
 
-    //update events
-    fun updateEvents(updatedEvents: List<Event>) {
+    // update event list after sorting events by status
+    fun updateEventList(updatedEvents: List<Event>) {
         events = updatedEvents
-        notifyDataSetChanged()
     }
 
     inner class EventViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
-        val eventTitle: TextView = itemView.findViewById(R.id.event_title)
+        val eventName: TextView = itemView.findViewById(R.id.event_name)
         val eventDate: TextView = itemView.findViewById(R.id.event_date)
         val eventCard: CardView = itemView.findViewById(R.id.card)
         val eventSettings: ImageButton = itemView.findViewById(R.id.event_settings)
-        val cardBackground: ImageView = itemView.findViewById(R.id.background_image)
-
+        val cardImage: ImageView = itemView.findViewById(R.id.card_image)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
@@ -98,17 +84,17 @@ class EventAdapter(private var events: List<Event>, private val status: String, 
 
         val currentEvent = events[position]
 
-        //set event title
-        holder.eventTitle.text = currentEvent.name
+        // set event name
+        holder.eventName.text = currentEvent.name
 
-        //format date
+        // format date
         val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
-        val formattedDate = currentEvent.event_date?.let { dateFormat.format(it) }
+        val formattedDate = currentEvent.eventDate?.let { dateFormat.format(it) }
         holder.eventDate.text = formattedDate
 
-        //resize event card for active events
+        // increase size of event card for active events
         if (status == "ACTIVE") {
-            resizeEventCard(holder, 624)
+            increaseCard(holder)
         }
 
         holder.eventCard.setOnClickListener {
@@ -119,38 +105,39 @@ class EventAdapter(private var events: List<Event>, private val status: String, 
             listener.onItemSettingsClicked(currentEvent, holder)
         }
 
-        //val eVM = ViewModelProvider(this).get(eventViewModel::class.java)
-        val eVM = ViewModelProvider(holder.itemView.context as ViewModelStoreOwner).get(eventViewModel::class.java)
+        val eventViewModel = ViewModelProvider(holder.itemView.context as ViewModelStoreOwner)
+            .get(eventViewModel::class.java)
 
-        //set event picture as card background
+        // set event picture as card image background
         if(currentEvent.reference != null) {
             GlobalScope.launch {
-                val uri = eVM.getUriFromPictureReference(currentEvent.reference!!)
-                loadImageWithGlide(uri.toString(), holder.cardBackground)
+                val uri = eventViewModel.getUriFromPictureReference(currentEvent.reference!!)
+                loadImageWithGlide(uri.toString(), holder.cardImage)
             }
         } else {
             val randomNumber = Random.nextInt(0, 5)
             when (randomNumber) {
-                0 -> holder.cardBackground.setImageResource(R.drawable.dilla1)
-                1 -> holder.cardBackground.setImageResource(R.drawable.dilla2)
-                2 -> holder.cardBackground.setImageResource(R.drawable.dilla3)
-                3 -> holder.cardBackground.setImageResource(R.drawable.dilla4)
-                else -> holder.cardBackground.setImageResource(R.drawable.dilla5)
+                0 -> holder.cardImage.setImageResource(R.drawable.dilla1)
+                1 -> holder.cardImage.setImageResource(R.drawable.dilla2)
+                2 -> holder.cardImage.setImageResource(R.drawable.dilla3)
+                3 -> holder.cardImage.setImageResource(R.drawable.dilla4)
+                else -> holder.cardImage.setImageResource(R.drawable.dilla5)
             }
         }
 
     }
 
-    //resize event card
-    private fun resizeEventCard(holder: EventViewHolder,size: Int) {
+    // resize event card
+    private fun increaseCard(holder: EventViewHolder) {
+
+        val sizeCardEventActive = 624
 
         val layoutParams = holder.eventCard.layoutParams as ViewGroup.LayoutParams
-        layoutParams.height = size
-        layoutParams.width = size
-
-        holder.eventCard.layoutParams = layoutParams
+        layoutParams.height = sizeCardEventActive
+        layoutParams.width = sizeCardEventActive
     }
 
+    // load image into card image view with glide
     private fun loadImageWithGlide(imageUrl: String, imageView: ImageView) {
 
         GlobalScope.launch(Dispatchers.Main) {
@@ -167,9 +154,8 @@ class EventAdapter(private var events: List<Event>, private val status: String, 
 
 
             } catch (e: Exception) {
-                Log.e("EventAdapter", "Fehler beim Laden des Bildes", e)
+                Log.e("EventAdapter", "error loading image", e)
             }
         }
     }
-
 }

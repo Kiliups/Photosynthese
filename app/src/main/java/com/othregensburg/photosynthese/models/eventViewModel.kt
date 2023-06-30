@@ -1,12 +1,9 @@
 package com.othregensburg.photosynthese.models
 
-import android.app.Activity
 import android.app.Application
-import android.content.Intent.getIntent
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
-import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -14,7 +11,6 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.othregensburg.photosynthese.MainActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -22,10 +18,8 @@ import java.util.*
 
 class eventViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val storageRef: StorageReference = FirebaseStorage.getInstance().getReference()
+    private val storageRef: StorageReference = FirebaseStorage.getInstance().reference
     private val db = FirebaseFirestore.getInstance()
-
-    var events: MutableLiveData<List<Event>> = MutableLiveData()
 
     //insert given Event into Firebase
     fun insert(event: Event) = viewModelScope.launch(Dispatchers.IO){
@@ -51,9 +45,9 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
 
             "admins" to event.admins,
             "name" to event.name,
-            "event_date" to event.event_date,
-            "start_date" to event.start_date,
-            "end_date" to event.end_date,
+            "event_date" to event.eventDate,
+            "start_date" to event.startDate,
+            "end_date" to event.endDate,
             "location" to event.location,
             "participants" to event.participants,
             "reference" to event.reference,
@@ -80,7 +74,7 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
     //get all events by a user
     fun getEventsByUser(uid: String?): MutableLiveData<List<Event>> {
 
-        var result: MutableLiveData<List<Event>> = MutableLiveData()
+        val result: MutableLiveData<List<Event>> = MutableLiveData()
 
         //get all media objects from firestore that have the given event_id in right order
         if (uid != null) {
@@ -131,14 +125,14 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
     private fun setEventStatus(event: Event){
 
         val currentDate = Date().time
-        val start = event.start_date
-        val end = event.end_date
+        val start = event.startDate
+        val end = event.endDate
 
         if(currentDate < start!!){
             event.status = "FUTURE"
         }
         else if(currentDate > end!!){
-            event.status = "PAST"
+            event.status = "MEMORY"
         }
         else{
             event.status = "ACTIVE"
@@ -150,7 +144,7 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
 
         val futureEvents = mutableListOf<Event>()
         val activeEvents = mutableListOf<Event>()
-        val pastEvents = mutableListOf<Event>()
+        val memoryEvents = mutableListOf<Event>()
 
         //sorts each event into a list depending on its status
         for(event in events){
@@ -158,21 +152,21 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
             when(event.status){
                 "ACTIVE" -> activeEvents.add(event)
                 "FUTURE" -> futureEvents.add(event)
-                "PAST" -> pastEvents.add(event)
+                "MEMORY" -> memoryEvents.add(event)
             }
         }
 
         val sortedEvents = mutableListOf<List<Event>>()
         sortedEvents.add(activeEvents)
         sortedEvents.add(futureEvents)
-        sortedEvents.add(pastEvents)
+        sortedEvents.add(memoryEvents)
 
         return sortedEvents
     }
 
-    fun addUserToEvent(uid: String, event_id: String, activity: AppCompatActivity) {
+    fun addUserToEvent(uid: String, eventId: String, activity: AppCompatActivity) {
         db.collection("event")
-            .whereEqualTo("id", event_id)
+            .whereEqualTo("id", eventId)
             .get()
             .addOnSuccessListener { documents ->
                 if(documents.isEmpty)
@@ -188,7 +182,7 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
                     }
                     if (notInList){
                         list.add(uid)
-                        db.collection("event").document(event_id)
+                        db.collection("event").document(eventId)
                             .update("participants", list)
                             .addOnSuccessListener {
                                 Toast.makeText(activity, "successfully registered", Toast.LENGTH_SHORT).show()
@@ -203,18 +197,14 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
 
     suspend fun getUriFromPictureReference(picture: String): Uri {
 
-        var uri: Uri = Uri.EMPTY
-
         //download event picture uri from firebase storage
-        if(picture!=null){
-            uri = storageRef.child(picture!!).downloadUrl.await()
-        }
 
-        return uri
+        return storageRef.child(picture).downloadUrl.await()
 
     }
 
     fun leaveEvent(uid: String, eventId: String) {
+<<<<<<< Updated upstream
         db.collection("event").document(eventId)
             .get()
             .addOnSuccessListener { document ->
@@ -222,15 +212,32 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
                 list.remove(uid)
                 db.collection("event").document(eventId)
                     .update("participants", list)
+=======
+        db.collection("event")
+            .whereEqualTo("id", eventId)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (item in documents) {
+                    val list = item.get("participants") as MutableList<String?>
+                    for (x in list){
+                        if (x == uid){
+                            Log.e("TEST", "uid: $uid, removed: $x")
+                            val removedElement = list.remove(uid)
+                            db.collection("event").document(eventId)
+                                .update("participants", list)
+                        }
+                    }
+                }
+>>>>>>> Stashed changes
             }
     }
     fun update(event: Event) {
         val updatedEvent = mapOf(
             "admins" to event.admins,
             "name" to event.name,
-            "event_date" to event.event_date,
-            "start_date" to event.start_date,
-            "end_date" to event.end_date,
+            "event_date" to event.eventDate,
+            "start_date" to event.startDate,
+            "end_date" to event.endDate,
             "location" to event.location,
             "participants" to event.participants,
             "reference" to event.reference,

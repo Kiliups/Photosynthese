@@ -1,7 +1,5 @@
 package com.othregensburg.photosynthese
 
-import android.R.attr.label
-import android.R.attr.text
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.app.TimePickerDialog
@@ -11,7 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -21,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,7 +26,6 @@ import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.othregensburg.photosynthese.adapter.EventAdapter
 import com.othregensburg.photosynthese.models.*
-import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -40,7 +35,8 @@ class MainActivity : AppCompatActivity() {
     // get current logged in user
     val user = FirebaseAuth.getInstance().currentUser
 
-    var eventItemClickListener = object : EventAdapter.eventItemClickListener {
+    //event item click listener for event recycler view adapter to handle click events
+    private var eventItemClickListener = object : EventAdapter.eventItemClickListener {
         override fun onItemClicked(event: Event) {
             val intent = Intent(this@MainActivity, EventActivity::class.java)
             intent.putExtra("event", event)
@@ -119,9 +115,9 @@ class MainActivity : AppCompatActivity() {
             val startTime = dialog.findViewById<AppCompatButton>(R.id.button_startPostingDate_time)
             val endTime = dialog.findViewById<AppCompatButton>(R.id.button_endPostingDate_time)
 
-            eventTime.text = formatTimestamp(event.event_date!!)
-            startTime.text = formatTimestamp(event.start_date!!)
-            endTime.text = formatTimestamp(event.end_date!!)
+            eventTime.text = formatTimestamp(event.eventDate!!)
+            startTime.text = formatTimestamp(event.startDate!!)
+            endTime.text = formatTimestamp(event.endDate!!)
 
             // Handle click on buttons
             eventTime.setOnClickListener (object: View.OnClickListener{
@@ -145,9 +141,9 @@ class MainActivity : AppCompatActivity() {
             applyChangesButton.setOnClickListener(object: View.OnClickListener {
                 override fun onClick(v: View?) {
 
-                    event.event_date = parseTime(eventTime.text.toString())
-                    event.start_date = parseTime(startTime.text.toString())
-                    event.end_date = parseTime(endTime.text.toString())
+                    event.eventDate = parseTime(eventTime.text.toString())
+                    event.startDate = parseTime(startTime.text.toString())
+                    event.endDate = parseTime(endTime.text.toString())
 
                     EventViewModel.update(event)
                     dialog.dismiss()
@@ -247,7 +243,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -272,20 +267,22 @@ class MainActivity : AppCompatActivity() {
 
         //set up event view model
         EventViewModel = ViewModelProvider(this).get(eventViewModel::class.java)
+
         var eventLiveData: LiveData<List<Event>> = EventViewModel.getEventsByUser(user!!.uid)
 
         eventLiveData.observe(this, androidx.lifecycle.Observer { events ->
             events?.let {
 
                 //sort events by status
-                var sortedEvents = EventViewModel.sortEventsByStatus(events)
+                val sortedEvents = EventViewModel.sortEventsByStatus(events)
 
                 //show text if no events are available
                 setNoResults(sortedEvents)
 
-                activeAdapter.updateEvents(sortedEvents[0])
-                futureAdapter.updateEvents(sortedEvents[1])
-                memoryAdapter.updateEvents(sortedEvents[2])
+                //update recycler views after sorting
+                activeAdapter.updateEventList(sortedEvents[0])
+                futureAdapter.updateEventList(sortedEvents[1])
+                memoryAdapter.updateEventList(sortedEvents[2])
             }
         })
 
@@ -312,7 +309,6 @@ class MainActivity : AppCompatActivity() {
                     .into(profile_picture)
             }
         }
-
 
         val swipeRefreshLayout = findViewById<SwipeRefreshLayout>(R.id.swipeRefreshLayout)
         swipeRefreshLayout.setOnRefreshListener {
