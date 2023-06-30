@@ -17,9 +17,9 @@ import kotlinx.coroutines.tasks.await
 import java.util.Locale
 
 class userViewModel(application: Application) : AndroidViewModel(application) {
-    val db = FirebaseFirestore.getInstance()
-    val auth = FirebaseAuth.getInstance()
-    val storageRef = FirebaseStorage.getInstance().getReference()
+    private val db = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
+    private val storageRef = FirebaseStorage.getInstance().getReference()
     var isDone = MutableLiveData<Boolean>()
     fun createUser(
         username: String, firstname: String, lastname: String, email: String, password: String
@@ -78,13 +78,7 @@ class userViewModel(application: Application) : AndroidViewModel(application) {
             auth.signInWithEmailAndPassword(
                 email, password
             ).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    // If login successful, set result to true
-                    result.value = true
-                } else {
-                    // If login unsuccessful, set result to false
-                    result.value = false
-                }
+                result.value = it.isSuccessful
             }
         }
         return result
@@ -125,9 +119,9 @@ class userViewModel(application: Application) : AndroidViewModel(application) {
         lastname: String,
         selectedPicture: Uri?
     ) {
-        username == username.lowercase(Locale.getDefault())
+        val username_ = username.lowercase(Locale.getDefault())
         val reference = "user/" + id
-        db.collection("user").whereEqualTo("username", username).get()
+        db.collection("user").whereEqualTo("username", username_).get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
                     // If username is taken, show error
@@ -136,10 +130,10 @@ class userViewModel(application: Application) : AndroidViewModel(application) {
                             getApplication(), getApplication<Application>().resources.getString(R.string.username_taken), Toast.LENGTH_SHORT
                         ).show()
                     } else {
-                        upload(id, username, email, firstname, lastname, reference, selectedPicture)
+                        upload(id, username_, email, firstname, lastname, reference, selectedPicture)
                     }
                 } else {
-                    upload(id, username, email, firstname, lastname, reference, selectedPicture)
+                    upload(id, username_, email, firstname, lastname, reference, selectedPicture)
                 }
             }
     }

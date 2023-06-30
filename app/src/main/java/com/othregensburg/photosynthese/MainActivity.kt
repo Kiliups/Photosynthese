@@ -1,7 +1,5 @@
 package com.othregensburg.photosynthese
 
-import android.R.attr.label
-import android.R.attr.text
 import android.app.Dialog
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -9,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.othregensburg.photosynthese.adapter.EventAdapter
+import com.othregensburg.photosynthese.event.EventActivity
 import com.othregensburg.photosynthese.models.*
 
 class MainActivity : AppCompatActivity() {
