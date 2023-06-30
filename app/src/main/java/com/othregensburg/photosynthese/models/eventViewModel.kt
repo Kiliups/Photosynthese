@@ -204,7 +204,6 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun leaveEvent(uid: String, eventId: String) {
-<<<<<<< Updated upstream
         db.collection("event").document(eventId)
             .get()
             .addOnSuccessListener { document ->
@@ -212,23 +211,6 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
                 list.remove(uid)
                 db.collection("event").document(eventId)
                     .update("participants", list)
-=======
-        db.collection("event")
-            .whereEqualTo("id", eventId)
-            .get()
-            .addOnSuccessListener { documents ->
-                for (item in documents) {
-                    val list = item.get("participants") as MutableList<String?>
-                    for (x in list){
-                        if (x == uid){
-                            Log.e("TEST", "uid: $uid, removed: $x")
-                            val removedElement = list.remove(uid)
-                            db.collection("event").document(eventId)
-                                .update("participants", list)
-                        }
-                    }
-                }
->>>>>>> Stashed changes
             }
     }
     fun update(event: Event) {
