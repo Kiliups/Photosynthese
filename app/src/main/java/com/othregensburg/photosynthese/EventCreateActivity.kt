@@ -66,8 +66,6 @@ class EventCreateActivity : AppCompatActivity() {
                 eventPictureButton.setPadding(0)
                 eventPictureButton.setImageURI(uri)
                 selectedPicture = uri
-            } else {
-                //If no picture was selected
             }
         }
         eventPictureButton.setOnClickListener(object: View.OnClickListener{
@@ -99,18 +97,18 @@ class EventCreateActivity : AppCompatActivity() {
         sendButton.setOnClickListener(object: View.OnClickListener {
             override fun onClick(p0: View?) {
                 if (editText_eventName.text.toString().equals(""))
-                    //No event name was put in
+                    // No event name was put in
                     dialog.show()
                 else {
-                    //Create the event with selected inputs
+                    // Create the event with selected inputs
                     val user = FirebaseAuth.getInstance().currentUser
 
-                    //convert selected time to UNIX timestamp
+                    // convert selected time to UNIX timestamp
                     val timeString = dateTimeButton.text.toString()
                     val timeFormat = SimpleDateFormat("dd.MM.yyyy HH:mm")
                     val timestamp = timeFormat.parse(timeString)
 
-                    //create an Event object with the selected values
+                    // create an Event object with the selected values
                     val newEvent = Event(
                         mutableListOf<String?>(user!!.uid),
                         editText_eventName.text.toString(),

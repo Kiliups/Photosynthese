@@ -150,7 +150,7 @@
                 app:hintTextColor="@color/white">
                 <EditText
                     android:id="@+id/editText_location"
-                    android:inputType="text"
+                    android:inputType="textMultiLine"
                     android:padding="@dimen/medium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

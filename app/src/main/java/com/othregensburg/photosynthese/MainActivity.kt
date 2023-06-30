@@ -7,6 +7,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
@@ -14,9 +15,12 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.cardview.widget.CardView
+import androidx.core.view.setPadding
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,6 +30,7 @@ import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.othregensburg.photosynthese.adapter.EventAdapter
 import com.othregensburg.photosynthese.event.EventActivity
+import com.othregensburg.photosynthese.event.EventDetailFragment
 import com.othregensburg.photosynthese.models.*
 import java.util.*
 
@@ -84,6 +89,14 @@ class MainActivity : AppCompatActivity() {
                     R.id.change_timetable -> {
                         showChangeTimeTableDialog(event)
                     }
+                    R.id.event_details ->{
+                        val status = event.status
+                        event.status = "FUTURE"
+                        val intent = Intent(this@MainActivity, EventActivity::class.java)
+                        intent.putExtra("event", event)
+                        startActivity(intent)
+                        event.status = status
+                    }
                 }
 
                 true
@@ -123,17 +136,17 @@ class MainActivity : AppCompatActivity() {
             // Handle click on buttons
             eventTime.setOnClickListener (object: View.OnClickListener{
                 override fun onClick(p0: View?) {
-                    openDateAndTimePickerDialog(eventTime)
+                    openDateAndTimePickerDialog(eventTime, false, null)
                 }
             })
             startTime.setOnClickListener (object: View.OnClickListener{
                 override fun onClick(p0: View?) {
-                    openDateAndTimePickerDialog(startTime)
+                    openDateAndTimePickerDialog(startTime, false, null)
                 }
             })
             endTime.setOnClickListener (object: View.OnClickListener{
                 override fun onClick(p0: View?) {
-                    openDateAndTimePickerDialog(endTime)
+                    openDateAndTimePickerDialog(endTime, true, parseTime(startTime.text.toString()))
                 }
             })
 
@@ -163,7 +176,7 @@ class MainActivity : AppCompatActivity() {
             dialog.show()
         }
 
-        override fun openDateAndTimePickerDialog(timeButton: AppCompatButton){
+        override fun openDateAndTimePickerDialog(timeButton: AppCompatButton, timeLimit: Boolean, limit: Long?){
             // Create a Date object from the time string
             val date = Date(parseTime(timeButton.text.toString()))
 
@@ -200,6 +213,9 @@ class MainActivity : AppCompatActivity() {
             }, timestamp_year, timestamp_month-1, timestamp_day)
 
             datePickerDialog.datePicker.firstDayOfWeek = Calendar.MONDAY
+            if(timeLimit){
+                datePickerDialog.getDatePicker().setMinDate(limit!!)
+            }
             datePickerDialog.show()
         }
 

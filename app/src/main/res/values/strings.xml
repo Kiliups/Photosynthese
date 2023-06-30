@@ -21,6 +21,8 @@
     <string name="leave_event">leave event</string>
     <string name="delete_event">delete event</string>
     <string name="change_timetable">change timetable</string>
+    <string name="event_details">show event details</string>
+    <string name="change_eventpicture">change event picture</string>
 
     <!-- Change timetable dialog -->
     <string name="endPostingDate">end of posting time</string>

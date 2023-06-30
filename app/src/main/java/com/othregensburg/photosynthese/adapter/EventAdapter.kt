@@ -52,7 +52,7 @@ class EventAdapter(private var events: List<Event>, private val status: String, 
 
             return "$formattedDay.$formattedMonth.$formattedYear $formattedHour:$formattedMinute"
         }
-        fun openDateAndTimePickerDialog(timeButton: AppCompatButton)
+        fun openDateAndTimePickerDialog(timeButton: AppCompatButton, timeLimit: Boolean, limit: Long?)
     }
 
     // update event list after sorting events by status

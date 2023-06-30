@@ -11,6 +11,9 @@
         android:id="@+id/delete_event"
         android:title="@string/delete_event" />
     <item
+        android:id="@+id/event_details"
+        android:title="@string/event_details"/>
+    <item
         android:id="@+id/change_timetable"
         android:title="@string/change_timetable" />
 
