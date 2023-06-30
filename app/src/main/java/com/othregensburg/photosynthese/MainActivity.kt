@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     // get current logged in user
     val user = FirebaseAuth.getInstance().currentUser
 
-    //event item click listener for event recycler view adapter to handle click events
+    // event item click listener for event recycler view adapter to handle click events
     private var eventItemClickListener = object : EventAdapter.eventItemClickListener {
         override fun onItemClicked(event: Event) {
             val intent = Intent(this@MainActivity, EventActivity::class.java)
@@ -249,8 +249,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //set up recycler views
-
+        // set up recycler views
         val activeEvents: RecyclerView = findViewById(R.id.recyclerView_events_active)
         activeEvents.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         val activeAdapter = EventAdapter(emptyList(), "ACTIVE", eventItemClickListener)
@@ -266,7 +265,7 @@ class MainActivity : AppCompatActivity() {
         val memoryAdapter = EventAdapter(emptyList(), "MEMORY", eventItemClickListener)
         memoryEvents.adapter = memoryAdapter
 
-        //set up event view model
+        // set up event view model
         EventViewModel = ViewModelProvider(this).get(eventViewModel::class.java)
 
         var eventLiveData: LiveData<List<Event>> = EventViewModel.getEventsByUser(user!!.uid)
@@ -274,13 +273,13 @@ class MainActivity : AppCompatActivity() {
         eventLiveData.observe(this, androidx.lifecycle.Observer { events ->
             events?.let {
 
-                //sort events by status
+                // sort events by status
                 val sortedEvents = EventViewModel.sortEventsByStatus(events)
 
-                //show text if no events are available
+                // show text if no events are available
                 setNoResults(sortedEvents)
 
-                //update recycler views after sorting
+                // update recycler views after sorting
                 activeAdapter.updateEventList(sortedEvents[0])
                 futureAdapter.updateEventList(sortedEvents[1])
                 memoryAdapter.updateEventList(sortedEvents[2])

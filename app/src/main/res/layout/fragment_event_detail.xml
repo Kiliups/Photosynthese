@@ -6,34 +6,41 @@
     android:layout_height="match_parent"
     tools:context=".event.EventDetailFragment">
 
-    <ImageButton
-        android:id="@+id/back_button"
-        android:layout_width="wrap_content"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@null"
-        android:padding="@dimen/medium"
-        android:src="@drawable/ic_arrow_back_24"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/event_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/small"
-        android:text="@string/placeholder_event_name"
-        android:textAppearance="?attr/textAppearanceHeadlineLarge"
-        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/back_button"
+            android:layout_width="@dimen/xxxlarge"
+            android:layout_height="@dimen/xxxlarge"
+            android:background="@null"
+            android:src="@drawable/ic_arrow_back_32"
+            android:layout_gravity="start"/>
+
+        <TextView
+            android:id="@+id/event_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:maxWidth="240dp"
+            android:text="@string/placeholder_event_name"
+            android:textAppearance="?attr/textAppearanceHeadlineLarge"
+            android:textColor="@color/white"
+            android:layout_gravity="center"/>
+
+    </androidx.appcompat.widget.Toolbar>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/event_name"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
         android:layout_marginTop="@dimen/small"
         android:layout_marginBottom="@dimen/small">
 
@@ -56,7 +63,6 @@
                     android:layout_marginBottom="@dimen/small"
                     android:layout_width="match_parent"
                     android:layout_height="352dp"
-                    app:srcCompat="@drawable/baseline_groups_32"
                     android:scaleType="centerCrop"/>
 
                 <LinearLayout
