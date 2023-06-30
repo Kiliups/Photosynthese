@@ -1,4 +1,4 @@
-package com.othregensburg.photosynthese
+package com.othregensburg.photosynthese.event
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -31,6 +31,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import androidx.fragment.app.Fragment
+import com.othregensburg.photosynthese.R
 import com.othregensburg.photosynthese.databinding.FragmentEventCameraBinding
 import com.othregensburg.photosynthese.models.Event
 import java.io.File
@@ -44,26 +45,21 @@ class EventCameraFragment : Fragment() {
     private var videoCapture: VideoCapture<Recorder>? = null
     private var recording: Recording? = null
     private lateinit var cameraExecutor: ExecutorService
-    var cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+    private var cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
     lateinit var camera: Camera
 
-    var isWide = false
-    var isWideAvailabile = false
-    var flash = false
-    var recordingVideo = false
+    private var isWide = false
+    private var isWideAvailable = false
+    private var flash = false
+    private var recordingVideo = false
 
     lateinit var event: Event
 
-    lateinit var binding: FragmentEventCameraBinding
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private lateinit var binding: FragmentEventCameraBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentEventCameraBinding.inflate(layoutInflater, container, false)
 
@@ -97,7 +93,7 @@ class EventCameraFragment : Fragment() {
         // Set up the listeners for take photo and video capture buttons
         binding.captureButton.setOnClickListener {
             // Animate the capture button
-            var captureAnimation = AnimationUtils.loadAnimation(
+            val captureAnimation = AnimationUtils.loadAnimation(
                 requireContext(), com.google.android.material.R.anim.abc_grow_fade_in_from_bottom
             )
             binding.captureButton.startAnimation(captureAnimation)
@@ -128,7 +124,7 @@ class EventCameraFragment : Fragment() {
             }
         }
 
-        //Set up wide angle button
+        // Set up wide angle button
         binding.wideAngleButton.setOnClickListener {
             isWide = !isWide
             if (isWide) {
@@ -139,7 +135,7 @@ class EventCameraFragment : Fragment() {
             startCamera()
         }
 
-        //Set up flash button
+        // Set up flash button
         setupFlashIcon()
         binding.flashButton.setOnClickListener {
             if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA && !recordingVideo) {
@@ -148,7 +144,7 @@ class EventCameraFragment : Fragment() {
             setupFlashIcon()
         }
 
-        //Set up back button
+        // Set up back button
         binding.backButton.setOnClickListener {
             requireActivity().onBackPressed()
         }
@@ -179,7 +175,7 @@ class EventCameraFragment : Fragment() {
 
     }
 
-    fun setupFlashIcon() {
+    private fun setupFlashIcon() {
         if (flash) {
             if (cameraSelector == CameraSelector.DEFAULT_FRONT_CAMERA) {
                 binding.flashButton.setImageResource(R.drawable.ic_flash_off_50)
@@ -190,19 +186,16 @@ class EventCameraFragment : Fragment() {
         }
     }
 
-    fun setupFlash() {
+    private fun setupFlash() {
         camera.cameraControl.enableTorch(flash)
         if (flash) {
-            /*if (cameraSelector == CameraSelector.DEFAULT_FRONT_CAMERA) {
-                binding.background.background = ColorDrawable(Color.WHITE)
-            }*/
             if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
                 Thread.sleep(700)
             }
         }
     }
 
-    //take photo and replace fragment
+    // take photo and replace fragment
     private fun takePhoto() {
         val imageCapture = imageCapture ?: return
 
@@ -219,12 +212,12 @@ class EventCameraFragment : Fragment() {
         imageCapture.takePicture(outputOptions,
             ContextCompat.getMainExecutor(requireContext()),
             object : ImageCapture.OnImageSavedCallback {
-                //If error, log it
+                // If error, log it
                 override fun onError(exc: ImageCaptureException) {
                     Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
                 }
 
-                //save photo and replace fragment
+                // save photo and replace fragment
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = output.savedUri ?: Uri.fromFile(file)
                     replaceFragment("photo", savedUri)
@@ -254,7 +247,7 @@ class EventCameraFragment : Fragment() {
         val file = File(cacheDir, "$name.mp4")
         val fileOutputOptions = FileOutputOptions.Builder(file).build()
 
-        //Set up flash
+        // Set up flash
         setupFlash()
 
         // Create a new video recording use case and start recording.
@@ -278,7 +271,7 @@ class EventCameraFragment : Fragment() {
                                     requireContext(), R.color.cards_pink
                                 ), PorterDuff.Mode.SRC_ATOP
                             )
-                            //hide wide angle button
+                            // hide wide angle button
                             binding.wideAngleButton.visibility = View.GONE
                         }
                     }
@@ -305,7 +298,7 @@ class EventCameraFragment : Fragment() {
             }
     }
 
-    //replace fragment and send uri to fragment
+    // replace fragment and send uri to fragment
     private fun replaceFragment(type: String, uri: Uri) {
         val fragment = EventCameraDisplayFragment.newInstance(event, uri, type)
         val fragmentTransaction = requireActivity().supportFragmentManager.beginTransaction()
@@ -326,7 +319,7 @@ class EventCameraFragment : Fragment() {
                 it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
             }
 
-            //set recorder with quality and videoCapture
+            // set recorder with quality and videoCapture
             val recorder = Recorder.Builder().setAspectRatio(AspectRatio.RATIO_4_3)
                 .setQualitySelector(QualitySelector.from(Quality.HD)).build()
             videoCapture = VideoCapture.withOutput(recorder)
@@ -343,10 +336,10 @@ class EventCameraFragment : Fragment() {
                     this, cameraSelector, preview, imageCapture, videoCapture
                 )
 
-                //check if wide angle camera is available
-                wideAvalible()
+                // check if wide angle camera is available
+                wideAvailable()
 
-                //if wide angle camera is available and user click on button, switch to wide angle camera
+                // if wide angle camera is available and user click on button, switch to wide angle camera
                 if (isWide) {
                     val cameraControl = camera.cameraControl
                     val cameraInfo = camera.cameraInfo
@@ -362,23 +355,23 @@ class EventCameraFragment : Fragment() {
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
-    //check if wide angle camera is available and setup button
-    fun wideAvalible() {
+    // check if wide angle camera is available and setup button
+    private fun wideAvailable() {
         camera.cameraControl
         val cameraInfo = camera.cameraInfo
         val minZoomRatio = cameraInfo.getZoomState().getValue()!!.getMinZoomRatio()
         if (minZoomRatio < 1) {
-            isWideAvailabile = true
+            isWideAvailable = true
             binding.wideAngleButton.visibility = View.VISIBLE
             binding.wideAngleButton.text = "x" + String.format("%.1f", minZoomRatio)
         } else {
-            isWideAvailabile = false
+            isWideAvailable = false
             binding.wideAngleButton.visibility = View.GONE
         }
     }
 
 
-    //check permission and start camera
+    // check permission and start camera
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
             requireContext(), it
@@ -390,7 +383,7 @@ class EventCameraFragment : Fragment() {
         cameraExecutor.shutdown()
     }
 
-    //check permission and start camera
+    // check permission and start camera
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>, grantResults: IntArray
     ) {

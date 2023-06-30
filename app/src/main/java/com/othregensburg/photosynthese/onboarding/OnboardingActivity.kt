@@ -3,19 +3,18 @@ package com.othregensburg.photosynthese.onboarding
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.othregensburg.photosynthese.MainActivity
 import com.othregensburg.photosynthese.databinding.ActivityOnboardingBinding
 
 class OnboardingActivity : AppCompatActivity() {
     lateinit var binding: ActivityOnboardingBinding
-    val auth = FirebaseAuth.getInstance()
+    private val auth = FirebaseAuth.getInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityOnboardingBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val fragmentList = arrayListOf<Fragment>(
+        val fragmentList = arrayListOf(
             OnboardingWelcomeFragment(),
             OnboardingLoginFragment(),
             OnboardingSignUpFragment()
@@ -28,7 +27,7 @@ class OnboardingActivity : AppCompatActivity() {
         super.onStart()
         // Check if user is already logged in
         if (auth.currentUser != null) {
-            //start main activity
+            // start main activity
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()

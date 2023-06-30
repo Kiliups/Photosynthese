@@ -1,8 +1,6 @@
-package com.othregensburg.photosynthese
+package com.othregensburg.photosynthese.event
 
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,12 +12,10 @@ import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
+import com.othregensburg.photosynthese.R
 import com.othregensburg.photosynthese.models.Event
 import com.othregensburg.photosynthese.models.eventViewModel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -34,7 +30,7 @@ class EventDetailFragment : Fragment() {
     companion object {
 
         // Create new instance of EventDetailFragment
-        fun newInstance(event: Event): EventDetailFragment{
+        fun newInstance(event: Event): EventDetailFragment {
             val fragment = EventDetailFragment()
             val args = Bundle()
             args.putSerializable("event", event)

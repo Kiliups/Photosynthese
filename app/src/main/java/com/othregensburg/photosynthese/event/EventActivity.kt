@@ -1,8 +1,9 @@
-package com.othregensburg.photosynthese
+package com.othregensburg.photosynthese.event
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.othregensburg.photosynthese.R
 import com.othregensburg.photosynthese.models.Event
 
 class EventActivity : AppCompatActivity() {
@@ -17,16 +18,15 @@ class EventActivity : AppCompatActivity() {
         val status = event.status
 
         // Replace the fragment based on the status
-        if(status == "ACTIVE")
-            replaceFragment(EventCameraFragment.newInstance(event))
-        else if(status == "FUTURE")
-            replaceFragment(EventDetailFragment.newInstance(event))
-        else if(status == "PAST")
-            replaceFragment(EventGalleryFragment.newInstance(event))
+        when (status) {
+            "ACTIVE" -> replaceFragment(EventCameraFragment.newInstance(event))
+            "FUTURE" -> replaceFragment(EventDetailFragment.newInstance(event))
+            "PAST" -> replaceFragment(EventGalleryFragment.newInstance(event))
+        }
     }
 
     // Replaces the current fragment with the given fragment
-    fun replaceFragment(fragment: Fragment) {
+    private fun replaceFragment(fragment: Fragment) {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragment_container, fragment)
         fragmentTransaction.commit()

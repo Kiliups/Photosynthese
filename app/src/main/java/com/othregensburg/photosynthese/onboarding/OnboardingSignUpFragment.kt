@@ -13,7 +13,7 @@ import com.othregensburg.photosynthese.databinding.FragmentOnboardingSignUpBindi
 import com.othregensburg.photosynthese.models.userViewModel
 
 class OnboardingSignUpFragment : Fragment() {
-    lateinit var binding: FragmentOnboardingSignUpBinding
+    private lateinit var binding: FragmentOnboardingSignUpBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
