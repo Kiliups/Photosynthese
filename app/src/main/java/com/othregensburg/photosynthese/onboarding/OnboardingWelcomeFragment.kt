@@ -9,7 +9,7 @@ import com.othregensburg.photosynthese.databinding.FragmentOnboardingWelcomeBind
 
 
 class OnboardingWelcomeFragment : Fragment() {
-    lateinit var binding: FragmentOnboardingWelcomeBinding
+    private lateinit var binding: FragmentOnboardingWelcomeBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {

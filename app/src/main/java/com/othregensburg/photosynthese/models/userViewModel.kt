@@ -17,9 +17,9 @@ import kotlinx.coroutines.tasks.await
 import java.util.Locale
 
 class userViewModel(application: Application) : AndroidViewModel(application) {
-    val db = FirebaseFirestore.getInstance()
-    val auth = FirebaseAuth.getInstance()
-    val storageRef = FirebaseStorage.getInstance().getReference()
+    private val db = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
+    private val storageRef = FirebaseStorage.getInstance().getReference()
     var isDone = MutableLiveData<Boolean>()
     fun createUser(
         username: String, firstname: String, lastname: String, email: String, password: String
@@ -32,7 +32,9 @@ class userViewModel(application: Application) : AndroidViewModel(application) {
                 if (!documents.isEmpty) {
                     // If username is taken, show error
                     Toast.makeText(
-                        getApplication(), getApplication<Application>().resources.getString(R.string.username_taken), Toast.LENGTH_SHORT
+                        getApplication(),
+                        getApplication<Application>().resources.getString(R.string.username_taken),
+                        Toast.LENGTH_SHORT
                     ).show()
                 } else {
                     // If username is not taken, create user
@@ -41,9 +43,13 @@ class userViewModel(application: Application) : AndroidViewModel(application) {
                     ).addOnSuccessListener {
                         // If user created, upload user data to database
                         val userId = it.user!!.uid
-                        upload(userId, user, email,firstname, lastname, "user/" + userId,null)
+                        upload(
+                            userId, user, email, firstname, lastname, "user/" + userId, null
+                        )
                         Toast.makeText(
-                            getApplication(), getApplication<Application>().resources.getString(R.string.user_created), Toast.LENGTH_SHORT
+                            getApplication(),
+                            getApplication<Application>().resources.getString(R.string.user_created),
+                            Toast.LENGTH_SHORT
                         ).show()
                     }
                 }
@@ -78,13 +84,7 @@ class userViewModel(application: Application) : AndroidViewModel(application) {
             auth.signInWithEmailAndPassword(
                 email, password
             ).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    // If login successful, set result to true
-                    result.value = true
-                } else {
-                    // If login unsuccessful, set result to false
-                    result.value = false
-                }
+                result.value = it.isSuccessful
             }
         }
         return result
@@ -125,21 +125,25 @@ class userViewModel(application: Application) : AndroidViewModel(application) {
         lastname: String,
         selectedPicture: Uri?
     ) {
-        username == username.lowercase(Locale.getDefault())
+        val _username = username.lowercase(Locale.getDefault())
         val reference = "user/" + id
-        db.collection("user").whereEqualTo("username", username).get()
+        db.collection("user").whereEqualTo("username", _username).get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
                     // If username is taken, show error
                     if (documents.documents[0].id != id) {
                         Toast.makeText(
-                            getApplication(), getApplication<Application>().resources.getString(R.string.username_taken), Toast.LENGTH_SHORT
+                            getApplication(),
+                            getApplication<Application>().resources.getString(R.string.username_taken),
+                            Toast.LENGTH_SHORT
                         ).show()
                     } else {
-                        upload(id, username, email, firstname, lastname, reference, selectedPicture)
+                        upload(
+                            id, _username, email, firstname, lastname, reference, selectedPicture
+                        )
                     }
                 } else {
-                    upload(id, username, email, firstname, lastname, reference, selectedPicture)
+                    upload(id, _username, email, firstname, lastname, reference, selectedPicture)
                 }
             }
     }
@@ -161,8 +165,7 @@ class userViewModel(application: Application) : AndroidViewModel(application) {
             "reference" to reference,
         )
         db.collection("user").document(id).set(uploadUser)
-        if (selectedPicture != null)
-            storageRef.child(reference).putFile(selectedPicture)
+        if (selectedPicture != null) storageRef.child(reference).putFile(selectedPicture)
         isDone.value = true
     }
 }

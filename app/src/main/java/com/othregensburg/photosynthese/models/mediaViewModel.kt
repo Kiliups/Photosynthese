@@ -27,9 +27,9 @@ import java.io.FileOutputStream
 import java.io.OutputStream
 
 class mediaViewModel(application: Application) : AndroidViewModel(application) {
-    var storageRef: StorageReference = FirebaseStorage.getInstance().getReference()
-    val db = FirebaseFirestore.getInstance()
-    val auth = FirebaseAuth.getInstance()
+    private var storageRef: StorageReference = FirebaseStorage.getInstance().getReference()
+    private val db = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
     val isLoading = MutableLiveData<Boolean>()
     var isDone = MutableLiveData<Boolean>()
 
@@ -185,13 +185,13 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
         var outputStream: OutputStream? = null
 
         try {
-            val contentUri = resolver.insert(contentUri, contentValues)
-            if (contentUri != null) {
-                outputStream = resolver.openOutputStream(contentUri)
-                outputStream?.use { outputStream ->
+            val uri = resolver.insert(contentUri, contentValues)
+            if (uri != null) {
+                outputStream = resolver.openOutputStream(uri)
+                outputStream?.use { stream ->
                     val bitmap = Glide.with(context).asBitmap().load(media.content).submit().get()
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-                    outputStream.flush()
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                    stream.flush()
                 }
                 withContext(Dispatchers.Main) {
                     isDone.value = true

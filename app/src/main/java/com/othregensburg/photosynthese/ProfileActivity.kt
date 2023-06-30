@@ -17,8 +17,8 @@ import com.othregensburg.photosynthese.models.userViewModel
 import com.othregensburg.photosynthese.onboarding.OnboardingActivity
 
 class ProfileActivity : AppCompatActivity() {
-    lateinit var binding: ActivityProfileBinding
-    val auth = FirebaseAuth.getInstance()
+    private lateinit var binding: ActivityProfileBinding
+    private val auth = FirebaseAuth.getInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
@@ -28,25 +28,29 @@ class ProfileActivity : AppCompatActivity() {
 
         uVM.isDone.observe(this) {
             if (it == true) {
-                Toast.makeText(this, resources.getString(R.string.profile_update), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this, resources.getString(R.string.profile_update), Toast.LENGTH_SHORT
+                ).show()
             } else {
-                Toast.makeText(this, resources.getString(R.string.profile_update_failed), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this, resources.getString(R.string.profile_update_failed), Toast.LENGTH_SHORT
+                ).show()
             }
         }
-        //get user data
+        // get user data
         uVM.getUser(auth.currentUser!!.uid).observe(this) { user ->
             if (user != null) {
-                //set user data
+                // set user data
                 binding.username.setText(user.username)
                 binding.firstName.setText(user.firstname)
                 binding.lastName.setText(user.lastname)
                 binding.email.setText(user.email)
 
-                //set profile picture if available
-                if (user.picture != null)
-                    Glide.with(this).load(user.picture).into(binding.profilePicture)
+                // set profile picture if available
+                if (user.picture != null) Glide.with(this).load(user.picture)
+                    .into(binding.profilePicture)
 
-                //set on click listener for check button and update user
+                // set on click listener for check button and update user
                 binding.checkButton.setOnClickListener {
                     uVM.updateUser(
                         auth.currentUser!!.uid,
@@ -60,12 +64,12 @@ class ProfileActivity : AppCompatActivity() {
             }
         }
 
-        //set on click listener for back button and go back to main activity
+        // set on click listener for back button and go back to main activity
         binding.backButton.setOnClickListener {
             onBackPressed()
         }
 
-        //set on click listener for info button and open youtube video
+        // set on click listener for info button and open youtube video
         binding.infoButton.setOnClickListener {
             val url = "https://youtu.be/WtCOpg-JF1s"
             val intent = Intent(Intent.ACTION_VIEW)
@@ -73,12 +77,16 @@ class ProfileActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        //set on click listener for logout button and log out
+        // set on click listener for logout button and log out
         binding.logoutButton.setOnClickListener {
             auth.signOut()
             val intent = Intent(this, OnboardingActivity::class.java)
-            //clear back stack
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            // clear back stack
+            intent.addFlags(
+                Intent.FLAG_ACTIVITY_CLEAR_TOP or
+                        Intent.FLAG_ACTIVITY_NEW_TASK or
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK
+            )
             startActivity(intent)
             finish()
         }
@@ -89,19 +97,19 @@ class ProfileActivity : AppCompatActivity() {
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                 // Callback is invoked after the user selects a media item or closes the photo picker
                 if (uri != null) {
-                    //If the user selected a picture
+                    // If the user selected a picture
                     binding.profilePicture.setPadding(0)
                     binding.profilePicture.setImageURI(uri)
                     selectedPicture = uri
-                } else {
-                    //If no picture was selected
                 }
             }
 
-        binding.profilePictureContainer.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(p0: View?) {
-                pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-            }
-        })
+        binding.profilePictureContainer.setOnClickListener {
+            pickMedia.launch(
+                PickVisualMediaRequest(
+                    ActivityResultContracts.PickVisualMedia.ImageOnly
+                )
+            )
+        }
     }
 }
