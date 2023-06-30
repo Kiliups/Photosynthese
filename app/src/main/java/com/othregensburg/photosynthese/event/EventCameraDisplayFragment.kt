@@ -1,4 +1,4 @@
-package com.othregensburg.photosynthese
+package com.othregensburg.photosynthese.event
 
 import android.net.Uri
 import android.os.Bundle
@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.othregensburg.photosynthese.R
 import com.othregensburg.photosynthese.databinding.FragmentEventCameraDisplayBinding
 import com.othregensburg.photosynthese.models.Event
 import com.othregensburg.photosynthese.models.Media

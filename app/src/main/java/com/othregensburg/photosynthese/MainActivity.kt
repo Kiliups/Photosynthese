@@ -25,6 +25,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.othregensburg.photosynthese.adapter.EventAdapter
+import com.othregensburg.photosynthese.event.EventActivity
 import com.othregensburg.photosynthese.models.*
 import java.util.*
 

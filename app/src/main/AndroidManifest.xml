@@ -33,7 +33,7 @@
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".EventActivity"
+            android:name=".event.EventActivity"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity

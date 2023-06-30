@@ -1,4 +1,4 @@
-package com.othregensburg.photosynthese
+package com.othregensburg.photosynthese.event
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.othregensburg.photosynthese.R
 import com.othregensburg.photosynthese.models.Event
 import com.othregensburg.photosynthese.models.eventViewModel
 import kotlinx.coroutines.launch
@@ -21,7 +22,7 @@ class EventDetailFragment : Fragment() {
     companion object {
 
         // create new instance of EventDetailFragment
-        fun newInstance(event: Event): EventDetailFragment{
+        fun newInstance(event: Event): EventDetailFragment {
             val fragment = EventDetailFragment()
             val args = Bundle()
             args.putSerializable("event", event)

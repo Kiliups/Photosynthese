@@ -1,4 +1,4 @@
-package com.othregensburg.photosynthese
+package com.othregensburg.photosynthese.event
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
+import com.othregensburg.photosynthese.R
 import com.othregensburg.photosynthese.databinding.FragmentEventGalleryBinding
 import com.othregensburg.photosynthese.models.Event
 import com.othregensburg.photosynthese.models.Media

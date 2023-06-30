@@ -1,4 +1,4 @@
-package com.othregensburg.photosynthese
+package com.othregensburg.photosynthese.event
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -31,6 +31,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import androidx.fragment.app.Fragment
+import com.othregensburg.photosynthese.R
 import com.othregensburg.photosynthese.databinding.FragmentEventCameraBinding
 import com.othregensburg.photosynthese.models.Event
 import java.io.File
