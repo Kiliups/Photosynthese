@@ -44,7 +44,7 @@ class EventAdapter(private var events: List<Event>, private val status: String, 
         fun onItemSettingsClicked(event: Event, holder: EventViewHolder)
         fun showCopyIdDialog(event_id: String)
         fun showEventPopupMenu(event: Event, view: View)
-        fun leaveEvent(event_id: String)
+        fun leaveEvent(eventId: String)
         fun deleteEvent(event: Event)
         fun showChangeTimeTableDialog(event: Event)
         fun parseTime(timeString: String): Long{

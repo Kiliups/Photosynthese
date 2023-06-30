@@ -214,22 +214,14 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
 
     }
 
-    fun leaveEvent(uid: String, event_id: String) {
-        db.collection("event")
-            .whereEqualTo("id", event_id)
+    fun leaveEvent(uid: String, eventId: String) {
+        db.collection("event").document(eventId)
             .get()
-            .addOnSuccessListener { documents ->
-                for (item in documents) {
-                    val list = item.get("participants") as MutableList<String?>
-                    for (x in list){
-                        if (x == uid){
-                            Log.e("TEST", "uid: $uid, removed: $x")
-                            val removedElement = list.remove(uid)
-                            db.collection("event").document(event_id)
-                                .update("participants", list)
-                        }
-                    }
-                }
+            .addOnSuccessListener { document ->
+                val list = document.get("participants") as MutableList<String?>
+                list.remove(uid)
+                db.collection("event").document(eventId)
+                    .update("participants", list)
             }
     }
     fun update(event: Event) {

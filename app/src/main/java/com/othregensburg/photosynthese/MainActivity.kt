@@ -100,8 +100,8 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        override fun leaveEvent(event_id: String){
-            EventViewModel.leaveEvent(user!!.uid, event_id)
+        override fun leaveEvent(eventId: String){
+            EventViewModel.leaveEvent(user!!.uid, eventId)
             this@MainActivity.recreate()
         }
 
