@@ -118,8 +118,11 @@ class EventGalleryFragment : Fragment() {
             uVM.getUser(media.user!!).observe(viewLifecycleOwner) { user ->
                 if (user != null) {
                     binding.username.text = user.username
-                    if (user.picture != null)
+                    if (user.picture != null) {
+                        binding.pictureContainer.visibility = View.VISIBLE
                         Glide.with(requireContext()).load(user.picture).into(binding.profilePicture)
+                    }else
+                        binding.pictureContainer.visibility= View.GONE
                 }
             }
         } else {

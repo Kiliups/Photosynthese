@@ -92,11 +92,14 @@ class EventDetailFragment : Fragment() {
         val location = view.findViewById<TextView>(R.id.location)
         val lineUnderDescription = view.findViewById<View>(R.id.line_under_description)
         val lineUnderTimetable = view.findViewById<View>(R.id.line_under_time_table)
+        val description_title = view.findViewById<View>(R.id.description_title)
+        val location_title = view.findViewById<View>(R.id.location_title)
 
         description.text = event?.description
 
-        //if there is no description, hide the line under the description
+        //if there is no description, hide the line under the description and the description titel
         if(event?.description == null || event?.description == ""){
+            description_title.visibility = View.GONE
             description.visibility = View.GONE
             lineUnderDescription.visibility = View.GONE
 
@@ -114,8 +117,9 @@ class EventDetailFragment : Fragment() {
 
         location.text = event?.location
 
-        //if there is no location, hide the line under the timetable
+        //if there is no location, hide the line under the timetable and the location titel
         if(event?.location == null || event?.location == ""){
+            location_title.visibility = View.GONE
             lineUnderTimetable.visibility = View.GONE
             location.visibility = View.GONE
         }
