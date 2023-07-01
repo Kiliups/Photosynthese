@@ -20,73 +20,72 @@
             android:orientation="vertical">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/event_group_active"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/small"
                 android:text="@string/headline_active_events"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
-                android:id="@+id/event_group_active" />
+                android:textAppearance="?attr/textAppearanceTitleMedium" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/no_results_active"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/small"
                 android:layout_marginBottom="@dimen/medium"
-                android:layout_marginLeft="@dimen/xxlarge"
+                android:layout_marginStart="@dimen/xxlarge"
                 android:text="@string/no_results"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:id="@+id/no_results_active"
-                tools:ignore="MissingClass" />
+                android:textAppearance="?attr/textAppearanceBodyMedium" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView_events_active"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/event_group_future"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/small"
                 android:text="@string/headline_future_events"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
-                android:id="@+id/event_group_future" />
+                android:textAppearance="?attr/textAppearanceTitleMedium" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/no_results_future"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/small"
                 android:layout_marginBottom="@dimen/medium"
-                android:layout_marginLeft="@dimen/xxlarge"
+                android:layout_marginStart="@dimen/xxlarge"
                 android:text="@string/no_results"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:id="@+id/no_results_future"/>
+                android:textAppearance="?attr/textAppearanceBodyMedium" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView_events_future"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/event_group_memory"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/small"
                 android:text="@string/headline_memory_box"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
-                android:id="@+id/event_group_memory" />
+                android:textAppearance="?attr/textAppearanceTitleMedium" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/no_results_memory"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/small"
                 android:layout_marginBottom="@dimen/medium"
-                android:layout_marginLeft="@dimen/xxlarge"
+                android:layout_marginStart="@dimen/xxlarge"
                 android:text="@string/no_results"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:id="@+id/no_results_memory"/>
+                android:textAppearance="?attr/textAppearanceBodyMedium" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView_events_memory"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
         </LinearLayout>

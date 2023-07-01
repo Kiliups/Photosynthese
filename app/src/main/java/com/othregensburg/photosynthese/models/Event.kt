@@ -24,6 +24,3 @@ data class Event(
         private const val serialVersionUID: Long = 1L
     }
 }
-
-
-

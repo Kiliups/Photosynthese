@@ -2,14 +2,14 @@
 
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card"
     android:layout_width="144dp"
     android:layout_height="144dp"
     android:clickable="true"
     android:focusable="true"
     android:checkable="true"
-    android:layout_margin="@dimen/small">
+    android:layout_margin="@dimen/small"
+    app:strokeColor="@color/background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -20,7 +20,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:foreground="@drawable/gradient_overlay"/>
+            android:foreground="@drawable/gradient_overlay"
+            android:contentDescription="@string/content_description_card_image" />
 
         <ImageButton
             android:id="@+id/event_settings"
@@ -30,7 +31,8 @@
             android:background="@color/transparent"
             android:src="@drawable/ic_more_vert_24"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/content_description_ic_event_settings" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -41,17 +43,15 @@
         android:padding="@dimen/medium"
         android:layout_gravity="bottom">
 
-        <!-- Title and Date-->
-
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/event_name"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?attr/textAppearanceTitleMedium"
-            android:id="@+id/event_name" />
+            android:textAppearance="?attr/textAppearanceTitleMedium" />
 
         <TextView
             android:id="@+id/event_date"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?attr/textAppearanceBodyMedium"
             android:textColor="?android:attr/textColorSecondary"/>

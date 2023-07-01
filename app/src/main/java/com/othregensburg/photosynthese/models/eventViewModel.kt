@@ -21,16 +21,17 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
     private val storageRef: StorageReference = FirebaseStorage.getInstance().reference
     private val db = FirebaseFirestore.getInstance()
 
-    //insert given Event into Firebase
+    // insert given Event into database
     fun insert(event: Event) = viewModelScope.launch(Dispatchers.IO){
 
-        //generate id for firestore
+        // generate id for firestore
         val eventId = db.collection("event").document().id
         event.id = eventId
 
+        // generate reference to event picture for firebase storage
         event.reference = "event/${eventId}.jpg"
 
-        //generate reference to event picture for firebase storage and upload image to storage
+        // upload event picture to firebase storage
         if (event.picture != null) {
             storageRef.child(event.reference!!).putFile(event.picture!!).await()
         }
@@ -38,10 +39,10 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
             event.reference = null
         }
 
-        //create map for firestore
+        // create map for firestore
         val uploadEvent = mapOf(
 
-            //uri and status not in database
+            // uri and status not in database
 
             "admins" to event.admins,
             "name" to event.name,
@@ -55,41 +56,37 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
             "description" to event.description
         )
 
-        //upload event object to firestore
+        // upload event object to firestore
         db.collection("event").document(eventId).set(uploadEvent)
     }
 
-    //delete given Event from Firebase
+    // delete given event from firestore
     fun delete(event: Event) = viewModelScope.launch(Dispatchers.IO) {
 
-        //delete event from firestore
+        // delete event from firestore
         db.collection("event").document(event.id!!).delete()
 
-        //delete image from firebase storage
+        // delete image from firebase storage
         if (event.reference  != null){
             storageRef.child(event.reference!!).delete()
         }
     }
 
-    //get all events by a user
+    // get all events by a user
     fun getEventsByUser(uid: String?): MutableLiveData<List<Event>> {
 
         val result: MutableLiveData<List<Event>> = MutableLiveData()
 
-        //get all media objects from firestore that have the given event_id in right order
+        // get all media objects from firestore that have the given user id in right order
         if (uid != null) {
             db.collection("event").whereArrayContains("participants", uid).
             get().addOnSuccessListener { documents ->
 
-                Log.d("DOCUMENTS", "empty: ${documents.isEmpty}")
-
-                //create help list
                 val eventList = mutableListOf<Event>()
 
-                //start coroutine and wait until all media objects are downloaded
+                // for each event item in documents create an event object and add it to event list
                 viewModelScope.launch(Dispatchers.Main) {
 
-                    //for each event item in documents create an event object and add it to help list
                     for (item in documents) {
 
                        //create event object
@@ -101,18 +98,17 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
                            item.get("end_date") as Long?,
                            item.get("location") as String?,
                            item.get("participants") as MutableList<String?>,
-                           null as Uri?, // event picture not in database (storage)
+                           null as Uri?, // event picture not in database
                            item.get("reference") as String?,
                            item.get("id") as String?,
                            item.get("description") as String?,
-                           null as String? // event status not in database (storage)
+                           null as String? // event status not in database
                        )
 
-                       //add media object to help list
+                       //add event object to event list
                        eventList.add(event)
                     }
 
-                    //set help list as result
                     result.value = eventList
                 }
             }
@@ -140,6 +136,7 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
 
     }
 
+    //sorts events by status
     fun sortEventsByStatus(events: List<Event>): List<List<Event>>{
 
         val futureEvents = mutableListOf<Event>()
@@ -164,22 +161,31 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
         return sortedEvents
     }
 
+    // add user to event
     fun addUserToEvent(uid: String, eventId: String, activity: AppCompatActivity) {
+
         db.collection("event")
             .whereEqualTo("id", eventId)
             .get()
             .addOnSuccessListener { documents ->
+
                 if(documents.isEmpty)
                     Toast.makeText(activity, "event couldn't be found", Toast.LENGTH_SHORT).show()
+
                 for (item in documents) {
+
                     val list = item.get("participants") as MutableList<String?>
                     var notInList = true
+
+                    // check if user is already in list
                     for (x in list){
                         if (x == uid){
                             Toast.makeText(activity, "already registered", Toast.LENGTH_SHORT).show()
                             notInList = false
                         }
                     }
+
+                    // add user to list
                     if (notInList){
                         list.add(uid)
                         db.collection("event").document(eventId)
@@ -198,12 +204,13 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
     suspend fun getUriFromPictureReference(picture: String): Uri {
 
         //download event picture uri from firebase storage
-
         return storageRef.child(picture).downloadUrl.await()
 
     }
 
+    // remove user from event
     fun leaveEvent(uid: String, eventId: String) {
+
         db.collection("event").document(eventId)
             .get()
             .addOnSuccessListener { document ->
@@ -213,7 +220,11 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
                     .update("participants", list)
             }
     }
+
+    // update event
     fun update(event: Event) {
+
+        // create map for firestore
         val updatedEvent = mapOf(
             "admins" to event.admins,
             "name" to event.name,
@@ -226,6 +237,7 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
             "id" to event.id,
             "description" to event.description
         )
+
         db.collection("event").document(event.id!!)
             .update(updatedEvent)
     }

@@ -20,7 +20,8 @@
             android:layout_height="@dimen/xxxlarge"
             android:background="@null"
             android:src="@drawable/ic_arrow_back_32"
-            android:layout_gravity="start"/>
+            android:layout_gravity="start"
+            android:contentDescription="@string/content_description_ic_back"/>
 
         <TextView
             android:id="@+id/event_name"
@@ -48,8 +49,7 @@
             android:id="@+id/card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_marginBottom="@dimen/medium">
+            android:layout_marginHorizontal="@dimen/small">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -63,7 +63,8 @@
                     android:layout_marginBottom="@dimen/small"
                     android:layout_width="match_parent"
                     android:layout_height="352dp"
-                    android:scaleType="centerCrop"/>
+                    android:scaleType="centerCrop"
+                    android:contentDescription="@string/content_description_card_image" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -83,7 +84,6 @@
                         android:id="@+id/description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/lorem_ipsum"
                         android:textAppearance="?attr/textAppearanceBodyMedium"/>
                     <View
                         android:id="@+id/line_under_description"
@@ -97,14 +97,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/xsmall"
-                        android:text="@string/event_date"
+                        android:text="@string/startDate"
                         android:textAppearance="?attr/textAppearanceTitleSmall"
                         />
                     <TextView
                         android:id="@+id/event_date"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/date_random"
                         android:textAppearance="?attr/textAppearanceBodyMedium"
                         />
                     <TextView
@@ -112,14 +111,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/small"
                         android:layout_marginBottom="@dimen/xsmall"
-                        android:text="@string/posting_start"
+                        android:text="@string/startPostingDate"
                         android:textAppearance="?attr/textAppearanceTitleSmall"
                         />
                     <TextView
                         android:id="@+id/posting_start"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/date_random"
                         android:textAppearance="?attr/textAppearanceBodyMedium"
                         />
                     <TextView
@@ -127,14 +125,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/small"
                         android:layout_marginBottom="@dimen/xsmall"
-                        android:text="@string/posting_end"
+                        android:text="@string/endPostingDate"
                         android:textAppearance="?attr/textAppearanceTitleSmall"
                         />
                     <TextView
                         android:id="@+id/posting_end"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/date_random"
                         android:textAppearance="?attr/textAppearanceBodyMedium"
                         />
                     <View
@@ -157,7 +154,6 @@
                         android:id="@+id/location"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/location"
                         android:textAppearance="?attr/textAppearanceBodyMedium"/>
 
                 </LinearLayout>

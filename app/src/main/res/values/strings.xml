@@ -1,7 +1,6 @@
 <resources>
-    <string name="app_name">Photosynthese</string>
 
-    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</string>
+    <string name="app_name">Photosynthese</string>
 
     <!-- Main Activity -->
     <string name="headline_active_events">ACTIVE EVENTS</string>
@@ -24,6 +23,11 @@
     <string name="event_details">show event details</string>
     <string name="change_eventpicture">change event picture</string>
 
+    <string name="content_description_profile_picture">profile picture</string>
+    <string name="content_description_card_image">event picture</string>
+    <string name="content_description_ic_event_settings">event settings</string>
+
+
     <!-- Change timetable dialog -->
     <string name="endPostingDate">end of posting time</string>
     <string name="apply">apply changes</string>
@@ -42,21 +46,18 @@
     <string name="send_button">create event</string>
     <string name="optional">optional settings</string>
     <string name="startDate">start time of event</string>
-    <string name="startPostingDate">start posting time</string>
+    <string name="startPostingDate">start of posting time</string>
     <string name="startPostingDateLong">start posting time\n(Default value: event start time)</string>
     <string name="stopPostingDate">end of event</string>
     <string name="stopPostingDateLong">end of event\n(Default value: 12 hours after event start)</string>
     <string name="inputError_EventName">please enter an event name!</string>
-    <string name="ok">ok</string>
+    <string name="ok">OK</string>
     <string name="placeholder_location">location (optional)</string>
 
-    <!-- Event Detail Activity -->
+    <!-- Event Detail Fragment -->
     <string name="time_table">time table</string>
-    <string name="event_date">start time of event</string>
-    <string name="posting_start">start of posting time</string>
-    <string name="posting_end">end of posting time</string>
     <string name="description">description</string>
-    <string name="date_random">28.06.2023</string>
+    <string name="content_description_ic_back">back</string>
 
     <!-- Post Menu -->
     <string name="download">download</string>
@@ -97,5 +98,4 @@
     <string name="permissions_failed">Permissions not granted by the user</string>
     <string name="send">Send</string>
 
-    <string name="hello_blank_fragment">Blank Fragment!</string>
 </resources>

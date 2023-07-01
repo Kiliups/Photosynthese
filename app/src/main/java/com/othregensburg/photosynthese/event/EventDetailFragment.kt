@@ -1,7 +1,6 @@
 package com.othregensburg.photosynthese.event
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -35,7 +34,8 @@ class EventDetailFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
 
         val view = inflater.inflate(R.layout.fragment_event_detail, container, false)
 
@@ -54,9 +54,11 @@ class EventDetailFragment : Fragment() {
             requireActivity().onBackPressed()
         }
 
-        val image = view.findViewById<ImageView>(R.id.event_picture)
 
         //set the event picture
+
+        val image = view.findViewById<ImageView>(R.id.event_picture)
+
         if(event?.reference != null) {
             lifecycleScope.launch {
                 //get the uri from the event picture
@@ -67,7 +69,7 @@ class EventDetailFragment : Fragment() {
                     .into(image)
             }
         } else{
-            //if there is no picture, hide the imageview
+            //if there is no picture, hide the ImageView
             image.visibility = View.GONE
         }
 
@@ -94,11 +96,11 @@ class EventDetailFragment : Fragment() {
         //format date
         val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
         val eventDateFormatted = event?.eventDate?.let { dateFormat.format(it) }
-        val postingStartForamatted = event?.startDate?.let { dateFormat.format(it) }
+        val postingStartFormatted = event?.startDate?.let { dateFormat.format(it) }
         val postingEndFormatted = event?.endDate?.let { dateFormat.format(it) }
 
         eventDate.text = eventDateFormatted
-        postingStart.text = postingStartForamatted
+        postingStart.text = postingStartFormatted
         postingEnd.text = postingEndFormatted
 
         location.text = event?.location

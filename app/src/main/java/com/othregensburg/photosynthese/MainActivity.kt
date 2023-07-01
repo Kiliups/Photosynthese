@@ -7,7 +7,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.Menu
@@ -15,12 +14,9 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.cardview.widget.CardView
-import androidx.core.view.setPadding
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,7 +26,6 @@ import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.othregensburg.photosynthese.adapter.EventAdapter
 import com.othregensburg.photosynthese.event.EventActivity
-import com.othregensburg.photosynthese.event.EventDetailFragment
 import com.othregensburg.photosynthese.models.*
 import java.util.*
 
@@ -50,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onItemSettingsClicked(event: Event, holder: EventAdapter.EventViewHolder) {
-            //When info button was clicked, dialog with option to copy event id is shown
+            // when info button was clicked, dialog with option to copy event id is shown
             showEventPopupMenu(event, holder.eventSettings)
 
         }
@@ -60,17 +55,17 @@ class MainActivity : AppCompatActivity() {
             val menu: Menu = popup.menu
             popup.inflate(R.menu.event_settings)
 
-            //check if logged in user is admin
-            var isAdmin: Boolean = false
+            // check if logged in user is admin
+            var isAdmin = false
             for (admin in event.admins){
                 if (admin == user!!.uid)
                     isAdmin = true
             }
             if(isAdmin){
-                menu.findItem(R.id.leave_event).setVisible(false)
+                menu.findItem(R.id.leave_event).isVisible = false
             } else {
-                menu.findItem(R.id.delete_event).setVisible(false)
-                menu.findItem(R.id.change_timetable).setEnabled(false)
+                menu.findItem(R.id.delete_event).isVisible = false
+                menu.findItem(R.id.change_timetable).isEnabled = false
             }
 
             popup.setOnMenuItemClickListener { item: MenuItem? ->
@@ -133,7 +128,7 @@ class MainActivity : AppCompatActivity() {
             startTime.text = formatTimestamp(event.startDate!!)
             endTime.text = formatTimestamp(event.endDate!!)
 
-            // Handle click on buttons
+            // handle click on buttons
             eventTime.setOnClickListener (object: View.OnClickListener{
                 override fun onClick(p0: View?) {
                     openDateAndTimePickerDialog(eventTime, false, null)
@@ -150,7 +145,7 @@ class MainActivity : AppCompatActivity() {
                 }
             })
 
-            // Handle Apply Changes Button
+            // handle Apply Changes Button
             val applyChangesButton = dialog.findViewById<Button>(R.id.apply_changes_button)
             applyChangesButton.setOnClickListener(object: View.OnClickListener {
                 override fun onClick(v: View?) {
@@ -165,7 +160,7 @@ class MainActivity : AppCompatActivity() {
                 }
             })
 
-            // Button to close the showed dialog
+            // button to close the showed dialog
             val dialogCloseButton = dialog.findViewById<ImageButton>(R.id.dialog_close_button)
             dialogCloseButton.setOnClickListener(object: View.OnClickListener {
                 override fun onClick(p0: View?) {
@@ -177,14 +172,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun openDateAndTimePickerDialog(timeButton: AppCompatButton, timeLimit: Boolean, limit: Long?){
-            // Create a Date object from the time string
+
+            // create a Date object from the time string
             val date = Date(parseTime(timeButton.text.toString()))
 
-            // Create a Calendar instance and set the date
+            // create a Calendar instance and set the date
             val calendar = Calendar.getInstance()
             calendar.time = date
 
-            // Extract individual components
+            // extract individual components
             var timestamp_day = calendar.get(Calendar.DAY_OF_MONTH)
             var timestamp_month = calendar.get(Calendar.MONTH) + 1
             var timestamp_year = calendar.get(Calendar.YEAR)
@@ -196,15 +192,15 @@ class MainActivity : AppCompatActivity() {
                 timestamp_month = month+1
                 timestamp_year = year
 
-                //update and format button text
+                // update and format button text
                 timeButton.text = formatDateTime(timestamp_day, timestamp_month, timestamp_year, timestamp_hour, timestamp_minute)
 
-                //Show timePicker, when date was selected
+                // show timePicker, when date was selected
                 val timePickerDialog = TimePickerDialog(this@MainActivity, R.style.dialog_theme, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
                     timestamp_hour = hourOfDay
                     timestamp_minute = minute
 
-                    //update and format button text
+                    // update and format button text
                     timeButton.text = formatDateTime(timestamp_day, timestamp_month, timestamp_year, timestamp_hour, timestamp_minute)
 
                 },timestamp_hour,timestamp_minute, true )
@@ -214,7 +210,7 @@ class MainActivity : AppCompatActivity() {
 
             datePickerDialog.datePicker.firstDayOfWeek = Calendar.MONDAY
             if(timeLimit){
-                datePickerDialog.getDatePicker().setMinDate(limit!!)
+                datePickerDialog.datePicker.setMinDate(limit!!)
             }
             datePickerDialog.show()
         }
@@ -232,23 +228,23 @@ class MainActivity : AppCompatActivity() {
             val event_id_TextView = dialog.findViewById<TextView>(R.id.event_id)
             event_id_TextView.text = event_id
 
-            // Get button to copy the event id into the clipboard and set listener
+            // get button to copy the event id into the clipboard and set listener
             val dialogCopyCard = dialog.findViewById<CardView>(R.id.dialog_copy_card)
             dialogCopyCard.setOnClickListener(object: View.OnClickListener {
                 override fun onClick(v: View?) {
 
-                    //copy event code into clipboard
+                    // copy event code into clipboard
                     val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     val clip: ClipData = ClipData.newPlainText("event id", event_id)
                     clipboard.setPrimaryClip(clip)
 
-                    //Show Toast if Android version below 13 (in API 33 other popup will inform user)
+                    // show Toast if Android version below 13 (in API 33 other popup will inform user)
                     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
                         Toast.makeText(this@MainActivity, "event id copied into clipboard!", Toast.LENGTH_SHORT).show()
                 }
             })
 
-            // Button to close the showed dialog
+            // button to close the showed dialog
             val dialogCloseButton = dialog.findViewById<Button>(R.id.dialog_close_button)
             dialogCloseButton.setOnClickListener(object: View.OnClickListener {
                 override fun onClick(p0: View?) {
@@ -265,7 +261,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // set up recycler views
+        // set up recycler views with an horizontal layout
         val activeEvents: RecyclerView = findViewById(R.id.recyclerView_events_active)
         activeEvents.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         val activeAdapter = EventAdapter(emptyList(), "ACTIVE", eventItemClickListener)
@@ -284,7 +280,7 @@ class MainActivity : AppCompatActivity() {
         // set up event view model
         EventViewModel = ViewModelProvider(this).get(eventViewModel::class.java)
 
-        var eventLiveData: LiveData<List<Event>> = EventViewModel.getEventsByUser(user!!.uid)
+        val eventLiveData: LiveData<List<Event>> = EventViewModel.getEventsByUser(user!!.uid)
 
         eventLiveData.observe(this, androidx.lifecycle.Observer { events ->
             events?.let {
@@ -321,7 +317,7 @@ class MainActivity : AppCompatActivity() {
         uVM.getUser(user.uid).observe(this) { item ->
             if (item?.picture != null) {
                 Glide.with(this)
-                    .load(item.picture) // Assuming item.picture is a URL or file path as a String
+                    .load(item.picture) // assuming item.picture is a URL or file path as a String
                     .into(profile_picture)
             }
         }
@@ -376,7 +372,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        // Button to close the showed dialog
+        // button to close the showed dialog
         val dialogCloseButton = dialog.findViewById<ImageButton>(R.id.dialog_close_button)
         dialogCloseButton.setOnClickListener(object: View.OnClickListener {
             override fun onClick(p0: View?) {
@@ -388,7 +384,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // show "no results" if no events are available
-    fun setNoResults(sortedEvents: List<List<Event>>){
+    private fun setNoResults(sortedEvents: List<List<Event>>){
 
         // show text if no active events are available
         if(sortedEvents[0].isEmpty())

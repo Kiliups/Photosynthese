@@ -25,7 +25,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.random.Random
 
-class EventAdapter(private var events: List<Event>, private val status: String, private val listener: eventItemClickListener)
+class EventAdapter(private var events: List<Event>, private val status: String,
+                   private val listener: eventItemClickListener)
     : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
     interface eventItemClickListener {
         fun onItemClicked(event: Event)
@@ -55,7 +56,7 @@ class EventAdapter(private var events: List<Event>, private val status: String, 
         fun openDateAndTimePickerDialog(timeButton: AppCompatButton, timeLimit: Boolean, limit: Long?)
     }
 
-    // update event list after sorting events by status
+    // updates event list after sorting events by status
     fun updateEventList(updatedEvents: List<Event>) {
         events = updatedEvents
     }
@@ -71,7 +72,7 @@ class EventAdapter(private var events: List<Event>, private val status: String, 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
 
-        val adapterLayout = LayoutInflater.from(parent.context).inflate(R.layout.event_list_item, parent, false)
+        val adapterLayout = LayoutInflater.from(parent.context).inflate(R.layout.card_event_item, parent, false)
         return EventViewHolder(adapterLayout)
     }
 
@@ -137,7 +138,7 @@ class EventAdapter(private var events: List<Event>, private val status: String, 
         layoutParams.width = sizeCardEventActive
     }
 
-    // load image into card image view with glide
+    // load image into card image view
     private fun loadImageWithGlide(imageUrl: String, imageView: ImageView) {
 
         GlobalScope.launch(Dispatchers.Main) {
