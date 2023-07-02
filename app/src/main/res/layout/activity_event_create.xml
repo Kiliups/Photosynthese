@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    tools:context=".EventCreateActivity">
+
+    <!--Header with Button back to the Main Activity -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/createEventToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/arrowBack"
+            android:layout_width="@dimen/xxxlarge"
+            android:layout_height="@dimen/xxxlarge"
+            android:src="@drawable/ic_arrow_back_32"
+            android:background="@color/transparent"
+            android:layout_gravity="start"/>
+
+        <TextView
+            android:id="@+id/header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/headline_create_event"
+            android:textAppearance="?attr/textAppearanceHeadlineLarge"
+            android:textColor="@color/white"
+            android:layout_gravity="center"/>
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- Settings/Inputs for a new event -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/CreateEventSendButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/createEventToolbar"
+        app:layout_constraintVertical_bias="1.0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <!-- Select profile picture -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="220dp"
+                android:layout_height="220dp"
+                android:layout_marginTop="@dimen/small"
+                app:cardCornerRadius="@dimen/xxxlarge">
+                <ImageView
+                    android:id="@+id/eventPicture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:padding="@dimen/large"
+                    android:src="@drawable/ic_group_96" />
+            </androidx.cardview.widget.CardView>
+
+            <!-- Input Event name -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/large"
+                android:textColorHint="@color/white"
+                app:boxStrokeColor="@color/white"
+                app:hintTextColor="@color/white">
+                <EditText
+                    android:id="@+id/editText_eventName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceTitleMedium"
+                    android:hint="@string/placeholder_event_name"
+                    android:inputType="text"
+                    android:maxLength="20"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+            <!-- Setting up the starting time of the event (Default current time) -->
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="320dp"
+                android:textColor="@color/white"
+                android:text="@string/startDate"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:id="@+id/StartDate_text"
+                android:layout_marginTop="@dimen/medium" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                app:cardCornerRadius="4dp"
+                app:strokeColor="@color/white"
+                app:strokeWidth="1dp">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:textColor="@color/white"
+                    android:id="@+id/button_date_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="left|center_vertical"
+                    android:padding="@dimen/medium"
+                    android:background="@color/background"
+                    android:textAllCaps="false"
+                    android:textAppearance="?attr/textAppearanceBodyLarge"
+                    android:text="@string/placeholder_date" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- Input Description -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small"
+                android:textColorHint="@color/white"
+                app:boxStrokeColor="@color/white"
+                app:hintTextColor="@color/white">
+                <EditText
+                    android:id="@+id/editText_description"
+                    android:inputType="textMultiLine"
+                    android:padding="@dimen/medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/placeholder_description"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Input Location -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="320dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small"
+                android:textColorHint="@color/white"
+                app:boxStrokeColor="@color/white"
+                app:hintTextColor="@color/white">
+                <EditText
+                    android:id="@+id/editText_location"
+                    android:inputType="textMultiLine"
+                    android:padding="@dimen/medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/placeholder_location"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+<!--
+
+            <!- Selection of starting time to post, if other than event start time ->
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="320dp"
+                android:textColor="@color/white"
+                android:text="@string/startPostingDateLong"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:id="@+id/StartPostingDate_text"
+                android:layout_marginTop="@dimen/small" />
+            <View
+                android:layout_width="320dp"
+                android:layout_height="1dp"
+                android:background="@color/white" />
+
+            <LinearLayout
+                android:layout_width="320dp"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:textColor="@color/white"
+                    android:id="@+id/button_startPostingdate"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:text="@string/placeholder_date" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:textColor="@color/white"
+                    android:id="@+id/button_startPostingtime"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:text="@string/placeholder_time" />
+            </LinearLayout>
+
+            <!- Selection of end time to post, if other than 12 hours after event start time ->
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="320dp"
+                android:textColor="@color/white"
+                android:text="@string/stopPostingDateLong"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:id="@+id/StopPostingDate_text"
+                android:layout_marginTop="@dimen/small" />
+            <View
+                android:layout_width="320dp"
+                android:layout_height="1dp"
+                android:background="@color/white" />
+
+            <LinearLayout
+                android:layout_width="320dp"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:textColor="@color/white"
+                    android:id="@+id/button_stopPostingdate"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:text="@string/placeholder_date" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:textColor="@color/white"
+                    android:id="@+id/button_stopPostingtime"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="false"
+                    android:text="@string/placeholder_time" />
+            </LinearLayout>
+
+            <!- Things to maybe add later, but don't make sence right now ->
+
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="320dp"
+                android:textColor="@color/white"
+                android:text="Things, that don't really make sence to implement at the moment"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:layout_marginTop="@dimen/small" />
+            <View
+                android:layout_width="320dp"
+                android:layout_height="1dp"
+                android:background="@color/white" />
+
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="320dp"
+                android:textColor="@color/white"
+                android:text="adding more admins\n\tUsers not implemented"
+                android:textAppearance="?attr/textAppearanceTitleMedium"/>
+
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="320dp"
+                android:textColor="@color/white"
+                android:text="Maps\n\tProbably the best with OpenStreetMap, but not he most important feature -> later"
+                android:textAppearance="?attr/textAppearanceTitleMedium"/>
+-->
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Button to create the new event with the settings -->
+    <Button
+        android:id="@+id/CreateEventSendButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/medium"
+        android:textAllCaps="false"
+        android:text="@string/send_button"
+        android:textColor="@color/background"
+        android:backgroundTint="@color/skyblue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/copy_event_id"
+        android:title="@string/copy_event_id" />
+    <item
+        android:id="@+id/leave_event"
+        android:title="@string/leave_event" />
+    <item
+        android:id="@+id/delete_event"
+        android:title="@string/delete_event" />
+    <item
+        android:id="@+id/event_details"
+        android:title="@string/event_details"/>
+    <item
+        android:id="@+id/change_timetable"
+        android:title="@string/change_timetable" />
+
+</menu>
