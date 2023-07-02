@@ -27,10 +27,17 @@
     <string name="content_description_card_image">event picture</string>
     <string name="content_description_ic_event_settings">event settings</string>
 
+    <!-- Toasts for adding an new user to an event -->
+    <string name="toast_event_not_fount">event could not be found</string>
+    <string name="toast_already_registerd">already registered</string>
+    <string name="toast_successfully_registered">successfully registered</string>
+    <string name="toast_error_joining">error while joining event</string>
+
 
     <!-- Change timetable dialog -->
     <string name="endPostingDate">end of posting time</string>
     <string name="apply">apply changes</string>
+    <string name="inputError_time">the event has to end after the start\nplease choose suitable times</string>
 
     <!-- Event Activity Toolbar -->
     <string name="content_description_icon_add">add</string>
@@ -65,37 +72,37 @@
 
     <!-- Event Gallery Fragment -->
     <string name="no_results">no results</string>
-    <string name="username">Username</string>
+    <string name="username">username</string>
     <string name="date">date</string>
     <string name="media_saved">media saved to gallery</string>
     <string name="media_saved_error">error while saving media to gallery</string>
 
     <!-- Onboarding -->
-    <string name="welcome">welcome to photosynthesis</string>
+    <string name="welcome">welcome to photosynthese</string>
     <string name="welcome_text">You can create events and invite your friends to join them. During the event you can share your photos and videos with your friends. After the event you can look back at the shared media and relive the event.</string>
     <string name="login">Login</string>
     <string name="sign_up">Sign Up</string>
-    <string name="email">Email</string>
-    <string name="password">Password</string>
-    <string name="confirm_password">Confirm Password</string>
-    <string name="no_account">Do not have an account? </string>
-    <string name="already_account">Already have an account? </string>
-    <string name="email_username">Username/Email</string>
-    <string name="first_name">First Name</string>
-    <string name="last_name">Last Name</string>
-    <string name="login_successful">Login Successful</string>
-    <string name="login_failed">Login Failed</string>
-    <string name="invalid_email">Please enter a valid email address</string>
-    <string name="invalid_confirm_password">Passwords do not match</string>
-    <string name="invalid_password">Password must be at least 6 characters long</string>
-    <string name="all_fields">Please fill out all fields</string>
-    <string name="username_taken">Username already taken</string>
-    <string name="user_created">User created</string>
+    <string name="email">email</string>
+    <string name="password">password</string>
+    <string name="confirm_password">confirm password</string>
+    <string name="no_account">do not have an account? </string>
+    <string name="already_account">already have an account? </string>
+    <string name="email_username">username/email</string>
+    <string name="first_name">first name</string>
+    <string name="last_name">last name</string>
+    <string name="login_successful">login successful</string>
+    <string name="login_failed">login failed</string>
+    <string name="invalid_email">please enter a valid email address</string>
+    <string name="invalid_confirm_password">passwords do not match</string>
+    <string name="invalid_password">password must be at least 6 characters long</string>
+    <string name="all_fields">please fill out all fields</string>
+    <string name="username_taken">username already taken</string>
+    <string name="user_created">user created</string>
     <string name="logout">logout</string>
     <string name="confirm">confirm</string>
-    <string name="profile_update">Profile updated</string>
-    <string name="profile_update_failed">Profile update failed</string>
-    <string name="permissions_failed">Permissions not granted by the user</string>
-    <string name="send">Send</string>
+    <string name="profile_update">profile updated</string>
+    <string name="profile_update_failed">profile update failed</string>
+    <string name="permissions_failed">permissions not granted by the user</string>
+    <string name="send">send</string>
 
 </resources>

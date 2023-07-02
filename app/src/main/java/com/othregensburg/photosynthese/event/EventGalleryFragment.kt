@@ -20,7 +20,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-
 class EventGalleryFragment : Fragment() {
     private lateinit var binding: FragmentEventGalleryBinding
     private var counter = 0
@@ -29,7 +28,9 @@ class EventGalleryFragment : Fragment() {
     private var isAdmin = false
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentEventGalleryBinding.inflate(inflater, container, false)
@@ -81,7 +82,6 @@ class EventGalleryFragment : Fragment() {
             }
         }
 
-
         // set up back button
         binding.backButton.setOnClickListener {
             requireActivity().onBackPressed()
@@ -122,8 +122,9 @@ class EventGalleryFragment : Fragment() {
                     if (user.picture != null) {
                         binding.pictureContainer.visibility = View.VISIBLE
                         Glide.with(requireContext()).load(user.picture).into(binding.profilePicture)
-                    } else
+                    } else {
                         binding.pictureContainer.visibility = View.GONE
+                    }
                 }
             }
         } else {
@@ -136,9 +137,12 @@ class EventGalleryFragment : Fragment() {
     }
 
     private fun moreButton(
-        view: View, mediaList: MutableList<Media>, _media: Media, mVM: mediaViewModel
+        view: View,
+        mediaList: MutableList<Media>,
+        mediaInput: Media,
+        mVM: mediaViewModel
     ) {
-        var media = _media
+        var media = mediaInput
         // set up popup menu
         val postMenu = PopupMenu(requireContext(), view)
         postMenu.inflate(R.menu.post_menu)
@@ -147,7 +151,7 @@ class EventGalleryFragment : Fragment() {
         postMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.delete -> {
-                    //delete media from database
+                    // delete media from database
                     mVM.delete(media)
                     mediaList.remove(media)
                     if (counter > 0) {
@@ -197,9 +201,8 @@ class EventGalleryFragment : Fragment() {
             val mPopup = fieldMPopup.get(postMenu)
             mPopup.javaClass.getDeclaredMethod("setForceShowIcon", Boolean::class.java)
                 .invoke(mPopup, true)
-        } catch (_: Exception) {
+        } catch (_: Exception) { }
 
-        }
         postMenu.show()
     }
 
@@ -212,5 +215,4 @@ class EventGalleryFragment : Fragment() {
             return fragment
         }
     }
-
 }

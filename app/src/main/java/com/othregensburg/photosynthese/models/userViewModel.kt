@@ -22,11 +22,15 @@ class userViewModel(application: Application) : AndroidViewModel(application) {
     private val storageRef = FirebaseStorage.getInstance().getReference()
     var isDone = MutableLiveData<Boolean>()
     fun createUser(
-        username: String, firstname: String, lastname: String, email: String, password: String
+        username: String,
+        firstname: String,
+        lastname: String,
+        email: String,
+        password: String
     ) = viewModelScope.launch(Dispatchers.IO) {
         val user = username.lowercase(Locale.getDefault())
 
-        //check if username is already taken
+        // check if username is already taken
         db.collection("user").whereEqualTo("username", user).get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
@@ -39,12 +43,19 @@ class userViewModel(application: Application) : AndroidViewModel(application) {
                 } else {
                     // If username is not taken, create user
                     auth.createUserWithEmailAndPassword(
-                        email, password
+                        email,
+                        password
                     ).addOnSuccessListener {
                         // If user created, upload user data to database
                         val userId = it.user!!.uid
                         upload(
-                            userId, user, email, firstname, lastname, "user/" + userId, null
+                            userId,
+                            user,
+                            email,
+                            firstname,
+                            lastname,
+                            "user/" + userId,
+                            null
                         )
                         Toast.makeText(
                             getApplication(),
@@ -54,7 +65,6 @@ class userViewModel(application: Application) : AndroidViewModel(application) {
                     }
                 }
             }
-
     }
 
     fun login(user: String, password: String): MutableLiveData<Boolean> {
@@ -70,7 +80,8 @@ class userViewModel(application: Application) : AndroidViewModel(application) {
                         // If username exists, get email and login
                         email = documents.documents[0].get("email").toString()
                         auth.signInWithEmailAndPassword(
-                            email, password
+                            email,
+                            password
                         ).addOnCompleteListener {
                             result.value = it.isSuccessful
                         }
@@ -82,7 +93,8 @@ class userViewModel(application: Application) : AndroidViewModel(application) {
         } else {
             // If email, login
             auth.signInWithEmailAndPassword(
-                email, password
+                email,
+                password
             ).addOnCompleteListener {
                 result.value = it.isSuccessful
             }
@@ -125,9 +137,9 @@ class userViewModel(application: Application) : AndroidViewModel(application) {
         lastname: String,
         selectedPicture: Uri?
     ) {
-        val _username = username.lowercase(Locale.getDefault())
+        val inputUsername = username.lowercase(Locale.getDefault())
         val reference = "user/" + id
-        db.collection("user").whereEqualTo("username", _username).get()
+        db.collection("user").whereEqualTo("username", inputUsername).get()
             .addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
                     // If username is taken, show error
@@ -139,11 +151,17 @@ class userViewModel(application: Application) : AndroidViewModel(application) {
                         ).show()
                     } else {
                         upload(
-                            id, _username, email, firstname, lastname, reference, selectedPicture
+                            id,
+                            inputUsername,
+                            email,
+                            firstname,
+                            lastname,
+                            reference,
+                            selectedPicture
                         )
                     }
                 } else {
-                    upload(id, _username, email, firstname, lastname, reference, selectedPicture)
+                    upload(id, inputUsername, email, firstname, lastname, reference, selectedPicture)
                 }
             }
     }

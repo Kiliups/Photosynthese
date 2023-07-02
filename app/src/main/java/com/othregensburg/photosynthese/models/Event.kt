@@ -4,7 +4,6 @@ import android.net.Uri
 import java.io.Serializable
 
 data class Event(
-
     var admins: MutableList<String?>,
     var name: String?,
     var eventDate: Long?,
@@ -17,10 +16,9 @@ data class Event(
     var id: String?,
     var description: String?,
     var status: String?
-
-): Serializable{
+) : Serializable{
     companion object {
-        //serialVersionUID is used to ensure that the serialized and deserialized objects are compatible
+        // serialVersionUID is used to ensure that the serialized and deserialized objects are compatible
         private const val serialVersionUID: Long = 1L
     }
 }

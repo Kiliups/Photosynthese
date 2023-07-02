@@ -58,7 +58,9 @@ class EventCameraFragment : Fragment() {
     private lateinit var binding: FragmentEventCameraBinding
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentEventCameraBinding.inflate(layoutInflater, container, false)
@@ -68,7 +70,9 @@ class EventCameraFragment : Fragment() {
             startCamera()
         } else {
             ActivityCompat.requestPermissions(
-                requireActivity(), REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
+                requireActivity(),
+                REQUIRED_PERMISSIONS,
+                REQUEST_CODE_PERMISSIONS
             )
         }
 
@@ -94,7 +98,8 @@ class EventCameraFragment : Fragment() {
         binding.captureButton.setOnClickListener {
             // Animate the capture button
             val captureAnimation = AnimationUtils.loadAnimation(
-                requireContext(), com.google.android.material.R.anim.abc_grow_fade_in_from_bottom
+                requireContext(),
+                com.google.android.material.R.anim.abc_grow_fade_in_from_bottom
             )
             binding.captureButton.startAnimation(captureAnimation)
             // Capture photo or video
@@ -166,21 +171,22 @@ class EventCameraFragment : Fragment() {
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val REQUEST_CODE_PERMISSIONS = 10
         private val REQUIRED_PERMISSIONS = mutableListOf(
-            Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO
         ).apply {
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                 add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
         }.toTypedArray()
-
     }
 
     private fun setupFlashIcon() {
         if (flash) {
             if (cameraSelector == CameraSelector.DEFAULT_FRONT_CAMERA) {
                 binding.flashButton.setImageResource(R.drawable.ic_flash_off_50)
-            } else
+            } else {
                 binding.flashButton.setImageResource(R.drawable.ic_flash_on_50)
+            }
         } else {
             binding.flashButton.setImageResource(R.drawable.ic_flash_off_50)
         }
@@ -209,7 +215,8 @@ class EventCameraFragment : Fragment() {
         val outputOptions = ImageCapture.OutputFileOptions.Builder(file).build()
 
         // Set up image capture listener, which is triggered after photo has been taken
-        imageCapture.takePicture(outputOptions,
+        imageCapture.takePicture(
+            outputOptions,
             ContextCompat.getMainExecutor(requireContext()),
             object : ImageCapture.OnImageSavedCallback {
                 // If error, log it
@@ -224,7 +231,8 @@ class EventCameraFragment : Fragment() {
                     // Turn off flash
                     camera.cameraControl.enableTorch(false)
                 }
-            })
+            }
+        )
     }
 
     // Implements VideoCapture use case, including start and stop capturing.
@@ -254,7 +262,8 @@ class EventCameraFragment : Fragment() {
         recording =
             videoCapture.output.prepareRecording(requireContext(), fileOutputOptions).apply {
                 if (PermissionChecker.checkSelfPermission(
-                        requireContext(), Manifest.permission.RECORD_AUDIO
+                        requireContext(),
+                        Manifest.permission.RECORD_AUDIO
                     ) == PermissionChecker.PERMISSION_GRANTED
                 ) {
                     withAudioEnabled()
@@ -268,10 +277,12 @@ class EventCameraFragment : Fragment() {
                             isEnabled = true
                             colorFilter = PorterDuffColorFilter(
                                 ContextCompat.getColor(
-                                    requireContext(), R.color.cards_pink
-                                ), PorterDuff.Mode.SRC_ATOP
+                                    requireContext(),
+                                    R.color.cards_pink
+                                ),
+                                PorterDuff.Mode.SRC_ATOP
                             )
-                            //hide wide angle button
+                            // hide wide angle button
                             binding.wideAngleButton.visibility = View.GONE
                         }
                     }
@@ -284,7 +295,8 @@ class EventCameraFragment : Fragment() {
                             recording?.close()
                             recording = null
                             Log.e(
-                                TAG, "Video capture ends with error: " + "${recordEvent.error}"
+                                TAG,
+                                "Video capture ends with error: " + "${recordEvent.error}"
                             )
                         }
                         binding.captureButton.apply {
@@ -333,7 +345,11 @@ class EventCameraFragment : Fragment() {
 
                 // Bind use cases to camera
                 camera = cameraProvider.bindToLifecycle(
-                    this, cameraSelector, preview, imageCapture, videoCapture
+                    this,
+                    cameraSelector,
+                    preview,
+                    imageCapture,
+                    videoCapture
                 )
 
                 // check if wide angle camera is available
@@ -346,12 +362,9 @@ class EventCameraFragment : Fragment() {
                     val zoomRatio = cameraInfo.zoomState.value!!.minZoomRatio
                     cameraControl.setZoomRatio(zoomRatio)
                 }
-
             } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
             }
-
-
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
@@ -370,11 +383,11 @@ class EventCameraFragment : Fragment() {
         }
     }
 
-
     // check permission and start camera
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
-            requireContext(), it
+            requireContext(),
+            it
         ) == PackageManager.PERMISSION_GRANTED
     }
 
@@ -385,7 +398,9 @@ class EventCameraFragment : Fragment() {
 
     // check permission and start camera
     override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>, grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
@@ -394,7 +409,8 @@ class EventCameraFragment : Fragment() {
             } else {
                 Toast.makeText(
                     requireContext(),
-                    resources.getString(R.string.permissions_failed), Toast.LENGTH_SHORT
+                    resources.getString(R.string.permissions_failed),
+                    Toast.LENGTH_SHORT
                 ).show()
                 requireActivity().finish()
             }

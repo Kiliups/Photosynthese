@@ -33,45 +33,44 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
     val isLoading = MutableLiveData<Boolean>()
     var isDone = MutableLiveData<Boolean>()
 
-    //inserts given Media into Firebase
+    // inserts given Media into Firebase
     fun insert(media: Media) = viewModelScope.launch(Dispatchers.IO) {
-
         withContext(Dispatchers.Main) {
             isLoading.value = true
         }
-        //generate id for firestore
+        // generate id for firestore
         val mediaId = db.collection("media").document().id
         media.id = mediaId
 
-        //get file type
+        // get file type
         var type = media.content.toString()
         type = type.substring(type.lastIndexOf(".") + 1)
 
-        //set user id
+        // set user id
         if (auth.currentUser != null) media.user = auth.currentUser!!.uid
 
-        //generate reference for firebase storage
-        val reference = "media/${media.eventId}/${mediaId}.${type}"
+        // generate reference for firebase storage
+        val reference = "media/${media.eventId}/$mediaId.$type"
         media.reference = reference
 
-        //create map for firestore
+        // create map for firestore
         val uploadMedia = mapOf(
             "event_id" to media.eventId,
             "reference" to media.reference,
             "timestamp" to media.timestamp,
             "user" to media.user
         )
-        //upload media object to firestore
+        // upload media object to firestore
         db.collection("media").document(mediaId).set(uploadMedia).addOnSuccessListener {
             Log.e("firebase", "upload success")
         }.addOnFailureListener {
             Log.e("firebase", it.message.toString())
         }
 
-        //compress image to 75% quality and 1200x1600px
+        // compress image to 75% quality and 1200x1600px
         val uploadUri = compressMedia(media.content!!, 75, type)
 
-        //upload image to firebase storage
+        // upload image to firebase storage
         storageRef.child(reference).putFile(uploadUri).await()
 
         withContext(Dispatchers.Main) {
@@ -79,38 +78,33 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    //deletes given Media from Firebase
+    // deletes given Media from Firebase
     fun delete(media: Media) = viewModelScope.launch(Dispatchers.Main) {
-        //delete data from firestore
+        // delete data from firestore
         db.collection("media").document(media.id!!).delete()
 
-        //delete data from firebase storage
+        // delete data from firebase storage
         storageRef.child(media.reference!!).delete()
     }
 
-    //gets all Media from Firebase
-    fun getEventMedia(event_id: String? = "0"): MutableLiveData<MutableList<Media>> {
-
+    // gets all Media from Firebase
+    fun getEventMedia(eventId: String? = "0"): MutableLiveData<MutableList<Media>> {
         val result: MutableLiveData<MutableList<Media>> = MutableLiveData()
         isLoading.value = true
 
-        //get all media objects from firestore that have the given event_id in right order
-        db.collection("media").whereEqualTo("event_id", event_id).orderBy("timestamp").get()
+        // get all media objects from firestore that have the given event_id in right order
+        db.collection("media").whereEqualTo("event_id", eventId).orderBy("timestamp").get()
             .addOnSuccessListener { documents ->
                 if (documents.isEmpty) {
                     result.value = null
                 } else {
-
-
-                    //create help list
+                    // create help list
                     val mediaList = mutableListOf<Media>()
 
-                    //start coroutine and wait until all media objects are downloaded
+                    // start coroutine and wait until all media objects are downloaded
                     viewModelScope.launch(Dispatchers.Main) {
-
-                        //for each media object in documents create a media object and add it to help list
+                        // for each media object in documents create a media object and add it to help list
                         for (item in documents) {
-
                             val media = Media(
                                 item.id as String?,
                                 item.get("event_id") as String?,
@@ -120,54 +114,53 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
                                 null
                             )
 
-                            //download media uri from firebase storage
+                            // download media uri from firebase storage
                             val uri = storageRef.child(media.reference!!).downloadUrl.await()
                             media.content = uri
 
-                            //add media object to help list
+                            // add media object to help list
                             mediaList.add(media)
-                            //set help list as result
+                            // set help list as result
                             result.value = mediaList
-
                         }
                     }
                 }
             }
-        //set isLoading to false
+        // set isLoading to false
         isLoading.value = false
         return result
     }
 
     private fun compressMedia(uri: Uri, quality: Int, type: String): Uri {
         var result: Uri? = null
-        //get context
+        // get context
         val context: Context = getApplication<Application>().applicationContext
 
-        //check if media is image or video
+        // check if media is image or video
         if (type == "jpg") {
-            //set resolution for image
+            // set resolution for image
             val requestOptions = RequestOptions().override(1200, 1600)
 
-            //get bitmap from uri and apply resolution
+            // get bitmap from uri and apply resolution
             val bitmap =
                 Glide.with(context).asBitmap().load(uri).apply(requestOptions).submit().get()
-            //create new file in cache directory
+            // create new file in cache directory
             val file = File(context.cacheDir, "${System.currentTimeMillis()}.jpg")
-            //write bitmap to file
+            // write bitmap to file
             val outputStream = FileOutputStream(file)
-            //compress bitmap with given quality
+            // compress bitmap with given quality
             bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
-            //close outputStream
+            // close outputStream
             outputStream.close()
             result = file.toUri()
         }
 
-        //check if media is video
+        // check if media is video
         if (type == "mp4") {
             result = uri
         }
 
-        //return uri of file
+        // return uri of file
         return result!!
     }
 
@@ -207,5 +200,3 @@ class mediaViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 }
-
-

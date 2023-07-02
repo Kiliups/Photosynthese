@@ -34,8 +34,11 @@ class EventDetailFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
         val view = inflater.inflate(R.layout.fragment_event_detail, container, false)
 
@@ -48,32 +51,31 @@ class EventDetailFragment : Fragment() {
         val eventName = view.findViewById<TextView>(R.id.event_name)
         eventName.text = event?.name
 
-        //set up the back button
+        // set up the back button
         val backButton = view.findViewById<ImageButton>(R.id.back_button)
         backButton.setOnClickListener {
             requireActivity().onBackPressed()
         }
 
-
-        //set the event picture
+        // set the event picture
 
         val image = view.findViewById<ImageView>(R.id.event_picture)
 
-        if(event?.reference != null) {
+        if (event?.reference != null) {
             lifecycleScope.launch {
-                //get the uri from the event picture
+                // get the uri from the event picture
                 val uri = eventViewModel.getUriFromPictureReference(event.reference!!)
-                //load the image into the imageview
+                // load the image into the imageview
                 Glide.with(requireContext())
                     .load(uri)
                     .into(image)
             }
-        } else{
-            //if there is no picture, hide the ImageView
+        } else {
+            // if there is no picture, hide the ImageView
             image.visibility = View.GONE
         }
 
-        //set the event description, timetable and location
+        // set the event description, timetable and location
         val titleDescription = view.findViewById<View>(R.id.description_title)
         val description = view.findViewById<TextView>(R.id.description)
         val eventDate = view.findViewById<TextView>(R.id.event_date)
@@ -86,14 +88,14 @@ class EventDetailFragment : Fragment() {
 
         description.text = event?.description
 
-        //if there is no description, hide the line under the description and the description title
-        if(event?.description == null || event.description == ""){
+        // if there is no description, hide the line under the description and the description title
+        if (event?.description == null || event.description == "") {
             titleDescription.visibility = View.GONE
             description.visibility = View.GONE
             lineUnderDescription.visibility = View.GONE
         }
 
-        //format date
+        // format date
         val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
         val eventDateFormatted = event?.eventDate?.let { dateFormat.format(it) }
         val postingStartFormatted = event?.startDate?.let { dateFormat.format(it) }
@@ -105,8 +107,8 @@ class EventDetailFragment : Fragment() {
 
         location.text = event?.location
 
-        //if there is no location, hide the line under the timetable and the location title
-        if(event?.location == null || event.location == ""){
+        // if there is no location, hide the line under the timetable and the location title
+        if (event?.location == null || event.location == "") {
             titleLocation.visibility = View.GONE
             lineUnderTimetable.visibility = View.GONE
             location.visibility = View.GONE

@@ -25,18 +25,20 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.random.Random
 
-class EventAdapter(private var events: List<Event>, private val status: String,
-                   private val listener: eventItemClickListener)
-    : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
+class EventAdapter(
+    private var events: List<Event>,
+    private val status: String,
+    private val listener: eventItemClickListener
+    ) : RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
     interface eventItemClickListener {
         fun onItemClicked(event: Event)
         fun onItemSettingsClicked(event: Event, holder: EventViewHolder)
-        fun showCopyIdDialog(event_id: String)
+        fun showCopyIdDialog(eventId: String)
         fun showEventPopupMenu(event: Event, view: View)
         fun leaveEvent(eventId: String)
         fun deleteEvent(event: Event)
         fun showChangeTimeTableDialog(event: Event)
-        fun parseTime(timeString: String): Long{
+        fun parseTime(timeString: String): Long {
             val timeFormat = SimpleDateFormat("dd.MM.yyyy HH:mm")
             return timeFormat.parse(timeString).time
         }
@@ -54,6 +56,7 @@ class EventAdapter(private var events: List<Event>, private val status: String,
             return "$formattedDay.$formattedMonth.$formattedYear $formattedHour:$formattedMinute"
         }
         fun openDateAndTimePickerDialog(timeButton: AppCompatButton, timeLimit: Boolean, limit: Long?)
+        fun showTimeErrorDialog()
     }
 
     // updates event list after sorting events by status
@@ -61,7 +64,7 @@ class EventAdapter(private var events: List<Event>, private val status: String,
         events = updatedEvents
     }
 
-    inner class EventViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         val eventName: TextView = itemView.findViewById(R.id.event_name)
         val eventDate: TextView = itemView.findViewById(R.id.event_date)
@@ -71,18 +74,15 @@ class EventAdapter(private var events: List<Event>, private val status: String,
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
-
         val adapterLayout = LayoutInflater.from(parent.context).inflate(R.layout.card_event_item, parent, false)
         return EventViewHolder(adapterLayout)
     }
 
     override fun getItemCount(): Int {
-
         return events.size
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-
         val currentEvent = events[position]
 
         // set event name
@@ -110,7 +110,7 @@ class EventAdapter(private var events: List<Event>, private val status: String,
             .get(eventViewModel::class.java)
 
         // set event picture as card image background
-        if(currentEvent.reference != null) {
+        if (currentEvent.reference != null) {
             GlobalScope.launch {
                 val uri = eventViewModel.getUriFromPictureReference(currentEvent.reference!!)
                 loadImageWithGlide(uri.toString(), holder.cardImage)
@@ -125,12 +125,10 @@ class EventAdapter(private var events: List<Event>, private val status: String,
                 else -> holder.cardImage.setImageResource(R.drawable.dilla5)
             }
         }
-
     }
 
     // resize event card
     private fun increaseCard(holder: EventViewHolder) {
-
         val sizeCardEventActive = 624
 
         val layoutParams = holder.eventCard.layoutParams as ViewGroup.LayoutParams
@@ -140,7 +138,6 @@ class EventAdapter(private var events: List<Event>, private val status: String,
 
     // load image into card image view
     private fun loadImageWithGlide(imageUrl: String, imageView: ImageView) {
-
         GlobalScope.launch(Dispatchers.Main) {
             try {
                 val bitmap = withContext(Dispatchers.IO) {
@@ -152,8 +149,6 @@ class EventAdapter(private var events: List<Event>, private val status: String,
                 }
                 val drawable = BitmapDrawable(imageView.resources, bitmap)
                 imageView.setImageDrawable(drawable)
-
-
             } catch (e: Exception) {
                 Log.e("EventAdapter", "error loading image", e)
             }

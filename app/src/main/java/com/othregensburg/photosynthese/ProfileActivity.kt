@@ -3,7 +3,6 @@ package com.othregensburg.photosynthese
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,11 +28,15 @@ class ProfileActivity : AppCompatActivity() {
         uVM.isDone.observe(this) {
             if (it == true) {
                 Toast.makeText(
-                    this, resources.getString(R.string.profile_update), Toast.LENGTH_SHORT
+                    this,
+                    resources.getString(R.string.profile_update),
+                    Toast.LENGTH_SHORT
                 ).show()
             } else {
                 Toast.makeText(
-                    this, resources.getString(R.string.profile_update_failed), Toast.LENGTH_SHORT
+                    this,
+                    resources.getString(R.string.profile_update_failed),
+                    Toast.LENGTH_SHORT
                 ).show()
             }
         }
@@ -47,8 +50,9 @@ class ProfileActivity : AppCompatActivity() {
                 binding.email.setText(user.email)
 
                 // set profile picture if available
-                if (user.picture != null) Glide.with(this).load(user.picture)
-                    .into(binding.profilePicture)
+                if (user.picture != null) {
+                    Glide.with(this).load(user.picture).into(binding.profilePicture)
+                }
 
                 // set on click listener for check button and update user
                 binding.checkButton.setOnClickListener {
@@ -84,8 +88,8 @@ class ProfileActivity : AppCompatActivity() {
             // clear back stack
             intent.addFlags(
                 Intent.FLAG_ACTIVITY_CLEAR_TOP or
-                        Intent.FLAG_ACTIVITY_NEW_TASK or
-                        Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK
             )
             startActivity(intent)
             finish()

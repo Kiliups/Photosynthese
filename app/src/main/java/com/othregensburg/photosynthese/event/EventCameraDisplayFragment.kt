@@ -14,12 +14,12 @@ import com.othregensburg.photosynthese.models.Event
 import com.othregensburg.photosynthese.models.Media
 import com.othregensburg.photosynthese.models.mediaViewModel
 
-
 class EventCameraDisplayFragment : Fragment() {
     private lateinit var binding: FragmentEventCameraDisplayBinding
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentEventCameraDisplayBinding.inflate(inflater, container, false)
@@ -41,8 +41,9 @@ class EventCameraDisplayFragment : Fragment() {
             binding.video.setVideoURI(video)
             binding.video.start()
             binding.video.setOnPreparedListener { it.isLooping = true }
-        } else
+        } else {
             binding.video.visibility = View.GONE
+        }
 
         // set back button
         binding.backButton.setOnClickListener {
@@ -54,14 +55,25 @@ class EventCameraDisplayFragment : Fragment() {
 
             // insert media into database
             var media: Media? = null
-            if (photo != null)
+            if (photo != null) {
                 media = Media(
-                    null, event.id, null, System.currentTimeMillis(), null, photo
+                    null,
+                    event.id,
+                    null,
+                    System.currentTimeMillis(),
+                    null,
+                    photo
                 )
-            if (video != null)
+            }else if (video != null) {
                 media = Media(
-                    null, event.id, null, System.currentTimeMillis(), null, video
+                    null,
+                    event.id,
+                    null,
+                    System.currentTimeMillis(),
+                    null,
+                    video
                 )
+            }
             mediaViewModel.insert(media!!)
 
             // display progress bar while loading
@@ -93,5 +105,4 @@ class EventCameraDisplayFragment : Fragment() {
             return fragment
         }
     }
-
 }

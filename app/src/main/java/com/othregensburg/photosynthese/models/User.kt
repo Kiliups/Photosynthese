@@ -9,5 +9,5 @@ data class User(
     val firstname: String?,
     val lastname: String?,
     val reference: String?,
-    var picture:Uri?
+    var picture: Uri?
 )

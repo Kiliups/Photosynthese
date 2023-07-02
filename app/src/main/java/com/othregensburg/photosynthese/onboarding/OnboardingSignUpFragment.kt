@@ -23,11 +23,12 @@ class OnboardingSignUpFragment : Fragment() {
         val userVM = ViewModelProvider(requireActivity()).get(userViewModel::class.java)
         binding.signUpButton.setOnClickListener {
             // Check if all fields are filled
-            if (binding.username.text.toString().isNotEmpty() && binding.email.text.toString()
-                    .isNotEmpty() && binding.password.text.toString()
-                    .isNotEmpty() && binding.confirmPassword.text.toString()
-                    .isNotEmpty() && binding.firstName.text.toString()
-                    .isNotEmpty() && binding.lastName.text.toString().isNotEmpty()
+            if (binding.username.text.toString().isNotEmpty() &&
+                binding.email.text.toString().isNotEmpty() &&
+                binding.password.text.toString().isNotEmpty() &&
+                binding.confirmPassword.text.toString().isNotEmpty() &&
+                binding.firstName.text.toString().isNotEmpty() &&
+                binding.lastName.text.toString().isNotEmpty()
             ) {
                 // Check if password is at least 6 characters long
                 if (binding.password.text.toString().length >= 6) {
@@ -56,7 +57,9 @@ class OnboardingSignUpFragment : Fragment() {
                     } else {
                         // Show error if passwords don't match
                         Toast.makeText(
-                            requireContext(), resources.getString(R.string.invalid_confirm_password), Toast.LENGTH_SHORT
+                            requireContext(),
+                            resources.getString(R.string.invalid_confirm_password),
+                            Toast.LENGTH_SHORT
                         ).show()
                     }
                 } else {
@@ -70,7 +73,9 @@ class OnboardingSignUpFragment : Fragment() {
             } else {
                 // Show error if not all fields are filled
                 Toast.makeText(
-                    requireContext(), resources.getString(R.string.all_fields), Toast.LENGTH_SHORT
+                    requireContext(),
+                    resources.getString(R.string.all_fields),
+                    Toast.LENGTH_SHORT
                 ).show()
             }
         }

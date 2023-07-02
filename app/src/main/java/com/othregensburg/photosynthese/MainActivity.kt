@@ -47,7 +47,6 @@ class MainActivity : AppCompatActivity() {
         override fun onItemSettingsClicked(event: Event, holder: EventAdapter.EventViewHolder) {
             // when info button was clicked, dialog with option to copy event id is shown
             showEventPopupMenu(event, holder.eventSettings)
-
         }
 
         override fun showEventPopupMenu(event: Event, view: View) {
@@ -57,11 +56,12 @@ class MainActivity : AppCompatActivity() {
 
             // check if logged in user is admin
             var isAdmin = false
-            for (admin in event.admins){
-                if (admin == user!!.uid)
+            for (admin in event.admins) {
+                if (admin == user!!.uid) {
                     isAdmin = true
+                }
             }
-            if(isAdmin){
+            if (isAdmin) {
                 menu.findItem(R.id.leave_event).isVisible = false
             } else {
                 menu.findItem(R.id.delete_event).isVisible = false
@@ -84,12 +84,18 @@ class MainActivity : AppCompatActivity() {
                     R.id.change_timetable -> {
                         showChangeTimeTableDialog(event)
                     }
-                    R.id.event_details ->{
+                    R.id.event_details -> {
+                        // cache current event status
                         val status = event.status
+
+                        // set event status on future, so the Activity will load the detail page
                         event.status = "FUTURE"
                         val intent = Intent(this@MainActivity, EventActivity::class.java)
                         intent.putExtra("event", event)
                         startActivity(intent)
+
+                        // set status back on the right one,
+                        // that the event is still shown in the right categorie
                         event.status = status
                     }
                 }
@@ -99,19 +105,17 @@ class MainActivity : AppCompatActivity() {
 
             popup.show()
         }
-        override fun deleteEvent(event: Event){
+        override fun deleteEvent(event: Event) {
             EventViewModel.delete(event)
             this@MainActivity.recreate()
-
         }
 
-        override fun leaveEvent(eventId: String){
+        override fun leaveEvent(eventId: String) {
             EventViewModel.leaveEvent(user!!.uid, eventId)
             this@MainActivity.recreate()
         }
 
         override fun showChangeTimeTableDialog(event: Event) {
-
             // set up dialog
             val dialog = Dialog(this@MainActivity)
             dialog.setContentView(R.layout.dialog_change_timetable)
@@ -129,17 +133,17 @@ class MainActivity : AppCompatActivity() {
             endTime.text = formatTimestamp(event.endDate!!)
 
             // handle click on buttons
-            eventTime.setOnClickListener (object: View.OnClickListener{
+            eventTime.setOnClickListener(object : View.OnClickListener {
                 override fun onClick(p0: View?) {
                     openDateAndTimePickerDialog(eventTime, false, null)
                 }
             })
-            startTime.setOnClickListener (object: View.OnClickListener{
+            startTime.setOnClickListener(object : View.OnClickListener {
                 override fun onClick(p0: View?) {
                     openDateAndTimePickerDialog(startTime, false, null)
                 }
             })
-            endTime.setOnClickListener (object: View.OnClickListener{
+            endTime.setOnClickListener(object : View.OnClickListener {
                 override fun onClick(p0: View?) {
                     openDateAndTimePickerDialog(endTime, true, parseTime(startTime.text.toString()))
                 }
@@ -147,22 +151,32 @@ class MainActivity : AppCompatActivity() {
 
             // handle Apply Changes Button
             val applyChangesButton = dialog.findViewById<Button>(R.id.apply_changes_button)
-            applyChangesButton.setOnClickListener(object: View.OnClickListener {
+            applyChangesButton.setOnClickListener(object : View.OnClickListener {
                 override fun onClick(v: View?) {
+                    val endTimestamp = parseTime(endTime.text.toString())
+                    val startTimestamp = parseTime(startTime.text.toString())
 
-                    event.eventDate = parseTime(eventTime.text.toString())
-                    event.startDate = parseTime(startTime.text.toString())
-                    event.endDate = parseTime(endTime.text.toString())
+                    if (startTimestamp < endTimestamp) {
+                        // set event dates on chosen ones and update event
+                        event.eventDate = parseTime(eventTime.text.toString())
+                        event.startDate = startTimestamp
+                        event.endDate = endTimestamp
 
-                    EventViewModel.update(event)
-                    dialog.dismiss()
-                    this@MainActivity.recreate()
+                        EventViewModel.update(event)
+                        dialog.dismiss()
+                        this@MainActivity.recreate()
+                    } else {
+                        // if the input was wrong, show an error message
+                        showTimeErrorDialog()
+                    }
+
+
                 }
             })
 
             // button to close the showed dialog
             val dialogCloseButton = dialog.findViewById<ImageButton>(R.id.dialog_close_button)
-            dialogCloseButton.setOnClickListener(object: View.OnClickListener {
+            dialogCloseButton.setOnClickListener(object : View.OnClickListener {
                 override fun onClick(p0: View?) {
                     dialog.dismiss()
                 }
@@ -171,8 +185,7 @@ class MainActivity : AppCompatActivity() {
             dialog.show()
         }
 
-        override fun openDateAndTimePickerDialog(timeButton: AppCompatButton, timeLimit: Boolean, limit: Long?){
-
+        override fun openDateAndTimePickerDialog(timeButton: AppCompatButton, timeLimit: Boolean, minTime: Long?) {
             // create a Date object from the time string
             val date = Date(parseTime(timeButton.text.toString()))
 
@@ -187,36 +200,77 @@ class MainActivity : AppCompatActivity() {
             var timestamp_hour = calendar.get(Calendar.HOUR_OF_DAY)
             var timestamp_minute = calendar.get(Calendar.MINUTE)
 
-            val datePickerDialog = DatePickerDialog(this@MainActivity, R.style.dialog_theme, DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
-                timestamp_day = dayOfMonth
-                timestamp_month = month+1
-                timestamp_year = year
-
-                // update and format button text
-                timeButton.text = formatDateTime(timestamp_day, timestamp_month, timestamp_year, timestamp_hour, timestamp_minute)
-
-                // show timePicker, when date was selected
-                val timePickerDialog = TimePickerDialog(this@MainActivity, R.style.dialog_theme, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-                    timestamp_hour = hourOfDay
-                    timestamp_minute = minute
+            val datePickerDialog = DatePickerDialog(
+                this@MainActivity,
+                R.style.dialog_theme,
+                DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+                    timestamp_day = dayOfMonth
+                    timestamp_month = month + 1
+                    timestamp_year = year
 
                     // update and format button text
-                    timeButton.text = formatDateTime(timestamp_day, timestamp_month, timestamp_year, timestamp_hour, timestamp_minute)
+                    timeButton.text = formatDateTime(
+                        timestamp_day,
+                        timestamp_month,
+                        timestamp_year,
+                        timestamp_hour,
+                        timestamp_minute
+                    )
 
-                },timestamp_hour,timestamp_minute, true )
-                timePickerDialog.show()
+                    // show timePicker, when date was selected
+                    val timePickerDialog = TimePickerDialog(
+                        this@MainActivity,
+                        R.style.dialog_theme,
+                        TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+                            timestamp_hour = hourOfDay
+                            timestamp_minute = minute
 
-            }, timestamp_year, timestamp_month-1, timestamp_day)
+                            // update and format button text
+                            timeButton.text = formatDateTime(
+                                timestamp_day,
+                                timestamp_month,
+                                timestamp_year,
+                                timestamp_hour,
+                                timestamp_minute
+                            )
+
+                        },
+                        timestamp_hour,
+                        timestamp_minute,
+                        true
+                    )
+                    timePickerDialog.show()
+                },
+                timestamp_year,
+                timestamp_month - 1,
+                timestamp_day)
 
             datePickerDialog.datePicker.firstDayOfWeek = Calendar.MONDAY
-            if(timeLimit){
-                datePickerDialog.datePicker.setMinDate(limit!!)
+            if (timeLimit){
+                datePickerDialog.datePicker.setMinDate(minTime!!)
             }
             datePickerDialog.show()
         }
 
-        override fun showCopyIdDialog(event_id: String){
+        override fun showTimeErrorDialog() {
+            // Show dialog if end time was selected earlier than start time of event
+            val dialog = Dialog(this@MainActivity)
+            dialog.setContentView(R.layout.dialog_time_error)
+            dialog.window?.setBackgroundDrawable(getDrawable(R.drawable.background_dialog))
+            dialog.window?.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            dialog.setCancelable(false)
 
+            val dialogOkButton = dialog.findViewById<Button>(R.id.dialog_ok_button)
+            dialogOkButton.setOnClickListener(object : View.OnClickListener {
+                override fun onClick(p0: View?) {
+                    dialog.dismiss()
+                }
+            })
+
+            dialog.show()
+        }
+
+        override fun showCopyIdDialog(eventId: String) {
             // set up dialog
             val dialog = Dialog(this@MainActivity)
             dialog.setContentView(R.layout.dialog_event_info)
@@ -226,27 +280,28 @@ class MainActivity : AppCompatActivity() {
 
             // set text to event id
             val event_id_TextView = dialog.findViewById<TextView>(R.id.event_id)
-            event_id_TextView.text = event_id
+            event_id_TextView.text = eventId
 
             // get button to copy the event id into the clipboard and set listener
             val dialogCopyCard = dialog.findViewById<CardView>(R.id.dialog_copy_card)
-            dialogCopyCard.setOnClickListener(object: View.OnClickListener {
+            dialogCopyCard.setOnClickListener(object : View.OnClickListener {
                 override fun onClick(v: View?) {
 
                     // copy event code into clipboard
                     val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    val clip: ClipData = ClipData.newPlainText("event id", event_id)
+                    val clip: ClipData = ClipData.newPlainText("event id", eventId)
                     clipboard.setPrimaryClip(clip)
 
                     // show Toast if Android version below 13 (in API 33 other popup will inform user)
-                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
+                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2){
                         Toast.makeText(this@MainActivity, "event id copied into clipboard!", Toast.LENGTH_SHORT).show()
+                    }
                 }
             })
 
             // button to close the showed dialog
             val dialogCloseButton = dialog.findViewById<Button>(R.id.dialog_close_button)
-            dialogCloseButton.setOnClickListener(object: View.OnClickListener {
+            dialogCloseButton.setOnClickListener(object : View.OnClickListener {
                 override fun onClick(p0: View?) {
                     dialog.dismiss()
                 }
@@ -257,7 +312,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -300,25 +354,25 @@ class MainActivity : AppCompatActivity() {
 
         // set up OnClickListener to create a new event
         val createEventButton: ImageButton = findViewById(R.id.icon_add)
-        createEventButton.setOnClickListener(object: View.OnClickListener {
-            override fun onClick (v: View?) {
+        createEventButton.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
                 showPopupMenu(createEventButton)
             }
         })
 
-        val profile=findViewById<CardView>(R.id.icon_profile)
-        profile.setOnClickListener{
+        val profile = findViewById<CardView>(R.id.icon_profile)
+        profile.setOnClickListener {
             val intent = Intent(this, ProfileActivity::class.java)
             startActivity(intent)
         }
-        val profile_picture = findViewById<ImageView>(R.id.profile_picture)
+        val profilePicture = findViewById<ImageView>(R.id.profile_picture)
         // setup UserViewModel
         val uVM = ViewModelProvider(this).get(userViewModel::class.java)
         uVM.getUser(user.uid).observe(this) { item ->
             if (item?.picture != null) {
                 Glide.with(this)
                     .load(item.picture) // assuming item.picture is a URL or file path as a String
-                    .into(profile_picture)
+                    .into(profilePicture)
             }
         }
 
@@ -353,7 +407,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showAddEventDialog() {
-
         // set up dialog
         val dialog = Dialog(this@MainActivity)
         dialog.setContentView(R.layout.dialog_add_event)
@@ -362,19 +415,19 @@ class MainActivity : AppCompatActivity() {
         dialog.setCancelable(false)
 
         // get editText for event_id
-        val input_event_id = dialog.findViewById<EditText>(R.id.input_event_id)
-        val add_event_button = dialog.findViewById<Button>(R.id.add_event_button)
+        val inputEventId = dialog.findViewById<EditText>(R.id.input_event_id)
+        val addEventButton = dialog.findViewById<Button>(R.id.add_event_button)
 
-        add_event_button.setOnClickListener(object: View.OnClickListener {
+        addEventButton.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-                EventViewModel.addUserToEvent(user!!.uid, input_event_id.text.toString(), this@MainActivity)
+                EventViewModel.addUserToEvent(user!!.uid, inputEventId.text.toString(), this@MainActivity)
                 dialog.dismiss()
             }
         })
 
         // button to close the showed dialog
         val dialogCloseButton = dialog.findViewById<ImageButton>(R.id.dialog_close_button)
-        dialogCloseButton.setOnClickListener(object: View.OnClickListener {
+        dialogCloseButton.setOnClickListener(object : View.OnClickListener {
             override fun onClick(p0: View?) {
                 dialog.dismiss()
             }
@@ -384,27 +437,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     // show "no results" if no events are available
-    private fun setNoResults(sortedEvents: List<List<Event>>){
-
+    private fun setNoResults(sortedEvents: List<List<Event>>) {
         // show text if no active events are available
-        if(sortedEvents[0].isEmpty())
+        if (sortedEvents[0].isEmpty()) {
             findViewById<TextView>(R.id.no_results_active).visibility = View.VISIBLE
-        else
+        } else {
             findViewById<TextView>(R.id.no_results_active).visibility = View.GONE
+        }
 
         // show text if no future events are available
-        if(sortedEvents[1].isEmpty())
+        if (sortedEvents[1].isEmpty()) {
             findViewById<TextView>(R.id.no_results_future).visibility = View.VISIBLE
-        else
+        } else {
             findViewById<TextView>(R.id.no_results_future).visibility = View.GONE
+        }
 
         // show text if no memory events are available
-        if(sortedEvents[2].isEmpty())
+        if (sortedEvents[2].isEmpty()) {
             findViewById<TextView>(R.id.no_results_memory).visibility = View.VISIBLE
-        else
+        } else {
             findViewById<TextView>(R.id.no_results_memory).visibility = View.GONE
-
-
+        }
     }
-
 }

@@ -2,7 +2,6 @@ package com.othregensburg.photosynthese.models
 
 import android.app.Application
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.AndroidViewModel
@@ -11,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.othregensburg.photosynthese.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -22,20 +22,18 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
     private val db = FirebaseFirestore.getInstance()
 
     // insert given Event into database
-    fun insert(event: Event) = viewModelScope.launch(Dispatchers.IO){
-
+    fun insert(event: Event) = viewModelScope.launch(Dispatchers.IO) {
         // generate id for firestore
         val eventId = db.collection("event").document().id
         event.id = eventId
 
         // generate reference to event picture for firebase storage
-        event.reference = "event/${eventId}.jpg"
+        event.reference = "event/$eventId.jpg"
 
         // upload event picture to firebase storage
         if (event.picture != null) {
             storageRef.child(event.reference!!).putFile(event.picture!!).await()
-        }
-        else{
+        } else {
             event.reference = null
         }
 
@@ -62,91 +60,82 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
 
     // delete given event from firestore
     fun delete(event: Event) = viewModelScope.launch(Dispatchers.IO) {
-
         // delete event from firestore
         db.collection("event").document(event.id!!).delete()
 
         // delete image from firebase storage
-        if (event.reference  != null){
+        if (event.reference != null) {
             storageRef.child(event.reference!!).delete()
         }
     }
 
     // get all events by a user
     fun getEventsByUser(uid: String?): MutableLiveData<List<Event>> {
-
         val result: MutableLiveData<List<Event>> = MutableLiveData()
 
         // get all media objects from firestore that have the given user id in right order
         if (uid != null) {
-            db.collection("event").whereArrayContains("participants", uid).
-            get().addOnSuccessListener { documents ->
+            db.collection("event")
+                .whereArrayContains("participants", uid)
+                .get()
+                .addOnSuccessListener { documents ->
+                    val eventList = mutableListOf<Event>()
 
-                val eventList = mutableListOf<Event>()
+                    // for each event item in documents create an event object and add it to event list
+                    viewModelScope.launch(Dispatchers.Main) {
+                        for (item in documents) {
+                           // create event object
+                           val event = Event(
+                               item.get("admins") as MutableList<String?>,
+                               item.get("name") as String?,
+                               item.get("event_date") as Long?,
+                               item.get("start_date") as Long?,
+                               item.get("end_date") as Long?,
+                               item.get("location") as String?,
+                               item.get("participants") as MutableList<String?>,
+                               null as Uri?, // event picture not in database
+                               item.get("reference") as String?,
+                               item.get("id") as String?,
+                               item.get("description") as String?,
+                               null as String? // event status not in database
+                           )
 
-                // for each event item in documents create an event object and add it to event list
-                viewModelScope.launch(Dispatchers.Main) {
+                           // add event object to event list
+                           eventList.add(event)
+                        }
 
-                    for (item in documents) {
-
-                       //create event object
-                       val event = Event(
-                           item.get("admins") as MutableList<String?>,
-                           item.get("name") as String?,
-                           item.get("event_date") as Long?,
-                           item.get("start_date") as Long?,
-                           item.get("end_date") as Long?,
-                           item.get("location") as String?,
-                           item.get("participants") as MutableList<String?>,
-                           null as Uri?, // event picture not in database
-                           item.get("reference") as String?,
-                           item.get("id") as String?,
-                           item.get("description") as String?,
-                           null as String? // event status not in database
-                       )
-
-                       //add event object to event list
-                       eventList.add(event)
+                        result.value = eventList
                     }
-
-                    result.value = eventList
-                }
             }
-
         }
         return result
     }
 
-    //set status of event
-    private fun setEventStatus(event: Event){
-
+    // set status of event
+    private fun setEventStatus(event: Event) {
         val currentDate = Date().time
         val start = event.startDate
         val end = event.endDate
 
-        if(currentDate < start!!){
+        if (currentDate < start!!) {
             event.status = "FUTURE"
-        }
-        else if(currentDate > end!!){
+        } else if (currentDate > end!!) {
             event.status = "MEMORY"
-        }
-        else{
+        } else {
             event.status = "ACTIVE"
         }
-
     }
 
-    //sorts events by status
-    fun sortEventsByStatus(events: List<Event>): List<List<Event>>{
-
+    // sorts events by status
+    fun sortEventsByStatus(events: List<Event>): List<List<Event>> {
         val futureEvents = mutableListOf<Event>()
         val activeEvents = mutableListOf<Event>()
         val memoryEvents = mutableListOf<Event>()
 
-        //sorts each event into a list depending on its status
-        for(event in events){
+        // sorts each event into a list depending on its status
+        for (event in events) {
             setEventStatus(event)
-            when(event.status){
+            when (event.status) {
                 "ACTIVE" -> activeEvents.add(event)
                 "FUTURE" -> futureEvents.add(event)
                 "MEMORY" -> memoryEvents.add(event)
@@ -163,54 +152,49 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
 
     // add user to event
     fun addUserToEvent(uid: String, eventId: String, activity: AppCompatActivity) {
-
         db.collection("event")
             .whereEqualTo("id", eventId)
             .get()
             .addOnSuccessListener { documents ->
-
-                if(documents.isEmpty)
-                    Toast.makeText(activity, "event couldn't be found", Toast.LENGTH_SHORT).show()
+                if (documents.isEmpty) {
+                    Toast.makeText(activity, R.string.toast_event_not_fount, Toast.LENGTH_SHORT).show()
+                }
 
                 for (item in documents) {
-
                     val list = item.get("participants") as MutableList<String?>
                     var notInList = true
 
                     // check if user is already in list
-                    for (x in list){
-                        if (x == uid){
-                            Toast.makeText(activity, "already registered", Toast.LENGTH_SHORT).show()
+                    for (x in list) {
+                        if (x == uid) {
+                            Toast.makeText(activity, R.string.toast_already_registerd, Toast.LENGTH_SHORT).show()
                             notInList = false
                         }
                     }
 
                     // add user to list
-                    if (notInList){
+                    if (notInList) {
                         list.add(uid)
                         db.collection("event").document(eventId)
                             .update("participants", list)
                             .addOnSuccessListener {
-                                Toast.makeText(activity, "successfully registered", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(activity, R.string.toast_successfully_registered, Toast.LENGTH_SHORT).show()
                                 activity.recreate()
                             }
                             .addOnFailureListener {
-                                Toast.makeText(activity, "error while joining event", Toast.LENGTH_SHORT).show()}
+                                Toast.makeText(activity, R.string.toast_error_joining, Toast.LENGTH_SHORT).show()}
                     }
                 }
             }
     }
 
     suspend fun getUriFromPictureReference(picture: String): Uri {
-
-        //download event picture uri from firebase storage
+        // download event picture uri from firebase storage
         return storageRef.child(picture).downloadUrl.await()
-
     }
 
     // remove user from event
     fun leaveEvent(uid: String, eventId: String) {
-
         db.collection("event").document(eventId)
             .get()
             .addOnSuccessListener { document ->
@@ -223,7 +207,6 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
 
     // update event
     fun update(event: Event) {
-
         // create map for firestore
         val updatedEvent = mapOf(
             "admins" to event.admins,
@@ -241,5 +224,4 @@ class eventViewModel(application: Application) : AndroidViewModel(application) {
         db.collection("event").document(event.id!!)
             .update(updatedEvent)
     }
-
 }

@@ -16,7 +16,9 @@ import com.othregensburg.photosynthese.models.userViewModel
 class OnboardingLoginFragment : Fragment() {
     private lateinit var binding: FragmentOnboardingLoginBinding
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         binding = FragmentOnboardingLoginBinding.inflate(inflater, container, false)
         val userVM = ViewModelProvider(requireActivity()).get(userViewModel::class.java)

@@ -8,7 +8,6 @@ import com.othregensburg.photosynthese.models.Event
 
 class EventActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_event)
 
@@ -25,7 +24,6 @@ class EventActivity : AppCompatActivity() {
 
     // replaces the current fragment with the given fragment
     private fun replaceFragment(fragment: Fragment) {
-
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragment_container, fragment)
         fragmentTransaction.commit()
