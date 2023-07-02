@@ -278,7 +278,7 @@ class EventCameraFragment : Fragment() {
                             colorFilter = PorterDuffColorFilter(
                                 ContextCompat.getColor(
                                     requireContext(),
-                                    R.color.cards_pink
+                                    R.color.video_capture_pink
                                 ),
                                 PorterDuff.Mode.SRC_ATOP
                             )

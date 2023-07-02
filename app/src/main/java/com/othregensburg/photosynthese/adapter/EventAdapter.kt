@@ -116,13 +116,11 @@ class EventAdapter(
                 loadImageWithGlide(uri.toString(), holder.cardImage)
             }
         } else {
-            val randomNumber = Random.nextInt(0, 5)
+            val randomNumber = Random.nextInt(0, 3)
             when (randomNumber) {
-                0 -> holder.cardImage.setImageResource(R.drawable.dilla1)
-                1 -> holder.cardImage.setImageResource(R.drawable.dilla2)
-                2 -> holder.cardImage.setImageResource(R.drawable.dilla3)
-                3 -> holder.cardImage.setImageResource(R.drawable.dilla4)
-                else -> holder.cardImage.setImageResource(R.drawable.dilla5)
+                0 -> holder.cardImage.setImageResource(R.drawable.background1)
+                1 -> holder.cardImage.setImageResource(R.drawable.background2)
+                else -> holder.cardImage.setImageResource(R.drawable.background3)
             }
         }
     }
